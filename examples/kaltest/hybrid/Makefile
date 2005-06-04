@@ -29,7 +29,7 @@ SHELL	= `which bash`
 MFLAGS	=
 CURRDIR	= .
 
-SUBDIRS	= kern gen tpc it vtx
+SUBDIRS	 = kern gen tpc it vtx
 SUBDIRS2 = main
 
 all:
@@ -38,6 +38,12 @@ all:
 	(cd $$i; echo ``making'' all ``in $(CURRDIR)/$$i...''; \
 	xmkmf -a; \
 	$(MAKE) $(MFLAGS) install); \
+	done
+	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \
+	for i in $(SUBDIRS2); do \
+	(cd $$i; echo ``making'' all ``in $(CURRDIR)/$$i...''; \
+	xmkmf -a; \
+	$(MAKE) $(MFLAGS)); \
 	done
 	
 Makefiles:

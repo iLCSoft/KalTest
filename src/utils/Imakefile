@@ -1,7 +1,5 @@
 #include "conf/makejsf.tmpl"
 
-LDFLAGS =
-
 INSTALLDIR    = ../..
 PACKAGENAME   = S4Utils
 SOREV         = 2005.01

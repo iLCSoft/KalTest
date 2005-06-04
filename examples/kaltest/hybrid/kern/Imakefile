@@ -2,7 +2,7 @@
 
 INSTALLDIR    = ../../../..
 PACKAGENAME   = EXKern
-SOREV         = 2005a
+SOREV         = 2005.01
 SRCS          = EXVKalDetector.$(SrcSuf) \
 		EXVMeasLayer.$(SrcSuf)
 
@@ -15,24 +15,23 @@ DICTNAME      = $(PACKAGENAME)Dict
 
 LIBNAME       = $(PACKAGENAME)
 
-SONAME        = lib$(LIBNAME).$(DllSuf).$(SOREV)
-
 LIBINSTALLDIR = $(INSTALLDIR)/lib
 INCINSTALLDIR = $(INSTALLDIR)/include
 INCPATH	      = -I. -I.. -I$(INCINSTALLDIR)
 CXXFLAGS     += $(INCPATH) -O0 -g
+SHLIBLDFLAGS  = $(DYLIBFLAGS)
 
-all:: $(SONAME)
 
-$(SONAME): $(OBJS)
-	$(LD) $(SOFLAGS) -o $(SONAME) $(OBJS) $(LDFLAGS)
+all::
+
+SharedLibraryTarget($(LIBNAME),$(SOREV),$(OBJS),.,.)
 	
 InstallSharedLibrary($(LIBNAME),$(SOREV),$(LIBINSTALLDIR))
 
 InstallMultipleFlags($(HDRS),$(INCINSTALLDIR),-m 644)
 
 clean:: 
-	@rm -f $(OBJS) core *.$(DllSuf) $(DICTNAME).$(SrcSuf) $(DICTNAME).h $(SONAME)
+	@rm -f $(OBJS) core *.$(DllSuf) $(DICTNAME).$(SrcSuf) $(DICTNAME).h
 
 depend:: $(SRCS) $(HDRS)
 	for i in $(SRCS); do \
