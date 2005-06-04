@@ -8,6 +8,5 @@
 #pragma link C++ class EXMeasLayer+;
 #pragma link C++ class EXKalDetector+;
 #pragma link C++ class EXEventGen+;
-#pragma link C++ class EXToyGLD+;
 
 #endif

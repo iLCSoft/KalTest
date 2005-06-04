@@ -29,33 +29,34 @@ SHELL	= `which bash`
 MFLAGS	=
 CURRDIR	= .
 
-SUBDIRS	= main kern gen tpc it vtx
+SUBDIRS	= kern gen tpc it vtx
+SUBDIRS2 = main
 
 all:
 	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \
 	for i in $(SUBDIRS); do \
 	(cd $$i; echo ``making'' all ``in $(CURRDIR)/$$i...''; \
 	xmkmf -a; \
-	$(MAKE) $(MFLAGS)); \
+	$(MAKE) $(MFLAGS) install); \
 	done
 	
 Makefiles:
 	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \
-	for i in $(SUBDIRS); do \
+	for i in $(SUBDIRS) $(SUBDIRS2); do \
 	(cd $$i; echo ``making'' Makefiles ``in $(CURRDIR)/$$i...''; \
 	xmkmf); \
 	done
 	
 clean: Makefiles
 	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \
-	for i in $(SUBDIRS); do \
+	for i in $(SUBDIRS) $(SUBDIRS2); do \
 	(cd $$i; echo ``making'' clean ``in $(CURRDIR)/$$i...''; \
 	$(MAKE) $(MFLAGS) clean); \
 	done
 
 distclean: clean
 	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \
-	for i in $(SUBDIRS); do \
+	for i in $(SUBDIRS) $(SUBDIRS2); do \
 	(cd $$i; echo ``making'' distclean ``in $(CURRDIR)/$$i...''; \
 	$(MAKE) $(MFLAGS) distclean); \
 	done; \

@@ -8,7 +8,7 @@
 #include "EXKalDetector.h"
 #include "EXEventGen.h"
 #include "EXHit.h"
-#include "EXToyGLD.h"
+#include "TKalDetCradle.h"
 
 #include <iostream>
 
@@ -46,19 +46,20 @@ int main (Int_t argc, Char_t **argv)
    // Prepare a detector
    // ===================================================================
 
-   EXToyGLD toygld;
+   TObjArray     kalhits;    // hit buffer
+   TKalDetCradle cradle;
    EXKalDetector detector;
 
-   toygld.Install(detector); // install detector into its toygld
+   cradle.Install(detector); // install detector into its cradle
 #ifdef __MS_OFF__
-   toygld.SwitchOffMS();     // switch off multiple scattering
+   cradle.SwitchOffMS();     // switch off multiple scattering
 #endif
 
    // ===================================================================
    // Prepare a Event Generator
    // ===================================================================
 
-   EXEventGen gen(toygld);
+   EXEventGen gen(cradle, kalhits);
 
    // ===================================================================
    // Event loop
@@ -71,7 +72,7 @@ int main (Int_t argc, Char_t **argv)
       //  Reset hit data
       // ---------------------------
 
-      toygld.Reset();
+      kalhits.Delete();
 
       // ============================================================
       // Generate a partcle
@@ -92,7 +93,6 @@ int main (Int_t argc, Char_t **argv)
       // ---------------------------
       //  Prepare hit iterrator
       // ---------------------------
-      TObjArray &kalhits = toygld.GetHits();
       TIter next(&kalhits, gkDir);   // come in to IP
 
       // ---------------------------
@@ -115,11 +115,11 @@ int main (Int_t argc, Char_t **argv)
       Int_t i1, i2, i3;
       if (gkDir == kIterBackward) {
          i3 = 0;
-         i1 = toygld.GetHits().GetEntries() - 1;
+         i1 = kalhits.GetEntries() - 1;
          i2 = i1 / 2;
       } else {
          i1 = 0;
-         i3 = toygld.GetHits().GetEntries() - 1;
+         i3 = kalhits.GetEntries() - 1;
          i2 = i3 / 2;
       }
       EXHit   &h1 = *dynamic_cast<EXHit *>(kalhits.At(i1));   // first hit

@@ -1,19 +1,20 @@
 #ifndef __EXEVENTGEN__
 #define __EXEVENTGEN__
 
-#include "EXToyGLD.h"
+#include "TKalDetCradle.h"
 #include "THelicalTrack.h"
 
 class EXEventGen {
 public:
-   EXEventGen(EXToyGLD &cradle) : fCradlePtr(&cradle) { }
+   EXEventGen(TKalDetCradle &cradle, TObjArray &hitbuf) : fCradlePtr(&cradle), fHitBufPtr(&hitbuf) { }
    virtual ~EXEventGen() { }
 
    THelicalTrack GenerateHelix(Double_t pt = 1.);
    void          Swim(THelicalTrack &heltrk);
 
 private:
-   EXToyGLD *fCradlePtr;
+   TKalDetCradle *fCradlePtr;
+   TObjArray     *fHitBufPtr;
 
    ClassDef(EXEventGen,1)   // Event Generator
 };

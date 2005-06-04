@@ -10,16 +10,12 @@
 #define __DR__     0.
 #define __FI0__    0.
 #define __DZ__     0.
-#if 0
-#define __TNLMIN__ 0.1
-#else
-#define __TNLMIN__ -0.7
-#endif
-#define __TNLMAX__  0.7
+#define __COS__    0.7
+#define __TNLMIN__  - (__COS__ / TMath::Sqrt(1 - __COS__ * __COS__))
+#define __TNLMAX__  - __TNLMIN__
 #define __X0__      0.
 #define __Y0__      0.
 #define __Z0__      0.
-
 
 ClassImp(EXEventGen)
 
@@ -108,7 +104,7 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
        if (!nhits) x0first = heltrk.GetPivot();
 
        if (ms.IsActive()) {
-          ((EXKalDetector *)&ms.GetParent(kFALSE))->ProcessHit(xx, ms, fCradlePtr->GetHits());
+          ((EXKalDetector *)&ms.GetParent(kFALSE))->ProcessHit(xx, ms, *fHitBufPtr);
        }
    }
 }

@@ -7,8 +7,7 @@ SRCS          = EXKalTest.$(SrcSuf) \
 		EXHit.$(SrcSuf) \
 		EXMeasLayer.$(SrcSuf) \
 		EXKalDetector.$(SrcSuf) \
-		EXEventGen.$(SrcSuf) \
-		EXToyGLD.$(SrcSuf)
+		EXEventGen.$(SrcSuf)
 
 OBJS	      =	$(subst .$(SrcSuf),.$(ObjSuf),$(SRCS)) \
 		$(PROGRAMNAME)Dict.$(ObjSuf)
