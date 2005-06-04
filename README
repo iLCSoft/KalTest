@@ -1,0 +1,54 @@
+-------------------------------------------------------------------------------
+2005/02/23    KalTest Package
+-------------------------------------------------------------------------------
+
+0) Organization of the KalTest package
+bin:             contains shell scripts to configure your system
+conf:            contains a Imake template
+doc:             documments
+examples/kaltest: sample programs to illustrate usage of the libraries
+src/geomlib:     geometry liabrary containing classes to describe track models and
+                 measurement layers
+   /kallib:      general purpose abstract base classes to implement Kalman filter 
+                 algorithm (TVKalSystem, TVKalSite, TVKalState)
+   /kaltracklib: derived classes that implement pure virtuals of kallib for track
+                 fitting purpose and abstract base classes to describe
+                 a) individual measurement layers (TVMeasLayer)
+                 b) detector system as a collection of measurement layers carrying
+                    information on the material budget (TVKalDetector)
+                 c) hit point on each measurement layer (TVTrackHit)
+   /utils:       a set of utility classes extracted from LEDA
+Makefile:        makefile to build the libraries
+README:          this file
+setup:           script to setup environmental variables to run the sample programs
+
+- See documments in the doc subdirectory for more information
+
+1) How to Build the Kalman Filter Libraries
+- Install ROOT if you haven't.
+- Set ROOTSYS environmental variable accordingly.
+- Source "setup" in the top directory of the KalTest source tree
+  and make the libraries in it as follows:
+  $ source ./setup
+  $ make
+
+2) How to Run Test Programs
+- Cd to the examples/kaltest subdirectory.
+- Choose one of the subsubdirectories in it:
+    cdc: track fitting example for a jet-chamber-like central tracker
+    tpc: track fitting example for a TPC-like central tracker
+    simple: a simple line fit example using the base kallib libraries only
+- Cd into the subsubdirectory you chose, build the test program, and run
+  as follows:
+  $ xmkmf -a
+  $ make
+  $ cd prod
+  $ ./EXKalTest
+
+Note:
+  KalTest package has been built and tested on
+	MacOSX 10.3
+	RedHat 9.0
+  with ROOT4.00.08f and the gcc3.x compiler.
+-
+-

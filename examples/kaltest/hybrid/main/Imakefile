@@ -1,0 +1,37 @@
+#include "../../../../conf/makejsf.tmpl"
+
+INSTALLDIR    = ../../../..
+PROGRAMNAME   = EXKalTest
+
+SRCS          = EXKalTest.$(SrcSuf)
+
+OBJS	      =	$(subst .$(SrcSuf),.$(ObjSuf),$(SRCS))
+
+HDRS	      = $(subst .$(SrcSuf),.h,$(SRCS))
+
+PROGRAM    = prod/$(PROGRAMNAME)
+
+LIBINSTALLDIR = $(INSTALLDIR)/lib
+INCINSTALLDIR = $(INSTALLDIR)/include
+INCPATH	      = -I. -I$(INCINSTALLDIR)
+CXXFLAGS     += $(INCPATH) -O0 -g
+
+all:: $(PROGRAM) 
+
+$(PROGRAM): $(OBJS)
+	$(LD) -o $(PROGRAM) $(OBJS) \
+	      -L$(LIBINSTALLDIR) -lEXTPC -lEXIT -lEXVTX -lEXKern -lEXGen \
+                                 -lS4KalTrack -lS4Kalman -lS4Geom -lS4Utils \
+	      $(LDFLAGS)
+
+clean:: 
+	@rm -f $(OBJS) prod/core
+
+depend:: $(SRCS) $(HDRS)
+	for i in $(SRCS); do \
+	rmkdepend -a -- $(CXXFLAGS) $(INCPATH) $(DEPENDFILES) -- $$i; done
+
+distclean:: clean
+	@rm -f $(PROGRAM) Makefile
+	@(cd prod; rm -f *.root *.out *~)
+

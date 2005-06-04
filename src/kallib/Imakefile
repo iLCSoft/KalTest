@@ -1,0 +1,81 @@
+#include "conf/makejsf.tmpl"
+
+LDFLAGS   = /* $(GLIBS) */
+
+INSTALLDIR    = ../..
+SOREV         = 2005a
+PACKAGENAME   = S4Kalman
+
+SRCS          = TKalMatrix.$(SrcSuf)  \
+		TVKalSite.$(SrcSuf) \
+		TVKalState.$(SrcSuf) \
+		TVKalSystem.$(SrcSuf)
+
+OBJS	      =	$(subst .$(SrcSuf),.$(ObjSuf),$(SRCS)) \
+		$(PACKAGENAME)Dict.$(ObjSuf)
+
+HDRS	      = $(subst .$(SrcSuf),.h,$(SRCS))
+
+DICTNAME      = $(PACKAGENAME)Dict
+
+LIBNAME       = $(PACKAGENAME)
+SONAME        = lib$(LIBNAME).$(DllSuf).$(SOREV)
+#if defined(DarwinArchitecture)
+DYLIBNAME     = lib$(LIBNAME).$(DylibSuf)
+#else
+DYLIBNAME     = 
+#endif
+
+LIBINSTALLDIR = $(INSTALLDIR)/lib
+INCINSTALLDIR = $(INSTALLDIR)/include
+INCPATH	      = -I. -I$(INCINSTALLDIR)
+CXXFLAGS     += $(INCPATH) -O0 -g 
+
+INSTALLFLAGS += -C
+
+all:: $(SONAME) $(DYLIBNAME)
+
+$(SONAME): $(OBJS)
+	$(LD) $(SOFLAGS) -o $(SONAME) $(OBJS) $(LDFLAGS)
+
+#if defined(DarwinArchitecture)
+$(DYLIBNAME): $(OBJS)
+	$(LD) $(DYLIBFLAGS) -o $(DYLIBNAME) $(OBJS) $(LDFLAGS)
+
+install:: $(DYLIBNAME)
+	$(MKDIRHIER) $(DESTDIR)$(LIBINSTALLDIR)
+	$(INSTALL) $(INSTALLFLAGS) $(DYLIBNAME) $(LIBINSTALLDIR)
+#endif
+
+InstallSharedLibrary($(LIBNAME),$(SOREV),$(LIBINSTALLDIR))
+
+InstallMultipleFlags($(HDRS),$(INCINSTALLDIR),-m 644)
+
+clean:: 
+	@rm -f $(OBJS) core *.$(DllSuf) $(DICTNAME).$(SrcSuf) $(DICTNAME).h
+
+depend:: $(SRCS) $(HDRS)
+	for i in $(SRCS); do \
+	rmkdepend -a -- $(CXXFLAGS) $(INCPATH) $(DEPENDFILES) -- $$i; done
+
+distclean:: clean
+	@rm -f $(OBJS) core *.$(DllSuf) *.$(DylibSuf)
+	@rm -f $(DICTNAME).$(SrcSuf) $(DICTNAME).h *~
+	@rm -f $(SONAME) *.root Makefile
+
+$(DICTNAME).$(SrcSuf): $(HDRS) LinkDef.h
+	@echo "Generating dictionary ..."
+	rootcint -f $(DICTNAME).$(SrcSuf) \
+ 		-c -I$(INCINSTALLDIR) $(HDRS) LinkDef.h
+
+/*
+ * Suffix Rules
+ *
+ */
+
+#if defined(HPArchitecture)
+.SUFFIXES: .$(SrcSuf)
+
+.$(SrcSuf).$(ObjSuf):
+	$(CXX) $(CXXFLAGS) -c $<
+#endif
