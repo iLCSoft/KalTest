@@ -1,0 +1,51 @@
+#include "../../../../conf/makejsf.tmpl"
+
+INSTALLDIR    = ../../../..
+PACKAGENAME   = EXTPC
+SOREV         = 2005a
+SRCS          = EXTPCKalDetector.$(SrcSuf) \
+		EXTPCMeasLayer.$(SrcSuf) \
+		EXTPCHit.$(SrcSuf)
+
+OBJS	      =	$(subst .$(SrcSuf),.$(ObjSuf),$(SRCS)) \
+		$(PACKAGENAME)Dict.$(ObjSuf)
+
+HDRS	      = $(subst .$(SrcSuf),.h,$(SRCS)) 
+
+DICTNAME      = $(PACKAGENAME)Dict
+
+LIBNAME       = $(PACKAGENAME)
+
+SONAME        = lib$(LIBNAME).$(DllSuf).$(SOREV)
+
+LIBINSTALLDIR = $(INSTALLDIR)/lib
+INCINSTALLDIR = $(INSTALLDIR)/include
+INCPATH	      = -I. -I.. -I$(INCINSTALLDIR)
+CXXFLAGS     += $(INCPATH) -O0 -g
+
+all:: $(SONAME)
+
+$(SONAME): $(OBJS)
+	$(LD) $(SOFLAGS) -o $(SONAME) $(OBJS) $(LDFLAGS)
+	
+InstallSharedLibrary($(LIBNAME),$(SOREV),$(LIBINSTALLDIR))
+
+InstallMultipleFlags($(HDRS),$(INCINSTALLDIR),-m 644)
+
+clean:: 
+	@rm -f $(OBJS) core *.$(DllSuf) $(DICTNAME).$(SrcSuf) $(DICTNAME).h $(SONAME)
+
+depend:: $(SRCS) $(HDRS)
+	for i in $(SRCS); do \
+	rmkdepend -a -- $(DEPENDFILES) -- $$i; done
+
+
+distclean:: clean
+	@rm -f $(OBJS) core *.$(DllSuf) $(DICTNAME).$(SrcSuf) $(DICTNAME).h *~
+	@rm -f *.root Makefile
+
+$(DICTNAME).$(SrcSuf): $(HDRS) LinkDef.h
+	@echo "Generating dictionary ..."
+	rootcint -f $(DICTNAME).$(SrcSuf) \
+ 		-c $(INCPATH) $(HDRS) LinkDef.h
+

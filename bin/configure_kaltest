@@ -1,0 +1,177 @@
+#!/bin/bash -f
+# ###################################################
+#
+# This script stores system information in config file.
+#
+#(Author)
+#  Akiya Miyamoto  15-April-1999   Original version
+#  A.Miyamoto  25-June-1999  Create src/JSFConfig.h, instead of conf/spec
+#$Id: configure_kaltest,v 1.1.1.1 2005-06-04 20:55:37 yamaguti Exp $
+#
+# ###################################################
+
+# ##################################################
+error_message(){
+  echo "System configuration error.."
+  echo "Environment variable, KALTESTROOT, is not set,"
+  echo "root command is not found or g77 is not found."
+  exit
+}
+
+# ##################################################
+exit_message(){
+  echo "System information is saved in $1"
+  exit
+}
+
+
+# ##################################################
+set_g77info()
+{
+  specfile=$1
+  echo -n "g77 version .. "
+  g77 -v > tmp-g77.$$ 2>&1
+
+  g77versionstr=`cat tmp-g77.$$ | grep release | grep gcc | cut -d"(" -f2 | cut -d")" -f1`
+
+  g77version=`echo $g77versionstr | cut -d" " -f1 | cut -d"-" -f2 | cut -d"." -f1 `
+  echo "#define __G77EGCS_VERSION__ " $g77version >> $specfile
+
+  g77mversion=`echo $g77versionstr | cut -d" " -f1 | cut -d"-" -f2 | cut -d"." -f2 `
+  echo "#define __G77EGCS_MINORVERSION__ " $g77mversion >> $specfile
+
+  g77plevel=`echo $g77versionstr | cut -d" " -f1 | cut -d"-" -f2 | cut -d"." -f3 `
+  echo "#define __G77EGCS_PATCHLEVEL__ " $g77plevel >> $specfile
+
+  g77lib="g2c"
+  if [ "$g77version" == "0" ] ; then
+     g77lib="f2c"
+  elif [ "$g77version" == "1" ] && ["$g77mversion" == "0" ] ;  then
+    g77lib="f2c"
+  fi
+  echo -n "#define __G77EGCS_LIBNAME__ " >> $specfile
+  echo $g77lib  >> $specfile
+
+  rm -f  tmp-g77.$$ 2>&1 
+}
+
+# ########################################################################
+#
+# Get GCC version number
+#
+# ########################################################################
+
+gcppversion()
+{
+
+cat > temp.cxx <<EOF
+#include <stdio.h>
+main()
+{
+ char *date=__DATE__;
+ char *time=__TIME__;
+ printf("#define __CONFIG_DATE__ \"%s\"\n",date);
+ printf("#define __CONFIG_TIME__ \"%s\"\n",time);
+
+ int gnuc=__GNUC__;
+ int gnuc_minor=__GNUC_MINOR__;
+ int gnuc_patch=__GNUC_PATCHLEVEL__;
+ printf("#define __JSF_GNUC_VERSION__    %d\n",gnuc);
+ printf("#define __JSF_GNUC_MINOR__      %d\n",gnuc_minor);
+ printf("#define __JSF_GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
+ printf("#define __GNUC_VERSION__    %d\n",gnuc);
+ printf("#define __GNUC_MINOR__      %d\n",gnuc_minor);
+ printf("#define __GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
+
+ char *version=__VERSION__;
+ printf("#define __GNUC_VERSION_STRING__  \"%s\"\n",version);
+ printf("#define __JSF_GNUC_VERSION_STRING__  \"%s\"\n",version);
+
+}
+EOF
+
+g++ temp.cxx
+./a.out
+
+rm -f temp.cxx a.out
+
+}
+
+# ############################################
+#
+# Main shell
+#
+# ############################################
+
+LANG=C
+
+systype=`uname -s`
+echo "OS of this system is $systype".
+
+if [ $# -ne 0 ] ; then
+  lcbsedir=$1
+else
+  if [ -z $KALTESTROOT ] ; then
+    error_message
+  fi
+  lcbasedir=$KALTESTROOT
+fi
+
+# ---------------------------------------------
+
+echo -n "Creating system information ."
+specfile=$lcbasedir/include/LCBASEConfig.h
+mkdir -p $lcbasedir/include
+
+echo "#ifndef __LCBASE_CONFIG__" > $specfile
+echo "#define __LCBASE_CONFIG__" >> $specfile
+
+# ---------------------------------------------
+
+echo -n "Root version .."
+if [ "$systype" == "AIX" ] ;  then
+  root -q -b -l $lcbasedir/bin/printversion.C > tmp.$$ 2>&1 
+  grep "ROOT_" tmp.$$ >> $specfile
+  rm -f tmp.$$ 
+else
+  root -q -b -l $lcbasedir/bin/printversion.C | grep "ROOT_" >> $specfile
+fi
+
+############################################3
+# Set gcc version information
+############################################3
+if [ -f `which g++` -a "$systype" != "AIX" ] ; then
+  echo -n "g++ version .. "
+  gcppversion >> $specfile
+fi
+
+
+##########################
+#
+##########################
+echo "#ifndef __CINT__" >> $specfile
+echo -n "#define __UNAME_MACHINE__ " >> $specfile
+uname -m >> $specfile
+echo -n "#define __UNAME_SYSNAME__ " >> $specfile
+uname -s >> $specfile
+
+
+if [ "$systype" != "AIX" ] ; then
+  if  [ "`which g77 | grep -c g77 `" != 0 ] ; then
+    set_g77info $specfile
+  fi 
+fi
+
+echo '#define JSF_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))' >> $specfile
+echo '#define JSF_VERSION_CODE JSF_VERSION(__JSF_VERSION__,__JSF_MINORVERSION__,__JSF_PATCHLEVEL__)' >> $specfile
+echo '#define GNUC_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))' >> $specfile
+echo '#define GNUC_VERSION_CODE GNUC_VERSION(__GNUC_VERSION__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__)' >> $specfile
+echo "#endif" >> $specfile
+echo "#endif" >> $specfile
+
+
+echo " "
+echo "$specfile was created."
+exit
+
+
