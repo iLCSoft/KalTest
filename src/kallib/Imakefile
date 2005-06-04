@@ -3,7 +3,7 @@
 LDFLAGS   = /* $(GLIBS) */
 
 INSTALLDIR    = ../..
-SOREV         = 2005a
+SOREV         = 2005.01
 PACKAGENAME   = S4Kalman
 
 SRCS          = TKalMatrix.$(SrcSuf)  \
@@ -19,32 +19,30 @@ HDRS	      = $(subst .$(SrcSuf),.h,$(SRCS))
 DICTNAME      = $(PACKAGENAME)Dict
 
 LIBNAME       = $(PACKAGENAME)
+
 SONAME        = lib$(LIBNAME).$(DllSuf).$(SOREV)
-#if defined(DarwinArchitecture)
-DYLIBNAME     = lib$(LIBNAME).$(DylibSuf)
-#else
-DYLIBNAME     = 
-#endif
 
 LIBINSTALLDIR = $(INSTALLDIR)/lib
 INCINSTALLDIR = $(INSTALLDIR)/include
 INCPATH	      = -I. -I$(INCINSTALLDIR)
 CXXFLAGS     += $(INCPATH) -O0 -g 
+SHLIBLDFLAGS  = $(DYLIBFLAGS)
 
 INSTALLFLAGS += -C
 
-all:: $(SONAME) $(DYLIBNAME)
+all:: $(SONAME)
 
+SharedLibraryTarget($(LIBNAME),$(SOREV),$(OBJS),.,.)
+
+#if defined(DarwinArchitecture)
 $(SONAME): $(OBJS)
 	$(LD) $(SOFLAGS) -o $(SONAME) $(OBJS) $(LDFLAGS)
 
-#if defined(DarwinArchitecture)
-$(DYLIBNAME): $(OBJS)
-	$(LD) $(DYLIBFLAGS) -o $(DYLIBNAME) $(OBJS) $(LDFLAGS)
-
-install:: $(DYLIBNAME)
+install:: $(SONAME)
 	$(MKDIRHIER) $(DESTDIR)$(LIBINSTALLDIR)
-	$(INSTALL) $(INSTALLFLAGS) $(DYLIBNAME) $(LIBINSTALLDIR)
+	$(INSTALL) $(INSTALLFLAGS) $(SONAME) $(LIBINSTALLDIR)
+	$(RM) $(LIBINSTALLDIR)/lib$(LIBNAME).$(DllSuf)
+	$(LN) $(SONAME) $(LIBINSTALLDIR)/lib$(LIBNAME).$(DllSuf)
 #endif
 
 InstallSharedLibrary($(LIBNAME),$(SOREV),$(LIBINSTALLDIR))
@@ -67,15 +65,3 @@ $(DICTNAME).$(SrcSuf): $(HDRS) LinkDef.h
 	@echo "Generating dictionary ..."
 	rootcint -f $(DICTNAME).$(SrcSuf) \
  		-c -I$(INCINSTALLDIR) $(HDRS) LinkDef.h
-
-/*
- * Suffix Rules
- *
- */
-
-#if defined(HPArchitecture)
-.SUFFIXES: .$(SrcSuf)
-
-.$(SrcSuf).$(ObjSuf):
-	$(CXX) $(CXXFLAGS) -c $<
-#endif

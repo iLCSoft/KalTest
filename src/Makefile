@@ -46,14 +46,14 @@ Makefiles:
 	xmkmf); \
 	done
 	
-clean:
+clean: Makefiles
 	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \
 	for i in $(SUBDIRS); do \
 	(cd $$i; echo ``making'' clean ``in $(CURRDIR)/$$i...''; \
 	$(MAKE) $(MFLAGS) clean); \
 	done
 
-distclean:
+distclean: clean
 	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \
 	for i in $(SUBDIRS); do \
 	(cd $$i; echo ``making'' distclean ``in $(CURRDIR)/$$i...''; \
