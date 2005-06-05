@@ -22,17 +22,18 @@ EXKalDetector::EXKalDetector(Int_t m)
    Z       =  6.;
    density = 0.1317;
    radlen  = 42.7/density;
-   TMaterial &cfrp = *new TMaterial("TPCCFRP", "", A, Z, density, radlen, 0.);
+   TMaterial &cfrp = *new TMaterial("CFRP", "", A, Z, density, radlen, 0.);
 
    static const Int_t    nlayers   = 200;
    static const Double_t lhalf     = 200.;
    static const Double_t rmin      = 45.;
-   static const Double_t rstep     = 0.75;
-   static const Double_t rcylin    = 44.;
+   static const Double_t rstep     = 3.;
+   static const Double_t rcylin    = 43.;
+   static const Double_t rcylout   = 44.;
 
-   // create measurement layers of inner cylinder of central tracker
+   // create dummy layers of inner cylinder of central tracker
    Add(new EXMeasLayer(air, cfrp, rcylin, lhalf, EXMeasLayer::kDummy));
-   Add(new EXMeasLayer(cfrp, air, rmin, lhalf, EXMeasLayer::kDummy));
+   Add(new EXMeasLayer(cfrp, air, rcylout, lhalf, EXMeasLayer::kDummy));
 
    // create measurement layers of central tracker
    Double_t r   = rmin;

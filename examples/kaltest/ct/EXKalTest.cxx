@@ -12,8 +12,8 @@
 
 #include <iostream>
 
-//static const Bool_t gkDir = kIterBackward;
-static const Bool_t gkDir = kIterForward;
+static const Bool_t gkDir = kIterBackward;
+//static const Bool_t gkDir = kIterForward;
 
 using namespace std;
 
