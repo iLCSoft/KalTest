@@ -51,16 +51,12 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
    //  Create hits
    // ---------------------------
 
-   EXVMeasLayer *msPtr;
-   Int_t        nhits  = 0;
-   TVector3     x0first;
    Double_t     dfi  = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))->GetSortingPolicy()
                      / heltrk.GetRho();
    Bool_t       is1stloop = kTRUE;
    Int_t dlyr = 1;
    for (Int_t lyr = 0; lyr < nlayers && lyr >= 0; lyr += dlyr) {
-       msPtr = dynamic_cast<EXVMeasLayer *>(fCradlePtr->At(lyr));
-       EXVMeasLayer &ms = *msPtr; // measurement layer
+       EXVMeasLayer &ms = *dynamic_cast<EXVMeasLayer *>(fCradlePtr->At(lyr));
        TVector3 xx;
        if (lyr) dfi  = 0.;
        if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
@@ -88,21 +84,19 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
        Double_t tmp    = 1. + kMS2 * TMath::Log(TMath::Max(1.e-4, xl));
        tmp /= (mom * beta);
        Double_t sgms   = kMS1 * TMath::Sqrt(xl) * tmp;
-                sgms  /= mom*beta;
        Double_t sgphi  = sgms*cslinv;
        Double_t sgtnl  = sgms*cslinv*cslinv;
        Double_t delphi = gRandom->Gaus(0.,sgphi);
        Double_t deltnl = gRandom->Gaus(0.,sgtnl);
 
-       dfi *= 0.5;
-       TVector3 x0ms = heltrk.CalcXAt(dfi);
-       heltrk.MoveTo(x0ms,dfi);     // M.S. at mid point
+       //dfi *= 0.5;
+       //TVector3 x0ms = heltrk.CalcXAt(dfi);
+       //heltrk.MoveTo(x0ms,dfi);     // M.S. at mid point
 
        heltrk.ScatterBy(delphi,deltnl);
        dfi  = 0.;
        if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) break;// recalc exact hit
        heltrk.MoveTo(xx,dfi);	// move pivot to current hit
-       if (!nhits) x0first = heltrk.GetPivot();
 
        if (ms.IsActive()) {
           ((EXVKalDetector *)&ms.GetParent(kFALSE))->ProcessHit(xx, ms, *fHitBufPtr);
