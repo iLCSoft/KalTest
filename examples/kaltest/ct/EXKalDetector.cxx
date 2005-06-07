@@ -24,7 +24,7 @@ EXKalDetector::EXKalDetector(Int_t m)
    radlen  = 42.7/density;
    TMaterial &cfrp = *new TMaterial("CFRP", "", A, Z, density, radlen, 0.);
 
-   static const Int_t    nlayers   = 200;
+   static const Int_t    nlayers   = 50;
    static const Double_t lhalf     = 200.;
    static const Double_t rmin      = 45.;
    static const Double_t rstep     = 3.;
