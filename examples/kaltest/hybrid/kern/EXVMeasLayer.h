@@ -23,7 +23,7 @@
 
 class TVTrackHit;
 
-class EXVMeasLayer : public TVMeasLayer, public TCylinder {
+class EXVMeasLayer : public TVMeasLayer {
 public:
    static Bool_t kActive;
    static Bool_t kDummy;
@@ -31,10 +31,8 @@ public:
    // Ctors and Dtor
 
    EXVMeasLayer(TMaterial &min,
-                  TMaterial &mout,
-                  Double_t   r0,
-                  Double_t   lhalf,
-                  Bool_t     type = EXVMeasLayer::kActive);
+                TMaterial &mout,
+                Bool_t     type = EXVMeasLayer::kActive);
    virtual ~EXVMeasLayer();
 
    // Parrent's pure virtuals that must be implemented

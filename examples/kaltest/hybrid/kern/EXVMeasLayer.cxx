@@ -23,11 +23,8 @@ ClassImp(EXVMeasLayer)
                                                                                 
 EXVMeasLayer::EXVMeasLayer(TMaterial &min,
                            TMaterial &mout,
-                           Double_t   r0,
-                           Double_t   lhalf,
                            Bool_t     type)
             : TVMeasLayer(min, mout),
-              TCylinder(r0, lhalf),
               fType(type)
 {
 }
