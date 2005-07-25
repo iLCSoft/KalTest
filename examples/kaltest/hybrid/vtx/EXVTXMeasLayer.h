@@ -17,12 +17,13 @@
 //
 #include "TVector3.h"
 #include "TKalMatrix.h"
+#include "TCylinder.h"
 #include "EXVMeasLayer.h"
 #include "KalTrackDim.h"
 
 class TVTrackHit;
 
-class EXVTXMeasLayer : public EXVMeasLayer {
+class EXVTXMeasLayer : public EXVMeasLayer, public TCylinder {
 public:
    // Ctors and Dtor
 
