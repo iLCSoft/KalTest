@@ -37,7 +37,6 @@ EXTPCKalDetector::EXTPCKalDetector(Int_t m)
    static const Double_t rstep     = 0.76775;       // step length of radius
    static const Double_t rtub      = 39.5;          // inner r of support tube
    static const Double_t outerr    = 206.;          // outer radius of TPC
-
    static const Double_t sigmax0   = 55.e-4;
    static const Double_t sigmax1   = 166.e-4 / 3 / TMath::Sqrt(28);
    static const Double_t sigmaz    = 600.e-4;

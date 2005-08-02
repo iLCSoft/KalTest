@@ -10,7 +10,7 @@
 //*     class EXITMeasLayer
 //* (Update Recored)
 //*   2003/09/30  Y.Nakashima       Original version.
-//*
+//*   2005/07/25  Kim, Youngim
 //*************************************************************************
 //
 
@@ -26,7 +26,8 @@ EXITMeasLayer::EXITMeasLayer(TMaterial &min,
                              Double_t   sigmax,
                              Double_t   sigmaz,
                              Bool_t     type)
-             : EXVMeasLayer(min, mout, r0, lhalf, type),
+             : EXVMeasLayer(min, mout, type),
+               TCylinder(r0, lhalf),
                fSigmaX(sigmax),
                fSigmaZ(sigmaz)
 {
@@ -98,3 +99,4 @@ void EXITMeasLayer::CalcDhDa(const TVTrackHit &vht,
       H(1,sdim-1) = 0.;
    }
 }
+

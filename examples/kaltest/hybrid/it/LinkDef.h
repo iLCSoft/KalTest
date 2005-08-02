@@ -6,6 +6,8 @@
 
 #pragma link C++ class EXITKalDetector+;
 #pragma link C++ class EXITHit+;
+#pragma link C++ class EXITFBHit+;
 #pragma link C++ class EXITMeasLayer+;
+#pragma link C++ class EXITFBMeasLayer+;
 
 #endif

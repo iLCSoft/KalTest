@@ -13,6 +13,8 @@
 
 #include <iostream>
 
+//#define __MS_OFF__
+
 static const Bool_t gkDir = kIterBackward;
 //static const Bool_t gkDir = kIterForward;
 
@@ -54,11 +56,12 @@ int main (Int_t argc, Char_t **argv)
    EXTPCKalDetector tpcdet;
 
    toygld.Install(vtxdet); // install vtx into its toygld
-   toygld.Install(itdet);  // install vtx into its toygld
+   toygld.Install(itdet);  // install it into its toygld
    toygld.Install(tpcdet); // install tpc into its toygld
 #ifdef __MS_OFF__
    toygld.SwitchOffMS();     // switch off multiple scattering
 #endif
+   toygld.Sort();   // temporary treatment
 
    // ===================================================================
    // Prepare a Event Generator
@@ -98,6 +101,10 @@ int main (Int_t argc, Char_t **argv)
       // ---------------------------
       //  Prepare hit iterrator
       // ---------------------------
+      if (kalhits.GetEntries() < 2) {
+         cerr << "<<<<<< Shortage of Hits! >>>>>>>" << endl;
+         continue;
+      }
       TIter next(&kalhits, gkDir);   // come in to IP
 
       // ---------------------------
@@ -128,8 +135,8 @@ int main (Int_t argc, Char_t **argv)
          i2 = i3 / 2;
       }
       TVTrackHit &h1 = *dynamic_cast<TVTrackHit *>(kalhits.At(i1));   // first hit
-      TVTrackHit &h2 = *dynamic_cast<TVTrackHit *>(kalhits.At(i2));   // last hit
-      TVTrackHit &h3 = *dynamic_cast<TVTrackHit *>(kalhits.At(i3));   // middle hit
+      TVTrackHit &h2 = *dynamic_cast<TVTrackHit *>(kalhits.At(i2));   // middle hit
+      TVTrackHit &h3 = *dynamic_cast<TVTrackHit *>(kalhits.At(i3));   // last hit
       TVector3    x1 = h1.GetMeasLayer().HitToXv(h1);
       TVector3    x2 = h2.GetMeasLayer().HitToXv(h2);
       TVector3    x3 = h3.GetMeasLayer().HitToXv(h3);

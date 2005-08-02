@@ -12,7 +12,7 @@
 //*     class EXITMeasLayer
 //* (Update Recored)
 //*   2003/09/30  Y.Nakashima       Original version.
-//*
+//*   2005/07/25  Kim, Youngim 
 //*************************************************************************
 //
 #include "TVector3.h"
@@ -22,7 +22,7 @@
 
 class TVTrackHit;
 
-class EXITMeasLayer : public EXVMeasLayer {
+class EXITMeasLayer : public EXVMeasLayer , public TCylinder {
 public:
    // Ctors and Dtor
 
@@ -45,7 +45,6 @@ public:
                                  const TVector3   &xv,
                                  const TKalMatrix &dxphiada,
                                        TKalMatrix &H)  const;
-
    Double_t GetSigmaX() const { return fSigmaX; }
    Double_t GetSigmaZ() const { return fSigmaZ; }
 

@@ -1,7 +1,9 @@
 
 #include "EXITKalDetector.h"
 #include "EXITMeasLayer.h"
+#include "EXITFBMeasLayer.h"
 #include "EXITHit.h"
+#include "EXITFBHit.h"
 #include "TRandom.h"
 
 ClassImp(EXITKalDetector)
@@ -21,6 +23,8 @@ EXITKalDetector::EXITKalDetector(Int_t m)
    density = 2.33;
    radlen  = 9.36;
    TMaterial &si = *new TMaterial("ITSi", "", A, Z, density, radlen, 0.);
+  
+  ////////// Barrel part of IT /////////////////////
 
    static const Int_t    nlayers  = 4;
    static const Double_t lhalfmin = 18.5;      // layer min half length [cm]
@@ -28,21 +32,63 @@ EXITKalDetector::EXITKalDetector(Int_t m)
    static const Double_t rstep    = 7.;        // layer radius step
    static const Double_t lstep    = 14.5;      // layer length step
    static const Double_t thick    = 0.05616;   // layer thick
-
    static const Double_t sigmax   = 1.e-3;
    static const Double_t sigmaz   = 1.e-3;
-                                                                                
-   Bool_t active = EXITMeasLayer::kActive;
-   Bool_t dummy  = EXITMeasLayer::kDummy;
+  
+  ///////// Forward & Backward of IT  //////////////
+
+   static const Int_t    nlayersfb    = 7;
+   static const Int_t    nlyrsfbdmmy  = 7;
+   static const Double_t zminfb       = 14.5;      // layer located z-direction [cm]
+   static const Double_t zstep        = 14.5;      // layer step
+   static const Double_t rinfb        = 2.5;       // layer inner radius 
+   static const Double_t routfb       = 7.;        // layer outer radius
+   
+   Bool_t active = EXVMeasLayer::kActive;
+   Bool_t dummy  = EXVMeasLayer::kDummy;
 
    // create measurement layers of inner tracker
-   Double_t r   = rmin;
-   Double_t len = lhalfmin;
-   for (Int_t layer = 0; layer < nlayers; layer++) {
-      Add(new EXITMeasLayer(air, si, r, len, sigmax, sigmaz, active));
-      Add(new EXITMeasLayer(si, air, r + thick, len, sigmax, sigmaz, dummy));
-      r   += rstep;
+   Double_t r    = rmin;
+   Double_t len  = lhalfmin;
+   Double_t rifb = rinfb;
+   Double_t zfb  = zminfb;
+   Double_t rofb = routfb;
+  
+   for (Int_t layer = 0; layer < (nlayersfb + nlyrsfbdmmy); layer++) {
+      TVector3 xc1(0,0,zfb);         // for forward part  
+      TVector3 xc2(0,0,zfb+thick);   // for forward part 
+      //TVector3 xc3(-xc1);          // for backward part 
+      //TVector3 xc4(-xc2);          // for backward part 
+
+     //  Forward part
+     if (layer < nlayersfb) {
+        Add(new EXITFBMeasLayer(air, si, xc1, rifb, rofb, sigmax, sigmaz, active));
+        Add(new EXITFBMeasLayer(si, air, xc2, rifb, rofb, sigmax, sigmaz, dummy));
+     } else {
+        Add(new EXITFBMeasLayer(air, air, xc1, rifb, rofb, sigmax, sigmaz, dummy));
+     }
+      //  Backward part
+      //Add(new EXITFBMeasLayer(air, si, xc3, rifb, rofb,  sigmax, sigmaz, active));
+      //Add(new EXITFBMeasLayer(si, air, xc4, rifb , rofb, sigmax, sigmaz, dummy));
+      if (layer < nlayers) { 
+         Add(new EXITMeasLayer(air, si, r, len, sigmax, sigmaz, active));
+         Add(new EXITMeasLayer(si, air, r + thick, len, sigmax, sigmaz, dummy));
+      }
       len += lstep;
+      zfb += zstep;
+      r   += rstep;
+
+      if      (layer == 1) rifb += 2.5;
+      else if (layer == 2) rifb += 1.;
+      else if (layer >= 6) rifb += 0.;
+      else                 rifb += 2.;
+
+      // layer should be bigger than its inner layer
+      // because Rout is used as a sorting policy.
+      if      (layer == 3) rofb += 8.;
+      else if (layer == 4) rofb += 2.; 
+      else if (layer >= 5) rofb += 1.e-6;
+      else                 rofb += 7.;
    }
    SetOwner();
 }
@@ -55,22 +101,47 @@ void EXITKalDetector::ProcessHit(const TVector3    &xx,
                                  const TVMeasLayer &ms,
                                        TObjArray   &hits)
 {
-   const EXITMeasLayer &ims = dynamic_cast<const EXITMeasLayer &>(ms);
-   TKalMatrix h    = ims.XvToMv(xx);
-   Double_t   rphi = h(0, 0);
-   Double_t   z    = h(1, 0);
+   // =======================================================
+   // Temporary treatment !!
+   // -------------------------------------------------------
+   const EXITMeasLayer   *msp   = dynamic_cast<const EXITMeasLayer *>(&ms);
+   const EXITFBMeasLayer *fbmsp = dynamic_cast<const EXITFBMeasLayer *>(&ms);
+   if (msp) {
+      TKalMatrix h    = msp->XvToMv(xx);
+      Double_t   rphi = h(0, 0);
+      Double_t   z    = h(1, 0);
 
-   Double_t dx = ims.GetSigmaX();
-   Double_t dz = ims.GetSigmaZ();
-   rphi += gRandom->Gaus(0., dx);   // smearing rphi
-   z    += gRandom->Gaus(0., dz);   // smearing z
+      Double_t dx = msp->GetSigmaX();
+      Double_t dz = msp->GetSigmaZ();
+      rphi += gRandom->Gaus(0., dx);   // smearing rphi
+      z    += gRandom->Gaus(0., dz);   // smearing z
 
-   Double_t meas [2];
-   Double_t dmeas[2];
-   meas [0] = rphi;
-   meas [1] = z;
-   dmeas[0] = dx;
-   dmeas[1] = dz;
+      Double_t meas [2];
+      Double_t dmeas[2];
+      meas [0] = rphi;
+      meas [1] = z;
+      dmeas[0] = dx;
+      dmeas[1] = dz;
 
-   hits.Add(new EXITHit(ims, meas, dmeas, xx, GetBfield(xx)));
+      hits.Add(new EXITHit(*msp, meas, dmeas, xx, GetBfield(xx)));
+   } else {
+      TKalMatrix h   = fbmsp->XvToMv(xx);
+      Double_t   x = h(0, 0); 
+      Double_t   y   = h(1, 0); 
+
+      Double_t dx = fbmsp->GetSigmaX();
+      Double_t dy = fbmsp->GetSigmaY();
+      x += gRandom->Gaus(0., dx);   // smearing x
+      y += gRandom->Gaus(0., dy);   // smearing y
+
+      Double_t meas [2];
+      Double_t dmeas[2];
+      meas [0] = x;
+      meas [1] = y;
+      dmeas[0] = dx;
+      dmeas[1] = dy;
+ 
+      hits.Add(new EXITFBHit(*fbmsp, meas, dmeas, xx, GetBfield(xx)));
+   }
+   // =================================================================
 }

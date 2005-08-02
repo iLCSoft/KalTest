@@ -1,5 +1,4 @@
 #include "EXITHit.h"
-#include "EXITMeasLayer.h"
 
 #include <iostream>
 #include <iomanip>
@@ -39,10 +38,10 @@ EXITHit::~EXITHit()
 
 TKalMatrix EXITHit::XvToMv(const TVector3 &xv, Double_t /*t0*/) const
 {
-   const EXITMeasLayer &ms
-                 = dynamic_cast<const EXITMeasLayer &>(GetMeasLayer());
-   TKalMatrix h  = ms.XvToMv(xv);
-   Double_t r    = ms.GetR();
+   const EXVMeasLayer &ms
+                 = dynamic_cast<const EXVMeasLayer &>(GetMeasLayer());
+   TKalMatrix h  = ms.XvToMv(*this,xv);
+   Double_t r    = xv.Pt();                 // by Kim, Youngim  2005/07/25
    Double_t phih = h(0,0) / r;
    Double_t phim = (*this)(0,0) / r;
    Double_t dphi = phih - phim;

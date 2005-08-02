@@ -3,9 +3,11 @@
 INSTALLDIR    = ../../../..
 PACKAGENAME   = EXIT
 SOREV         = 2005.01
-SRCS          = EXITKalDetector.$(SrcSuf) \
-		EXITMeasLayer.$(SrcSuf) \
-		EXITHit.$(SrcSuf)
+SRCS          = EXITMeasLayer.$(SrcSuf) \
+		EXITFBMeasLayer.$(SrcSuf) \
+                EXITKalDetector.$(SrcSuf) \
+		EXITHit.$(SrcSuf) \
+		EXITFBHit.$(SrcSuf)
 
 OBJS	      =	$(subst .$(SrcSuf),.$(ObjSuf),$(SRCS)) \
 		$(PACKAGENAME)Dict.$(ObjSuf)
