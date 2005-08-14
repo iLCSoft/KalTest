@@ -24,12 +24,6 @@ public:
 
    ~EXKalDetector() {}
 
-   Double_t CalcRadLength(const TVMeasLayer &from,
-                          const TVMeasLayer &to) const;
-   Double_t CalcSigmaMS0 (const TVMeasLayer &from,
-                          const TVMeasLayer &to,
-                                Double_t     pathlen) const;
-
 private:
    Double_t fRT0Det;   // radius of T0 detector
 

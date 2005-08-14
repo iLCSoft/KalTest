@@ -22,7 +22,7 @@ EXHit::EXHit(const EXMeasLayer &ms,
              const TVector3    &xx,
                    Double_t     b,
                    Int_t        m)
-        : TVTrackHit(ms,x,dx,xx,b,m), fLR(lr), fCellNo(cn), fVdrift(v)
+        : TVTrackHit(ms,x,dx,b,m), fLR(lr), fCellNo(cn), fVdrift(v), fXX(xx)
 {
 }
 

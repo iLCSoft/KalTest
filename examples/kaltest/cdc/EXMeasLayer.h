@@ -33,8 +33,8 @@ public:
    // Ctors and Dtor
 
    EXMeasLayer(Double_t r0, Double_t lhalf, TVector3 we, TVector3 wd,
-               Double_t cellw, Double_t fwdx0inv, Double_t bwdx0inv)
-         : TVMeasLayer(fwdx0inv, bwdx0inv),
+               Double_t cellw, TMaterial &min, TMaterial &mout, Bool_t isactive = kTRUE)
+         : TVMeasLayer(min, mout, isactive),
            THype(r0,lhalf,wd.Perp()/wd.Z()), fWireEnd(we), fWireDir(wd),
            fCellWidth(cellw), 
            fWirePhi(TMath::ATan2(we.Y(),we.X())), 

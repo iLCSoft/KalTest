@@ -29,13 +29,40 @@ EXKalDetector::EXKalDetector(Int_t    nlayers,
                              Double_t rt0det)
 	: TVKalDetector(nlayers+1), fRT0Det(rt0det)
 {
+   // prepare materials
+   Double_t A, Z, density, radlen;
+   A       = 14.00674 * 0.7 + 15.9994 * 0.3;    // mass number
+   Z       = 7.3;                               // atomic number
+   density = 1.205e-3;                          // [g/cmm^3]
+   radlen  = 3.42e4;                            // [cm]
+   TMaterial &air = *new TMaterial("Air", "", A, Z, density, radlen, 0.);
+
+   A       = 28.0855;
+   Z       = 14.;
+   density = 2.33;
+   radlen  = 9.36;
+   TMaterial &si = *new TMaterial("Si", "", A, Z, density, radlen, 0.);
+   static const Double_t thick    = 0.05616;    // layer thickness
+
+   A       = 12.0107;                           // mass number
+   Z       =  6.;                               // atomic number
+   density = 0.1317;                            // [g/cmm^3]
+   radlen  = 42.7/density;                      // [cm]
+   TMaterial &cfrp = *new TMaterial("CFRP", "", A, Z, density, radlen, 0.);
+
+   static Bool_t kActive = kTRUE;
+   static Bool_t kDummy  = kFALSE;
+
    // create inner timing detector
    if (rt0det > 0.) {
          TVector3 we(0., rt0det, -lhalf);
          TVector3 wd(0., 0., 1.);
          Double_t celw = 2*celhw*rt0det/rmin;
-         Add(new EXMeasLayer(rt0det, lhalf, we, wd.Unit(), celw, kgX0Si, kgX0CFRP));
-         Add(new EXMeasLayer(rt0det+4.5, lhalf, we, wd.Unit(), celw, kgX0CFRP, kgX0Inv));
+         Add(new EXMeasLayer(rt0det      , lhalf, we, wd.Unit(), celw, air, si, kActive));
+         Add(new EXMeasLayer(rt0det+thick, lhalf, we, wd.Unit(), celw, si, air, kDummy));
+         
+         Add(new EXMeasLayer(rt0det+4.5, lhalf, we, wd.Unit(), celw, air, cfrp, kDummy));
+         Add(new EXMeasLayer(rt0det+5.0, lhalf, we, wd.Unit(), celw, cfrp, air, kDummy));
    }
    // create measurement layers of central tracker
 
@@ -85,56 +112,9 @@ EXKalDetector::EXKalDetector(Int_t    nlayers,
          wd.RotateZ(fact*dfiw);
 
          Double_t r0 = r*csdelphi; // r0 = r(z=0) while r = r(z=-lhalf)
-         Add(new EXMeasLayer(r0, lhalf, we, wd.Unit(), celw, kgX0Inv, kgX0Inv));
+         Add(new EXMeasLayer(r0, lhalf, we, wd.Unit(), celw, air, air, kActive));
          r += rstep;
       }
    }
    SetOwner();
-}
-
-Double_t EXKalDetector::CalcRadLength(const TVMeasLayer &from,
-                                      const TVMeasLayer &to) const
-{
-   Double_t rfrom = dynamic_cast<const THype &>(from).GetR0();
-   Double_t rto   = dynamic_cast<const THype &>(to).GetR0();
-   static const Double_t kTol = 1.e-9;
-   if ((rfrom - fRT0Det - kTol) * (rto - fRT0Det - kTol) <= 0.) return 1./kgX0CFRP;
-   return 1./kgX0Inv; 
-}
-
-Double_t EXKalDetector::CalcSigmaMS0(const TVMeasLayer &vfrom,
-                                     const TVMeasLayer &vto,
-                                           Double_t     pathlen) const
-{
-   static const Double_t kMS1  = 0.0136;
-   static const Double_t kMS2  = 0.038;
-
-   const EXMeasLayer &from = *dynamic_cast<const EXMeasLayer *> (&vfrom);
-   const EXMeasLayer &to   = *dynamic_cast<const EXMeasLayer *> (&vto);
-
-   Double_t xl    = pathlen / CalcRadLength(from,to);
-   // ------------------------------------------------------------------
-            xl    = TMath::Max(xl,1.e-4); // very crude treatment that
-					  // should be improved!
-   // ------------------------------------------------------------------
-
-   // ------------------------------------------------------------------
-   if (fRT0Det > 0.) {			// VERY TEMPORARY
-      Double_t rfrom = from.GetWireEnd().Perp();
-      Double_t rto   = to.GetWireEnd().Perp();
-      Double_t eps   = 1.e-2;
-      if ((fRT0Det+eps - rfrom)*(fRT0Det+eps - rto) <= 0.) {
-#if 1
-         xl = 0.006;  // CFRP or Field cage
-#else
-         xl = 0.03;  // CFRP or Field cage
-#endif
-      }
-   }
-   // ------------------------------------------------------------------
-
-   Double_t sgms0 = kMS1 * TMath::Sqrt(xl) * (1 + kMS2*TMath::Log(xl));
-
-   if (TKalDetCradle::GetInstance().IsMSOn()) return sgms0;
-   else          return 0.;
 }

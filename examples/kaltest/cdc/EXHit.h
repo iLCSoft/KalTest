@@ -36,6 +36,8 @@ public:
 
    virtual void       DebugPrint(Option_t *opt = "")        const;
 
+   inline const TVector3 & GetExactX() const { return fXX; }
+
 private:
    inline const EXMeasLayer & GetMeasLayer() const
    {
@@ -46,6 +48,7 @@ private:
    Int_t        fLR;           // (left,right) = (-1,+1)
    Int_t        fCellNo;       // cell No
    Double_t     fVdrift;       // drift velocity
+   TVector3     fXX;           // exact hit position
 
    ClassDef(EXHit,1)      // Sample hit class
 };

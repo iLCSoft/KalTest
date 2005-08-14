@@ -197,7 +197,7 @@ int main (Int_t argc, Char_t **argv)
 #else
    EXKalDetector detector(nlayers,nwires,lhalf,celhw,tana,rmin,rstep,rt0det);
 #endif
-   TKalDetCradle &cradle = TKalDetCradle::GetInstance();
+   TKalDetCradle cradle;
    cradle.Install(detector);
 #ifndef __MS_ON__
    cradle.SwitchOffMS();	// switch off multiple scattering
@@ -270,10 +270,17 @@ int main (Int_t argc, Char_t **argv)
           Double_t tanl   = heltrk.GetTanLambda();
           Double_t cslinv = TMath::Sqrt(1 + tanl*tanl);
           Double_t path   = TMath::Abs(heltrk.GetRho()*dfi)*cslinv;
-          Double_t sgms   = detector.CalcSigmaMS0(*msPtrs,*msPtr,path);
+          Bool_t   dir    = ((xx * TKalMatrix::ToThreeVec(heltrk.CalcDxDphi(dfi)))
+                            * TMath::Sign(-1., kpa)) > 0;
+          Double_t x0inv  = 1. / ms.GetMaterial(dir).GetRadLength();
+          Double_t xl     = path * x0inv;
           Double_t mom    = TMath::Abs(1/kpa) * cslinv;
           Double_t beta   = mom/TMath::Sqrt(mom*mom + kMpi2); // pion assumed
-                   sgms  /= mom*beta;
+          static const Double_t kMS1 = 0.01316;
+          static const Double_t kMS2 = 0.038;
+          Double_t tmp    = 1. + kMS2 * TMath::Log(TMath::Max(1.e-4, xl));
+          tmp /= (mom * beta);
+          Double_t sgms   = kMS1 * TMath::Sqrt(xl) * tmp;
           Double_t sgphi  = sgms*cslinv;
           Double_t sgtnl  = sgms*cslinv*cslinv;
           Double_t delphi = gRandom->Gaus(0.,sgphi);
