@@ -3,19 +3,17 @@
 #include "EXKalDetector.h"
 #include "TRandom.h"
 
-//-----------------------------------
-// Track Parameters
-//-----------------------------------
+// -----------------------------------
+//  Track Parameters
+// -----------------------------------
 
 #define __DR__     0.
 #define __FI0__    0.
 #define __DZ__     0.
 #define __COS__    0.7
-#define __TNLMIN__  - (__COS__ / TMath::Sqrt(1 - __COS__ * __COS__))
-#define __TNLMAX__  - __TNLMIN__
-#define __X0__      0.
-#define __Y0__      0.
-#define __Z0__      0.
+#define __X0__     0.
+#define __Y0__     0.
+#define __Z0__     0.
 
 ClassImp(EXEventGen)
 
@@ -29,7 +27,8 @@ THelicalTrack EXEventGen::GenerateHelix(Double_t pt)
    Double_t fi0 = __FI0__ + 2*TMath::Pi()*(gRandom->Uniform()-0.5);
    Double_t cpa = 1. / pt;
    Double_t dz  = __DZ__;
-   Double_t tnl = gRandom->Uniform(__TNLMIN__, __TNLMAX__);
+   Double_t cs  = gRandom->Uniform(-__COS__, __COS__);
+   Double_t tnl = cs / TMath::Sqrt((1-cs)*(1+cs)); 
    Double_t x0  = __X0__;
    Double_t y0  = __Y0__;
    Double_t z0  = __Z0__;
@@ -43,16 +42,17 @@ THelicalTrack EXEventGen::GenerateHelix(Double_t pt)
 
 void EXEventGen::Swim(THelicalTrack &heltrk)
 {
-   TIter next(fCradlePtr);
-   Int_t nlayers = fCradlePtr->GetEntries();
+	
    // ---------------------------
    //  Create hits
    // ---------------------------
 
-   Double_t dfi  = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))->GetSortingPolicy()
-                 / heltrk.GetRho();
+   Double_t dfi       = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))
+                         ->GetSortingPolicy()
+                         / heltrk.GetRho();
    Bool_t   is1stloop = kTRUE;
-   Int_t dlyr = 1;
+   Int_t    nlayers   = fCradlePtr->GetEntries();
+   Int_t    dlyr      = 1;
    for (Int_t lyr = 0; lyr < nlayers && lyr >= 0; lyr += dlyr) {
        EXMeasLayer &ms = *dynamic_cast<EXMeasLayer *>(fCradlePtr->At(lyr));
        TVector3 xx;

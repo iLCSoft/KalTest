@@ -14,17 +14,19 @@
 //* (Update Recored)
 //*   2003/09/30  Y.Nakashima       Original version.
 //*   2005/02/23  A.Yamaguchi       Added CalcDapDa method.
+//*   2005/02/XX  A.Yamaguchi       Moved CalcDapDa method to THelicalTrack.
+//*   2005/08/13  K.Fujii           Removed CalcProcessNoise method.
 //*
 //*************************************************************************
-//
-#include "TVKalState.h"
-#include "THelicalTrack.h"
-#include "TStraightTrack.h"
-#include "KalTrackDim.h"
+
+#include "TVKalState.h"         // from KalLib
+#include "THelicalTrack.h"      // from GeomLib
+#include "TStraightTrack.h"     // from GeomLib
+#include "KalTrackDim.h"        // from KalTrackLib
 
 class TKalTrackSite;
 
-//_____________________________________________________________________
+//_________________________________________________________________________
 //  -----------------------------------
 //  Base Class for Kalman state vector
 //  -----------------------------------
@@ -63,20 +65,10 @@ public:
    TVTrack        &CreateTrack() const;
 
 private:
-   TKalMatrix      CalcProcessNoise(const TKalTrackSite  &to,
-                                          TKalTrackState &ato,
-                                    const TVTrack        &tto,
-                                          Double_t        dfi)   const;
-
-private:
 
    TVector3 fX0;		// pivot
 
    ClassDef(TKalTrackState,1)      // sample state vector class
 };
-                                                                                
-//=======================================================
-// inline functions
-//=======================================================
                                                                                 
 #endif

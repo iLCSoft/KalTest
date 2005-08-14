@@ -18,15 +18,13 @@
 //*
 //*************************************************************************
 
-#include "TObjArray.h"
-#include "TAttElement.h"
-#include "TVMeasLayer.h"
-#include "TKalTrackState.h"
+#include "TObjArray.h"        // from ROOT
+#include "TAttElement.h"      // from Utils
 
-//_____________________________________________________________________
-//  ------------------------------
+//_________________________________________________________________________
+// ------------------------------
 //  Detector system class
-//  ------------------------------
+// ------------------------------
 //
 
 class TVKalDetector : public TObjArray, public TAttElement {
@@ -35,14 +33,6 @@ public:
    TVKalDetector(Int_t n = 1) : TObjArray(n) {}
    virtual ~TVKalDetector() {}
 
-   virtual void       CalcEnergyLoss(const TMaterial      &mat,
-                                           Double_t        df,
-                                     const TKalTrackState &afrom,
-                                           TKalTrackState &ato)  const;
-   virtual TKalMatrix CalcSigmaMS0  (const TMaterial      &mat, 
-                                           Double_t        df,
-                                     const TKalTrackState &from) const;
-   
    ClassDef(TVKalDetector,1)  // Base class for detector system
 };
 

@@ -26,14 +26,13 @@ Double_t EXMeasLayer::fgSigmaZ = 1.e-2;
 
 ClassImp(EXMeasLayer)
                                                                                 
-EXMeasLayer::EXMeasLayer(TMaterial &min,
-                         TMaterial &mout,
-                         Double_t   r0,
-                         Double_t   lhalf,
-                         Bool_t     type)
-           : TVMeasLayer(min, mout),
-             TCylinder(r0, lhalf),
-             fType(type)
+EXMeasLayer::EXMeasLayer(TMaterial &min,      // material inside the layer
+                         TMaterial &mout,     // material outside the layer
+                         Double_t   r0,       // radius of the cylindrial layer
+                         Double_t   lhalf,    // half length of the cylindrical layer
+                         Bool_t     isactive) // flag to tell the layer is active
+           : TVMeasLayer(min, mout, isactive),
+             TCylinder(r0, lhalf)
 {
 }
 
@@ -71,10 +70,10 @@ TVector3 EXMeasLayer::HitToXv(const TVTrackHit &vht) const
    return TVector3(x,y,z);
 }
 
-void EXMeasLayer::CalcDhDa(const TVTrackHit &vht,
-                           const TVector3   &xxv,
-                           const TKalMatrix &dxphiada,
-                                 TKalMatrix &H)  const
+void EXMeasLayer::CalcDhDa(const TVTrackHit &,          // Hit: not used in this example
+                           const TVector3   &xxv,       // hit position vector
+                           const TKalMatrix &dxphiada,  // @x(\phi(a),a)/@a
+                                 TKalMatrix &H)  const  // projector matrix = @h/@a
 {
    // Calculate
    //    H = (@h/@a) = (@phi/@a, @z/@a)^t

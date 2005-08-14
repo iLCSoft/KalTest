@@ -13,6 +13,7 @@
 //*     class TVTrack
 //* (Update Recored)
 //*   2003/10/24  K.Fujii       Original version.
+//*   2005/08/14  K.Fujii       Added IsInB().
 //*
 //*************************************************************************
 //
@@ -56,7 +57,8 @@ public:
                              Double_t &fid,
                              TMatrixD &C)
    {
-      TMatrixD F(5,5);
+      Int_t sdim = C.GetNrows();
+      TMatrixD F(sdim, sdim);
       MoveTo(x0to,fid,&F,&C);
    }
 
@@ -76,14 +78,6 @@ public:
       sv(4,0) = fTanL;
    }
 
-   virtual TMatrixD CalcDapDa (Double_t fid,
-                               Double_t dr,
-                               Double_t drp) const
-   {
-      TMatrixD F(5,5);
-      CalcDapDa(fid, dr, drp, F);
-      return F;
-   }
    virtual TVector3 CalcXAt   (Double_t phi) const = 0;
    virtual TMatrixD CalcDxDa  (Double_t phi) const = 0;
    virtual TMatrixD CalcDxDphi(Double_t phi) const = 0;
@@ -119,8 +113,10 @@ public:
    {
       // units: cm, sec, kGaus
       if (b != 0.) fAlpha = kGiga/kLightVelocity*100./(b/10);
-      else         fAlpha = 1.e+20;
+      else         fAlpha = kInfinity;
    }
+	
+   inline virtual Bool_t IsInB() const { return fAlpha < kInfinity ? kTRUE : kFALSE; }
 
 protected:
    Double_t fDrho;      // drho
@@ -131,8 +127,9 @@ protected:
    TVector3 fX0;        // pivot
    Double_t fAlpha;     // alpha
 
-   static const Double_t kLightVelocity = 2.99792458e8; //
-   static const Double_t kGiga          = 1.0e9;        //
+   static const Double_t kLightVelocity = 2.99792458e8; //! light velocity [cm/sec]
+   static const Double_t kGiga          = 1.0e9;        //! Giga = 10^{9}
+   static const Double_t kInfinity      = 1.e+20;       //! infinity
 
    ClassDef(TVTrack,1)      // Base class for any track
 };

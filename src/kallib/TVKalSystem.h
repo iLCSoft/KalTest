@@ -40,7 +40,7 @@ public:
    virtual void   SmoothBackTo(Int_t k);
    virtual void   SmoothAll();
 
-   inline  void Add(TObject *obj);
+   inline  void   Add(TObject *obj);
 
    // Getters
 

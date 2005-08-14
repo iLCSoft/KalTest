@@ -13,27 +13,25 @@
 //*   2003/09/30  Y.Nakashima       Original version.
 //*
 //*************************************************************************
-//
-#include <iostream>
-#include <memory>
-//#include "TMath.h"
 
-#include "TKalTrackSite.h"
-#include "TKalTrackState.h"
-#include "TVTrackHit.h"
+#include "TKalTrackSite.h"    // from KalTrackLib
+#include "TKalTrackState.h"   // from KalTrackLib
+#include "TVTrackHit.h"       // from KalTrackLib
+#include "TVSurface.h"        // from GeomLib
 
-#include "TVSurface.h"
+#include <iostream>           // from STL
+#include <memory>             // from STL
 
 using namespace std;
 
-//_____________________________________________________________________
+//_________________________________________________________________________
 //  ----------------------------------
-//  Sample class for measurement site
+//   Class for measurement site
 //  ----------------------------------
 //
 ClassImp(TKalTrackSite)
 
-//_____________________________________________________________________
+//_________________________________________________________________________
 //  ----------------------------------
 //  Ctors and Dtor
 //  ----------------------------------
@@ -62,7 +60,7 @@ TKalTrackSite::~TKalTrackSite()
    if (IsHitOwner() && fHitPtr) delete fHitPtr;
 }
 
-//_____________________________________________________________________
+//_________________________________________________________________________
 //  ----------------------------------
 //  Implementation of public methods
 //  ----------------------------------

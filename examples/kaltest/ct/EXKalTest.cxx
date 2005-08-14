@@ -1,14 +1,15 @@
-#include "TNtupleD.h"
-#include "TFile.h"
-#include "TKalDetCradle.h"
-#include "TKalTrackState.h"
-#include "TKalTrackSite.h"
-#include "TKalTrack.h"
+#include "TKalDetCradle.h"    // from KalTrackLib
+#include "TKalTrackState.h"   // from KalTrackLib
+#include "TKalTrackSite.h"    // from KalTrackLib
+#include "TKalTrack.h"        // from KalTrackLib
+
 #include "EXKalTest.h"
 #include "EXKalDetector.h"
 #include "EXEventGen.h"
 #include "EXHit.h"
-#include "TKalDetCradle.h"
+
+#include "TNtupleD.h"         // from ROOT
+#include "TFile.h"            // from ROOT
 
 #include <iostream>
 
@@ -47,8 +48,8 @@ int main (Int_t argc, Char_t **argv)
    // ===================================================================
 
    TObjArray     kalhits;    // hit buffer
-   TKalDetCradle cradle;
-   EXKalDetector detector;
+   TKalDetCradle cradle;     // detctor system
+   EXKalDetector detector;   // CT detector
 
    cradle.Install(detector); // install detector into its cradle
 #ifdef __MS_OFF__
@@ -156,21 +157,21 @@ int main (Int_t argc, Char_t **argv)
 
       TKalTrack kaltrack;    // a track is a kal system
       kaltrack.SetOwner();   // kaltrack owns sites
-      kaltrack.Add(&sited);
+      kaltrack.Add(&sited);  // add the dummy site to the track
 
       // ---------------------------
       //  Start Kalman Filter
       // ---------------------------
 
       EXHit *hitp = 0;
-      while ((hitp = dynamic_cast<EXHit *>(next()))) {
-         TKalTrackSite  &site = *new TKalTrackSite(*hitp);
-         if (!kaltrack.AddAndFilter(site)) {
-            cerr << " site discarded!" << endl;
-            delete &site;
+      while ((hitp = dynamic_cast<EXHit *>(next()))) {     // loop over hits
+         TKalTrackSite  &site = *new TKalTrackSite(*hitp); // create a site for this hit
+         if (!kaltrack.AddAndFilter(site)) {               // add and filter this site
+            cerr << " site discarded!" << endl;           
+            delete &site;                                  // delete this site, if failed
          }
       }
-      //kaltrack.SmoothBackTo(3);
+      //kaltrack.SmoothBackTo(3);                          // smooth back.
 
       // ============================================================
       // Monitor Fit Result

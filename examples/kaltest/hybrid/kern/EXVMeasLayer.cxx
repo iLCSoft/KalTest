@@ -23,9 +23,8 @@ ClassImp(EXVMeasLayer)
                                                                                 
 EXVMeasLayer::EXVMeasLayer(TMaterial &min,
                            TMaterial &mout,
-                           Bool_t     type)
-            : TVMeasLayer(min, mout),
-              fType(type)
+                           Bool_t     isactive)
+            : TVMeasLayer(min, mout, isactive)
 {
 }
 

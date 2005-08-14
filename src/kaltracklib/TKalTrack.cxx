@@ -15,25 +15,39 @@
 //*
 //*************************************************************************
                                                                                 
-#include <iostream>
-#include "TKalTrackState.h"
-#include "TKalTrackSite.h"
-#include "TKalTrack.h"
+#include "TKalTrackState.h"    // from KalTrackLib
+#include "TKalTrackSite.h"     // from KalTrackLib
+#include "TKalTrack.h"         // from KalTrackLib
+#include <iostream>            // from STL
 
 using namespace std;
 
-//_____________________________________________________________________
+//_________________________________________________________________________
 //  ------------------------------
-//  Base Class for measurement vector used by Kalman filter
+//   TKalTrack: Kalman rack class
 //  ------------------------------
-//
+
 ClassImp(TKalTrack)
                                                                                 
+//_________________________________________________________________________
+//  ----------------------------------
+//   Ctor
+//  ----------------------------------
 TKalTrack::TKalTrack(Int_t n)
-            :TVKalSystem(n), fMass(0.), fDir(kIterForward)
+          :TVKalSystem(n), fMass(0.), fDir(kIterForward)
 {
 }
 
+//_________________________________________________________________________
+//  ----------------------------------
+//   Utility Method
+//  ----------------------------------
+//_________________________________________________________________________
+// -----------------
+//  FitToHelix
+// -----------------
+//    chi^2-fits hits belonging to this track to a single helix.
+//
 Double_t TKalTrack::FitToHelix(TKalTrackState &a, TKalMatrix &C, Int_t &ndf)
 {
    // Define static constants...

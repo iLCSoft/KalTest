@@ -1,5 +1,5 @@
-
 #include "EXVKalDetector.h"
+#include "TVKalDetector.h"
 
 Double_t EXVKalDetector::fgBfield = 30.;
 

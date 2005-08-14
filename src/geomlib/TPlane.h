@@ -39,6 +39,8 @@ public:
    virtual Double_t CalcS   (const TVector3 &xx) const;
    virtual TMatrixD CalcDSDx(const TVector3 &xx) const;
 
+   inline virtual const TVector3 & GetXc     () const { return fXc;     } 
+   inline virtual const TVector3 & GetNormal () const { return fNormal; } 
    inline virtual       Bool_t     IsOnSurface(const TVector3 &xx) const;
    inline virtual       Bool_t     IsOutside  (const TVector3 &xx) const;
 

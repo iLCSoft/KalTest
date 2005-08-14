@@ -35,13 +35,6 @@ public:
                 Bool_t     type = EXVMeasLayer::kActive);
    virtual ~EXVMeasLayer();
 
-   // Parrent's pure virtuals that must be implemented
-
-   Bool_t IsActive () const { return fType;   }
-
-private:
-   Bool_t   fType;      // (true, false) = (active layer, dummy layer)
-
    ClassDef(EXVMeasLayer,1) 	// Sample measurement layer class
 };
 

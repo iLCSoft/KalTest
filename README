@@ -1,10 +1,10 @@
 -------------------------------------------------------------------------------
-2005/02/23    KalTest Package
+2005/08/14    KalTest Package
 -------------------------------------------------------------------------------
 
 0) Organization of the KalTest package
 bin:             contains shell scripts to configure your system
-conf:            contains a Imake template
+conf:            contains an Imake template
 doc:             documments
 examples/kaltest: sample programs to illustrate usage of the libraries
 src/geomlib:     geometry liabrary containing classes to describe track models and
@@ -36,19 +36,25 @@ setup:           script to setup environmental variables to run the sample progr
 - Cd to the examples/kaltest subdirectory.
 - Choose one of the subsubdirectories in it:
     cdc: track fitting example for a jet-chamber-like central tracker
-    tpc: track fitting example for a TPC-like central tracker
+    ct:  track fitting example for a simple cylindrical tracker
+    hybrid: hybrid track fitting example for VTX+IT(Barell/Fwd/Bwd)+TPC
     simple: a simple line fit example using the base kallib libraries only
 - Cd into the subsubdirectory you chose, build the test program, and run
   as follows:
+  For hybrid:
+  $ make
+  $ cd main/prod
+  $ EXKalTest [# events] [pt in GeV]
+  For others:
   $ xmkmf -a
   $ make
   $ cd prod
-  $ ./EXKalTest
+  $ ./EXKalTest [# events] [pt in GeV]
 
 Note:
   KalTest package has been built and tested on
 	MacOSX 10.3
 	RedHat 9.0
-  with ROOT4.00.08f and the gcc3.x compiler.
+  with ROOT4.04.02b and the gcc3.x compiler.
 -
 -

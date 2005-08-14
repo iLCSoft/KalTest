@@ -13,20 +13,19 @@
 //*     class TVTrackHit
 //* (Update Recored)
 //*   2003/09/30  Y.Nakashima       Original version.
+//*   2005/08/11  K.Fujii           Removed fXX and its getter and setter.
 //*
 //*************************************************************************
 
-#include "TVector3.h"
-#include "TKalMatrix.h"
-#include "KalTrackDim.h"
-#include "TVMeasLayer.h"
+#include "TVector3.h"      // from ROOT
+#include "TKalMatrix.h"    // from KalLib
+#include "KalTrackDim.h"   // from KalTrackLib
+#include "TVMeasLayer.h"   // from KalTrackLib
 
 class TVTrackHit : public TKalMatrix {
 public:
    TVTrackHit(Int_t m = kMdim);
 
-   TVTrackHit(const TVMeasLayer &ms, Double_t *x, Double_t *dx, 
-              const TVector3 &xx, Double_t b = 30., Int_t m = kMdim);
    TVTrackHit(const TVMeasLayer &ms, Double_t *x, Double_t *dx, 
               Double_t b = 30., Int_t m = kMdim);
    TVTrackHit(const TVTrackHit &hit);
@@ -40,10 +39,6 @@ public:
 
    inline virtual const TVMeasLayer & GetMeasLayer() const 
                                                 { return *fMeasLayerPtr;    }
-   inline virtual const TVector3    & GetExactX   () const
-                                                { return fXX;               }
-
-   inline virtual void     SetExactX (const TVector3 &xx) { fXX       = xx; }
 
    virtual TKalMatrix XvToMv  (const TVector3 &xv, Double_t t0)  const = 0;
 
@@ -51,7 +46,6 @@ public:
 
 private:
    Int_t         fDim;            // dimension of coordinate space
-   TVector3      fXX;             // exact hit position
    Double_t      fBfield;         // B field
    TVMeasLayer  *fMeasLayerPtr;   // pointer to measurement layer
 

@@ -31,7 +31,7 @@ SharedLibraryTarget($(LIBNAME),$(SOREV),$(OBJS),.,.)
 	
 InstallSharedLibrary($(LIBNAME),$(SOREV),$(LIBINSTALLDIR))
 
-InstallMultipleFlags($(HDRS),$(INCINSTALLDIR),-m 644)
+InstallMultipleFlags($(HDRS),$(INCINSTALLDIR),-m 644 -C)
 
 clean:: 
 	@rm -f $(OBJS) core *.$(DllSuf) $(DICTNAME).$(SrcSuf) $(DICTNAME).h

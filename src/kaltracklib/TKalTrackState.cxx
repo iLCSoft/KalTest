@@ -12,28 +12,31 @@
 //* (Update Recored)
 //*   2003/09/30  Y.Nakashima       Original version.
 //*   2005/02/23  Y.Yamaguchi       Improved CalcProcessNoise().
+//*   2005/08/14  K.Fujii           Removed CalcProcessNoise() and
+//*                                 let TKalDetCradle::Transport() do its
+//*                                 function.
 //*
 //*************************************************************************
-//
-#include <iostream>
-#include <memory>
 
-#include "TKalDetCradle.h"
-#include "TVKalDetector.h"
-#include "TKalTrackState.h"
-#include "TKalTrackSite.h"
-#include "TKalTrack.h"
-#include "TObjNum.h"
+#include "TKalDetCradle.h"      // from KalTrackLib
+#include "TVKalDetector.h"      // from KalTrackLib
+#include "TKalTrackState.h"     // from KalTrackLib
+#include "TKalTrackSite.h"      // from KalTrackLib
+#include "TKalTrack.h"          // from KalTrackLib
+
+#include <iostream>             // from STL
+#include <memory>               // from STL
 
 using namespace std;
 
-//_____________________________________________________________________
-//  -----------------------------------
-//  Base Class for Kalman state vector
-//  -----------------------------------
-//
-// --------------------------------------------------------------------
-// Ctors and Dtor
+//_________________________________________________________________________
+// -----------------------------------
+//  Kalman track state vector
+// -----------------------------------
+//_________________________________________________________________________
+// -----------------
+//  Ctors and Dtor
+// -----------------
 //
 TKalTrackState::TKalTrackState(Int_t p) 
            : TVKalState(p), fX0()
@@ -65,45 +68,29 @@ TKalTrackState::TKalTrackState(const TKalMatrix &sv, const TKalMatrix &c,
 {
 }
 
+//_________________________________________________________________________
+// ----------------------------------------------
+//  Implementation of base-class pure virtuals
+// ----------------------------------------------
 //
-// --------------------------------------------------------------------
-// Implementation of base-class pure virtuals
-//
-
 TKalTrackState * TKalTrackState::MoveTo(const TVKalSite  &to,
                                               TKalMatrix &F,
                                               TKalMatrix *QPtr) const
-{
-   TKalTrackSite &siteto = *(TKalTrackSite *)&to;
-   TVector3       x0to   = siteto.GetPivot();
-
-   auto_ptr<TVTrack> helto(&CreateTrack());
-
-   TKalMatrix  av(5,1), Fto(5,5);
-   Double_t    fid;
-   helto->MoveTo(x0to,fid,&Fto);
-   helto->PutInto(av);
-
-   Int_t sdim = GetDimension();
-   TKalMatrix sv(sdim,1);
-   for (Int_t i=0; i<5; i++) {
-      sv(i,0) = av(i,0);
-      for (Int_t j=0; j<5; j++) {
-         F(i,j) = Fto(i,j);
-      }
-   }
-   if (sdim == 6) {
-      sv(5,0) = (*this)(5,0);
-      F (5,5) = 1.;
-   }
-
+{	
    if (QPtr) {
-      TKalTrackState *atop
-                   = new TKalTrackState(sv, siteto, TVKalSite::kPredicted);
-       //  fid = | phi_to - phi_from |
-       //  assuming that pivots are hits
-      *QPtr = CalcProcessNoise(siteto, *atop, *helto, fid);
-      return atop;
+      const TKalTrackSite &from   = static_cast<const TKalTrackSite &>(GetSite());
+      const TKalTrackSite &siteto = static_cast<const TKalTrackSite &>(to);
+            TKalDetCradle &det    = const_cast<TKalDetCradle &>
+                                       (static_cast<const TKalDetCradle &>
+                                          (from.GetHit().GetMeasLayer().GetParent()));
+      Int_t sdim = GetDimension();
+      TKalMatrix sv(sdim,1);
+      det.Transport(from, siteto, sv, F, *QPtr);
+      if (sdim == 6) {
+         sv(5,0) = (*this)(5,0);
+         F (5,5) = 1.;
+      }
+      return new TKalTrackState(sv, siteto, TVKalSite::kPredicted, sdim);
    } else {
       return 0;
    }
@@ -114,49 +101,6 @@ TKalTrackState & TKalTrackState::MoveTo(const TVKalSite  &to,
                                               TKalMatrix &Q) const
 {
    return *MoveTo(to, F, &Q);
-}
-
-TKalMatrix TKalTrackState::CalcProcessNoise(const TKalTrackSite  &to,
-                                                  TKalTrackState &ato,
-                                            const TVTrack        &tto,
-                                                  Double_t        dfi) const
-{
-   const TKalTrackSite &from = static_cast<const TKalTrackSite &>(GetSite());
-   TKalDetCradle       &det  = const_cast<TKalDetCradle &>
-                              (static_cast<const TKalDetCradle &>
-                              (from.GetHit().GetMeasLayer().GetParent()));
-   Int_t p = GetDimension();
-   TKalMatrix Q(p,p);
-   if (!det.IsMSOn()) return Q;
-
-   det.CalcTable(from, to);
-   const TObjArray &mlt = det.GetMeasLayerTable();
-   const TObjArray &dft = det.GetDPhiTable();
-   Int_t dir = det.GetDir();
-
-   Int_t  nel   = mlt.GetEntries();
-   if (!nel) return Q;
-
-   Double_t delfi = dfi;
-   Double_t dr    = 0.;
-   Double_t drp   = ato(0, 0);
-
-   for (Int_t i = 0; i < nel; i++) {
-      TKalMatrix D(p, p);
-      tto.CalcDapDa(delfi, dr, drp, D);
-      if (p == 6) D(5, 5) = 1.;
-      TVMeasLayer         &ml  = *dynamic_cast<TVMeasLayer *>(mlt[i]);
-      const TVKalDetector &dtr = dynamic_cast<const TVKalDetector &>
-                                (ml.GetParent(kFALSE));
-      Double_t   df  = dynamic_cast<TObjNum *>(dft[i])->GetNum();
-      TKalMatrix Qi  = dtr.CalcSigmaMS0(ml.GetMaterial(dir), df, *this);
-      //TKalMatrix Qi  = TKalMatrix(p, p);
-      TKalMatrix Dt  = TKalMatrix(TMatrixD::kTransposed, D);
-      Q += D * Qi * Dt;
-      delfi -= df;
-      dtr.CalcEnergyLoss(ml.GetMaterial(dir), df, *this, ato);
-   }
-   return Q;
 }
 
 void TKalTrackState::DebugPrint() const
@@ -180,11 +124,11 @@ void TKalTrackState::DebugPrint() const
    GetCovMat().DebugPrint(" covMat = ", 6);
 }
 
+//_________________________________________________________________________
+// --------------------------------
+//  Derived class methods
+// --------------------------------
 //
-// --------------------------------------------------------------------
-// Derived class methods
-//
-
 THelicalTrack TKalTrackState::GetHelix() const
 {
    TKalMatrix a(5,1);

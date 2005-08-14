@@ -11,10 +11,13 @@
 #define __DR__     0.
 #define __FI0__    0.
 #define __DZ__     0.
+#if 1
 #define __COSMIN__ 0.97
 #define __COSMAX__ 0.97
-#define __TNLMIN__  (__COSMIN__ / TMath::Sqrt(1 - __COSMIN__ * __COSMIN__))
-#define __TNLMAX__  (__COSMAX__ / TMath::Sqrt(1 - __COSMAX__ * __COSMAX__))
+#else
+#define __COSMIN__ -0.7
+#define __COSMAX__  0.7
+#endif
 #define __X0__      0.
 #define __Y0__      0.
 #define __Z0__      0.
@@ -32,7 +35,8 @@ THelicalTrack EXEventGen::GenerateHelix(Double_t pt)
    Double_t fi0 = __FI0__ + 2*TMath::Pi()*(gRandom->Uniform()-0.5);
    Double_t cpa = 1. / pt;
    Double_t dz  = __DZ__;
-   Double_t tnl = gRandom->Uniform(__TNLMIN__, __TNLMAX__);
+   Double_t cs  = gRandom->Uniform(__COSMIN__, __COSMAX__);
+   Double_t tnl = cs / TMath::Sqrt((1-cs)*(1+cs)); 
    Double_t x0  = __X0__;
    Double_t y0  = __Y0__;
    Double_t z0  = __Z0__;
@@ -53,8 +57,9 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
    //  Create hits
    // ---------------------------
 
-   Double_t dfi  = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))->GetSortingPolicy()
-                 / heltrk.GetRho();
+   Double_t dfi  = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))
+                     ->GetSortingPolicy()
+                   / heltrk.GetRho();
    Int_t dlyr = 1;
    for (Int_t lyr = 0; lyr < nlayers && lyr >= 0; lyr += dlyr) {
       //if (lyr == nlayers - 1) dlyr = -1;

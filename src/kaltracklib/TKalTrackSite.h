@@ -16,16 +16,15 @@
 //*   2004/09/17  K.Fujii           Added ownership flag.
 //*
 //*************************************************************************
-//
-#include "TVector3.h"
 
-#include "TVKalSite.h"
-#include "TVTrackHit.h"
+#include "TVector3.h"    // from ROOT
+#include "TVKalSite.h"   // from KalLib
+#include "TVTrackHit.h"  // from KalTrackLib
 
 class TVKalState;
 class TKalTrackState;
 
-//_____________________________________________________________________
+//_________________________________________________________________________
 //  ---------------------------------
 //  Class for Kalman measurement site
 //  ---------------------------------
@@ -68,9 +67,5 @@ private:
 
    ClassDef(TKalTrackSite,1)  // sample measurement site class
 };
-                                                                                
-//=======================================================
-// inline functions
-//=======================================================
                                                                                 
 #endif

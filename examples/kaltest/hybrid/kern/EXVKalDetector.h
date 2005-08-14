@@ -4,6 +4,8 @@
 #include "TVector3.h"
 #include "TVKalDetector.h"
 
+class TVMeasLayer;
+
 class EXVKalDetector : public TVKalDetector {
 public:
    EXVKalDetector(Int_t m = 100);

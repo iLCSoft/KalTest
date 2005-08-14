@@ -150,7 +150,8 @@ void THelicalTrack::MoveTo(const TVector3 &xv0to, // new pivoit
       return;
    }
 
-   TMatrixD F(5,5);
+   TMatrixD Fdummy(5,5);
+   TMatrixD &F = FPtr ? *FPtr : Fdummy;
 
    // ---------------------------------------------------
    // (2) Calculate @a'/@a = @a'/a = F_k-1
@@ -197,7 +198,6 @@ void THelicalTrack::MoveTo(const TVector3 &xv0to, // new pivoit
    F(4,3) = 0;
    F(4,4) = 1;
 
-   if (FPtr) *FPtr = F;
    if (!CPtr) {
       *this = helto;
       return;

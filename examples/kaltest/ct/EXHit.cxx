@@ -18,13 +18,12 @@ EXHit::EXHit(Int_t m)
 {
 }
       
-EXHit::EXHit(const EXMeasLayer &ms,
-                   Double_t    *x,
-                   Double_t    *dx, 
-             const TVector3    &xx,
-                   Double_t     b,
-                   Int_t        m)
-     : TVTrackHit(ms, x, dx, xx, b, m)
+EXHit::EXHit(const EXMeasLayer &ms,    // measurement layer
+                   Double_t    *x,     // coordinate array
+                   Double_t    *dx,    // coordinate error array
+                   Double_t     b,     // magnetic field
+                   Int_t        m)     // dimension of meas. vector
+     : TVTrackHit(ms, x, dx, b, m)
 {
 }
 

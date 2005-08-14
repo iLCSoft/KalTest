@@ -6,8 +6,9 @@
 
 class EXEventGen {
 public:
-   EXEventGen(TKalDetCradle &cradle, TObjArray &kalhits) : fCradlePtr(&cradle), fHitBufPtr(&kalhits) { }
-   virtual ~EXEventGen() { }
+   EXEventGen(TKalDetCradle &cradle, TObjArray &kalhits)
+             : fCradlePtr(&cradle), fHitBufPtr(&kalhits) {}
+   virtual ~EXEventGen() {}
 
    THelicalTrack GenerateHelix(Double_t pt = 1.);
    void          Swim(THelicalTrack &heltrk);

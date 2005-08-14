@@ -48,12 +48,10 @@ public:
                                  const TKalMatrix &dxphiada,
                                        TKalMatrix &H)  const;
 
-   Bool_t   IsActive () const { return fType;    }
    Double_t GetSigmaX() const { return fgSigmaX; }
    Double_t GetSigmaZ() const { return fgSigmaZ; }
 
 private:
-   Bool_t fType;               // (true, false) = (active layer, dummy layer)
    static Double_t fgSigmaX;   // xy resolution
    static Double_t fgSigmaZ;   // z  resolution
 

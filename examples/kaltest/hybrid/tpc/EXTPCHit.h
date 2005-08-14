@@ -24,12 +24,14 @@ public:
 
    virtual void       DebugPrint(Option_t *opt = "")           const;
 
-   Int_t    GetSide  () const { return fSide;   }
-   Double_t GetVdrift() const { return fVdrift; }
+   inline		  Int_t    GetSide  () const { return fSide;   }
+   inline		  Double_t GetVdrift() const { return fVdrift; }
+   inline  const TVector3 GetExactX()          const { return fXX;     }
 
 private:
-   Int_t    fSide;
-   Double_t fVdrift;
+   Int_t    fSide;      // (-1,+1) = (-z side, +z side)
+   Double_t fVdrift;    // drift veclocity
+   TVector3 fXX;        // exact hit position
 
    ClassDef(EXTPCHit,1)      // Sample hit class
 };
