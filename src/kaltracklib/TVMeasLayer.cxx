@@ -77,9 +77,9 @@ Double_t TVMeasLayer::GetEnergyLoss(      Bool_t    isoutgoing,
 
    const TMaterial &mat = GetMaterial(isoutgoing);
    Double_t dnsty = mat.GetDensity();		// density
-   Double_t A     = mat.GetA();				// atomic mass
-   Double_t Z     = mat.GetZ();				// atomic number
-   //Double_t I    = Z * 1.e-8;				// mean excitation energy [GeV]
+   Double_t A     = mat.GetA();                 // atomic mass
+   Double_t Z     = mat.GetZ();                 // atomic number
+   //Double_t I    = Z * 1.e-8;			// mean excitation energy [GeV]
    //Double_t I    = (2.4 +Z) * 1.e-8;		// mean excitation energy [GeV]
    Double_t I    = (9.76 * Z + 58.8 * TMath::Power(Z, -0.19)) * 1.e-9;
    Double_t hwp  = 28.816 * TMath::Sqrt(dnsty * Z/A) * 1.e-9;
@@ -161,5 +161,3 @@ void TVMeasLayer::CalcQms(      Bool_t       isoutgoing,
    Qms(4,2) = sgms2 * cpatnl * tnl21;
    Qms(4,4) = sgms2 * tnl21  * tnl21;
 }
-
-

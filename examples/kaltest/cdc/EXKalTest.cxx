@@ -254,7 +254,7 @@ int main (Int_t argc, Char_t **argv)
        EXMeasLayer &ms = *msPtr; // measurement layer
        TVector3 xx;
        if (lyr && lyrmx) dfi  = 0.;
-       if (!ms.CalcXingPointWith(heltrk,xx,dfi)) {
+       if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
            if (is1stloop && hits.GetEntries() > 3) {
                is1stloop = kFALSE;
                dlyr  = -1;

@@ -13,8 +13,8 @@ public:
    void          Swim(THelicalTrack &heltrk);
 
 private:
-   TKalDetCradle *fCradlePtr;
-   TObjArray     *fHitBufPtr;
+   TKalDetCradle *fCradlePtr;   // pointer to detector system
+   TObjArray     *fHitBufPtr;   // pointer to hit array
 
    ClassDef(EXEventGen,1)   // Event Generator
 };

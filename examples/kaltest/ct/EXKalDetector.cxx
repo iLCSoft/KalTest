@@ -27,7 +27,7 @@ EXKalDetector::EXKalDetector(Int_t m)
 
    static const Int_t    nlayers   = 50;        // # sampling layers 
    static const Double_t lhalf     = 200.;      // half length
-   static const Double_t rmin      = 45.;		// r_{min} = radius of 0th layer
+   static const Double_t rmin      = 45.;       // r_{min} = radius of 0th layer
    static const Double_t rstep     = 3.;        // step in r
    static const Double_t rcylin    = 43.;       // inner radius of CFRP cylinder 
    static const Double_t rcylout   = 44.;       // outer radius of CFRP cylinder

@@ -13,7 +13,7 @@ public:
                          TObjArray   &hits);
 
 private:
-   static Double_t fgVdrift;
+   static Double_t fgVdrift;   // drift velocity
 
    ClassDef(EXTPCKalDetector,1)   // Sample hit class
 };

@@ -20,8 +20,6 @@ public:
    virtual TKalMatrix XvToMv (const TVector3 &xv, Double_t t0) const;
    virtual void       DebugPrint(Option_t *opt = "")           const;
 
-private:
-
    ClassDef(EXHit,1)      // Sample hit class
 };
 

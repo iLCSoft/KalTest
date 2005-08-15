@@ -51,8 +51,8 @@ public:
    Double_t GetSigmaZ() const { return fSigmaZ; }
 
 private:
-   Double_t fSigmaX;
-   Double_t fSigmaZ;
+   Double_t fSigmaX;  // sigma_x
+   Double_t fSigmaZ;  // sigma_z
 
    ClassDef(EXVTXMeasLayer,1) 	// Sample measurement layer class
 };

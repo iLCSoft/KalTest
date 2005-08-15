@@ -82,26 +82,26 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    // ---------------------------------------------------------------------
    //  Sort measurement layers in this cradle if not
    // ---------------------------------------------------------------------
-	if (!fDone) Update();
+   if (!fDone) Update();
 	
    // ---------------------------------------------------------------------
-	//  Locate sites from and to in this cradle
+   //  Locate sites from and to in this cradle
    // ---------------------------------------------------------------------
    Int_t  fridx = from.GetHit().GetMeasLayer().GetIndex(); // index of site from
    Int_t  toidx = to.GetHit().GetMeasLayer().GetIndex();   // index of site to
    Int_t  di    = fridx > toidx ? -1 : 1;                  // layer increment
-	Bool_t isout = di > 0 ? kTRUE : kFALSE;  // out-going or in-coming
+   Bool_t isout = di > 0 ? kTRUE : kFALSE;  // out-going or in-coming
 
    std::auto_ptr<TVTrack> help(&static_cast<TKalTrackState &>
                               (from.GetCurState()).CreateTrack()); // tmp track
-	TVTrack &hel = *help;
+   TVTrack &hel = *help;
 	
    TVector3 xx;                // expected hit position vector
    Double_t fid     = 0.;      // deflection angle from the last hit
 
-   Int_t sdim = sv.GetNrows();                     // # track parameters
-	for (Int_t p=0; p<sdim; p++) F(p, p) = 1.; // initialize F to unity
-	TKalMatrix DF(sdim, sdim);                 // propagator matrix segment
+   Int_t sdim = sv.GetNrows();                // # track parameters
+   for (Int_t p=0; p<sdim; p++) F(p, p) = 1.; // initialize F to unity
+   TKalMatrix DF(sdim, sdim);                 // propagator matrix segment
 
    // ---------------------------------------------------------------------
    //  Loop over layers and ransport sv, F, and Q step by step
@@ -127,9 +127,9 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    // ---------------------------------------------------------------------
    //  Move pivot from last expected hit to actural hit at site to
    // ---------------------------------------------------------------------
-	hel.MoveTo(to.GetPivot(), fid, &DF); // move pivot to actual hit (to)
-	hel.PutInto(sv);                     // save updated hel to sv
-	F = DF * F;                          // update F accordingly
+   hel.MoveTo(to.GetPivot(), fid, &DF); // move pivot to actual hit (to)
+   hel.PutInto(sv);                     // save updated hel to sv
+   F = DF * F;                          // update F accordingly
 }
 
 //_________________________________________________________________________

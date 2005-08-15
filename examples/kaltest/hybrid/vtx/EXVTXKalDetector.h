@@ -11,7 +11,6 @@ public:
    void ProcessHit(const TVector3    &xx,
                    const TVMeasLayer &ms,
                          TObjArray   &hits);
-private:
 
    ClassDef(EXVTXKalDetector,1)   // Sample hit class
 };

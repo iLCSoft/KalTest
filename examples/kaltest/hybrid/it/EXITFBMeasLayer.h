@@ -60,10 +60,10 @@ public:
    inline Double_t GetSigmaY() const { return fSigmaY; }
 
 private:
-   Double_t fRin;
-   Double_t fRout;
-   Double_t fSigmaX;
-   Double_t fSigmaY;
+   Double_t fRin;     // inner radius
+   Double_t fRout;    // outer radius
+   Double_t fSigmaX;  // sigma_x
+   Double_t fSigmaY;  // sigma_y
 
    ClassDef(EXITFBMeasLayer,1) 	// Sample measurement layer class
 };
