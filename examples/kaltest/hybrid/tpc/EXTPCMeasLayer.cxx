@@ -16,6 +16,9 @@
 
 #include "EXTPCMeasLayer.h"
 #include "EXTPCHit.h"
+#include "EXTPCKalDetector.h"
+#include "EXEventGen.h"
+#include "TRandom.h"
 
 ClassImp(EXTPCMeasLayer)
                                                                                 
@@ -109,3 +112,31 @@ Double_t EXTPCMeasLayer::GetSigmaX(Double_t zdrift) const
 {
    return TMath::Sqrt(fSigmaX0 * fSigmaX0 + fSigmaX1 * fSigmaX1 * zdrift);
 }
+
+void EXTPCMeasLayer::ProcessHit(const TVector3  &xx,
+                                      TObjArray &hits)
+{
+   Int_t      side = (xx.Z() < 0. ? -1 : 1);
+   TKalMatrix h    = XvToMv(xx, side);
+   Double_t   rphi = h(0, 0);
+   Double_t   d    = h(1, 0);
+
+   Double_t dx = GetSigmaX(d);
+   Double_t dz = GetSigmaZ();
+   rphi += gRandom->Gaus(0., dx);   // smearing rphi
+   d    += gRandom->Gaus(0., dz);   // smearing drift distance
+
+   Double_t v = EXTPCKalDetector::GetVdrift();
+   d         += v * EXEventGen::GetT0(); // T0 shift
+
+   Double_t meas [2];
+   Double_t dmeas[2];
+   meas [0] = rphi;
+   meas [1] = d;
+   dmeas[0] = dx;
+   dmeas[1] = dz;
+
+   Double_t b = EXTPCKalDetector::GetBfield();
+   hits.Add(new EXTPCHit(*this, meas, dmeas, side, v, xx, b));
+}
+

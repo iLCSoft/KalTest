@@ -51,10 +51,14 @@ public:
    virtual Int_t      CalcXingPointWith(const TVTrack  &hel,
                                               TVector3 &xx,
                                               Double_t &phi,
+                                              Int_t     mode,
                                               Double_t  eps = 1.e-8) const;
 
    inline virtual Double_t GetSortingPolicy ()            const;
-   inline virtual Bool_t IsOnSurface (const TVector3 &xx) const;
+   inline virtual Bool_t   IsOnSurface (const TVector3 &xx) const;
+
+          virtual void     ProcessHit(const TVector3  &xx,
+                                            TObjArray &hits);
 
    inline Double_t GetSigmaX() const { return fSigmaX; } // by yikim 2005/07/28
    inline Double_t GetSigmaY() const { return fSigmaY; }

@@ -36,6 +36,7 @@ ClassImp(TTube)
 Int_t TTube::CalcXingPointWith(const TVTrack  &hel,
                                      Double_t &phi,
                                      TVector3 &xx,
+                                     Int_t     mode,
                                      Double_t  eps) const
 {
    // This assumes nonzero B field.
@@ -89,48 +90,52 @@ Int_t TTube::CalcXingPointWith(const TVTrack  &hel,
    // Switch on the number of crossing points.
    //
                                                                                 
+   static const Double_t kPi     = TMath::Pi();
    static const Double_t kHalfPi = 0.5*TMath::Pi();
    static const Double_t kTwoPi  = 2.0*TMath::Pi();
                                                                                 
    switch (nx) {
       case 2:  // track hitting barrel part
-               phi = 9999.;
-               for (Int_t ix=0; ix<nx; ix++) {
-                  Double_t x   = xxp[ix].X() - xc;
-                  Double_t y   = xxp[ix].Y() - yc;
-                  Double_t dfi = TMath::ATan2(y,x) - fi0 - kHalfPi*(1+chg);
-                  while (dfi <  0.)     dfi += kTwoPi;
-                  while (dfi >= kTwoPi) dfi -= kTwoPi;
-                  if (chg > 0) dfi -= kTwoPi;
-                  if (TMath::Abs(dfi) < TMath::Abs(phi)) {
-                     phi = dfi;
-                     xx.SetXYZ(xxp[ix].X(), xxp[ix].Y(), zc - rho*tnl*dfi);
-                  }
-               }
-               if (IsOnBarrel(xx)) return 1;
-                                                                                
+         phi = 9999.;
+         for (Int_t ix=0; ix<nx; ix++) {
+            Double_t x   = xxp[ix].X() - xc;
+            Double_t y   = xxp[ix].Y() - yc;
+            Double_t dfi = TMath::ATan2(y,x) - fi0 - kHalfPi*(1+chg);
+            if (!mode) {
+               while (dfi < -kPi) dfi += kTwoPi;
+               while (dfi >= kPi) dfi -= kTwoPi;
+            } else {
+               Int_t sign = (mode > 0 ? +1 : -1); // (+1,-1) = (fwd,bwd)
+               while (dfi <  0.)     dfi += kTwoPi;
+               while (dfi >= kTwoPi) dfi -= kTwoPi;
+               if (sign*chg > 0) dfi -= kTwoPi;
+            }
+            if (TMath::Abs(dfi) < TMath::Abs(phi)) {
+               phi = dfi;
+               xx.SetXYZ(xxp[ix].X(), xxp[ix].Y(), zc - rho*tnl*dfi);
+            }
+         }
+         if (IsOnBarrel(xx)) return 1;
       default: // track hitting end cap part
-               Int_t iret = 0;
-               if (TMath::Abs(tnl) < 0.1) {
-                  return 0;
-               } else if (tnl < 0.) {
-                  xx.SetZ(GetZmin());
-                  iret = 2;
-               } else {
-                  xx.SetZ(GetZmax());
-                  iret = 3;
-               }
-               phi = (zdz-xx.Z())/rho/tnl;
-               if (TMath::Abs(phi) > kTwoPi) {
-                  return 0;
-               } else {
-                  xx.SetX(xc - rho*TMath::Cos(phi+fi0));
-                  xx.SetY(yc - rho*TMath::Sin(phi+fi0));
-                  if (IsOutside(xx)) return 0;
-               }
-               return iret;
-               break;
+         Int_t iret = 0;
+         if (TMath::Abs(tnl) < 0.1) {
+            return 0;
+         } else if (tnl < 0.) {
+            xx.SetZ(GetZmin());
+            iret = 2;
+         } else {
+            xx.SetZ(GetZmax());
+            iret = 3;
+         }
+         phi = (zdz-xx.Z())/rho/tnl;
+         if (TMath::Abs(phi) > kTwoPi) {
+            return 0;
+         } else {
+            xx.SetX(xc - rho*TMath::Cos(phi+fi0));
+            xx.SetY(yc - rho*TMath::Sin(phi+fi0));
+            if (IsOutside(xx)) return 0;
+         }
+         return iret;
+         break;
    }
 }
-
-

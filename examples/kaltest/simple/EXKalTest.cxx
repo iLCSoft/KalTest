@@ -160,9 +160,9 @@ int main (Int_t argc, Char_t **argv)
 
    Int_t  loop = 1;
    EXHit *hitPtr;
-   Int_t ndf;
-   Double_t chi2;
-   Double_t cl;
+   Int_t    ndf  = 0;
+   Double_t chi2 = 0.;
+   Double_t cl   = 0.;
    while ((hitPtr = (EXHit *)next())) {
 #ifdef __DEBUG__ 
       cerr << "----------------------" << endl

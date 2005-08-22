@@ -8,9 +8,7 @@ public:
    EXTPCKalDetector(Int_t m = 100);
    ~EXTPCKalDetector();
 
-   void ProcessHit(const TVector3    &xx,
-                   const TVMeasLayer &ms,
-                         TObjArray   &hits);
+   static Double_t GetVdrift() { return fgVdrift; }
 
 private:
    static Double_t fgVdrift;   // drift velocity

@@ -37,6 +37,7 @@ public:
    virtual Int_t CalcXingPointWith(const TVTrack  &hel,
                                          Double_t &phi,
                                          TVector3 &xx,
+                                         Int_t     mode,
                                          Double_t  eps = 1.e-8)   const;
 
    inline virtual       Bool_t     IsOnBarrel(const TVector3 &xx) const;

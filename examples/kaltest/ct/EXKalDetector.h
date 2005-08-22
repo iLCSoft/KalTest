@@ -12,11 +12,9 @@ public:
    ~EXKalDetector();
 
    // Utility methods
-   void       ProcessHit(const TVector3    &xx,
-                         const EXMeasLayer &ms, 
-                               TObjArray   &hits); 
-   Double_t   GetBfield (const TVector3 &xx = TVector3(0.)) const
-                           { return fgBfield; }
+
+   static Double_t GetBfield (const TVector3 &xx = TVector3(0.))
+                               { return fgBfield; }
 
 private:
    static Double_t fgBfield;   // magnetic field [kG]

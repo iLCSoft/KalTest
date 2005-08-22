@@ -29,7 +29,7 @@ SHELL	= `which bash`
 MFLAGS	=
 CURRDIR	= .
 
-SUBDIRS	= simple ct #cdc
+SUBDIRS	= simple ct cdc
 SUBDIRS2 = hybrid
 
 all:

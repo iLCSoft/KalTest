@@ -64,14 +64,6 @@ TMatrixD TCylinder::CalcDSDx(const TVector3 &xx) const
 Int_t TCylinder::CalcXingPointWith(const TVTrack  &hel,
                                          TVector3 &xx,
                                          Double_t &phi,
-                                         Double_t  eps) const
-{
-   return CalcXingPointWith(hel,xx,phi,0,eps);
-}
-
-Int_t TCylinder::CalcXingPointWith(const TVTrack  &hel,
-                                         TVector3 &xx,
-                                         Double_t &phi,
                                          Int_t     mode,
                                          Double_t  eps) const
 {

@@ -47,6 +47,10 @@ public:
                                  const TKalMatrix &dxphiada,
                                        TKalMatrix &H)  const;
 
+   virtual void       ProcessHit(const TVector3   &xx,
+                                       TObjArray  &hits);
+
+
    Double_t GetSigmaX() const { return fSigmaX; }
    Double_t GetSigmaZ() const { return fSigmaZ; }
 

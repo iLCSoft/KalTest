@@ -50,27 +50,3 @@ EXVTXKalDetector::EXVTXKalDetector(Int_t m)
 EXVTXKalDetector::~EXVTXKalDetector()
 {
 }
-
-void EXVTXKalDetector::ProcessHit(const TVector3    &xx,
-                                  const TVMeasLayer &ms,
-                                        TObjArray   &hits)
-{
-   const EXVTXMeasLayer &vms = dynamic_cast<const EXVTXMeasLayer &>(ms);
-   TKalMatrix h    = vms.XvToMv(xx);
-   Double_t   rphi = h(0, 0);
-   Double_t   z    = h(1, 0);
-
-   Double_t dx = vms.GetSigmaX();
-   Double_t dz = vms.GetSigmaZ();
-   rphi += gRandom->Gaus(0., dx);   // smearing rphi
-   z    += gRandom->Gaus(0., dz);   // smearing z
-
-   Double_t meas [2];
-   Double_t dmeas[2];
-   meas [0] = rphi;
-   meas [1] = z;
-   dmeas[0] = dx;
-   dmeas[1] = dz;
-
-   hits.Add(new EXVTXHit(vms, meas, dmeas, xx, GetBfield(xx)));
-}

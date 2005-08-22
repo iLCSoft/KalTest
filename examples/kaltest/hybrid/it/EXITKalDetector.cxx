@@ -35,7 +35,7 @@ EXITKalDetector::EXITKalDetector(Int_t m)
    static const Double_t sigmax   = 1.e-3;
    static const Double_t sigmaz   = 1.e-3;
   
-  ///////// Forward & Backward of IT  //////////////
+  ///////// Forward & Backward Part of IT //////////
 
    static const Int_t    nlayersfb    = 7;
    static const Int_t    nlyrsfbdmmy  = 7;
@@ -57,19 +57,19 @@ EXITKalDetector::EXITKalDetector(Int_t m)
    for (Int_t layer = 0; layer < (nlayersfb + nlyrsfbdmmy); layer++) {
       TVector3 xc1(0,0,zfb);         // for forward part  
       TVector3 xc2(0,0,zfb+thick);   // for forward part 
-      //TVector3 xc3(-xc1);          // for backward part 
-      //TVector3 xc4(-xc2);          // for backward part 
+      TVector3 xc3(-xc1);          // for backward part 
+      TVector3 xc4(-xc2);          // for backward part 
 
-     //  Forward part
-     if (layer < nlayersfb) {
-        Add(new EXITFBMeasLayer(air, si, xc1, rifb, rofb, sigmax, sigmaz, active));
-        Add(new EXITFBMeasLayer(si, air, xc2, rifb, rofb, sigmax, sigmaz, dummy));
-     } else {
-        Add(new EXITFBMeasLayer(air, air, xc1, rifb, rofb, sigmax, sigmaz, dummy));
-     }
-      //  Backward part
-      //Add(new EXITFBMeasLayer(air, si, xc3, rifb, rofb,  sigmax, sigmaz, active));
-      //Add(new EXITFBMeasLayer(si, air, xc4, rifb , rofb, sigmax, sigmaz, dummy));
+      if (layer < nlayersfb) {
+         //  Forward part
+         Add(new EXITFBMeasLayer(air, si, xc1, rifb, rofb, sigmax, sigmaz, active));
+         Add(new EXITFBMeasLayer(si, air, xc2, rifb, rofb, sigmax, sigmaz, dummy));
+         //  Backward part
+         Add(new EXITFBMeasLayer(air, si, xc3, rifb, rofb, sigmax, sigmaz, active));
+         Add(new EXITFBMeasLayer(si, air, xc4, rifb, rofb, sigmax, sigmaz, dummy));
+      } else {
+         Add(new EXITFBMeasLayer(air, air, xc1, rifb, rofb, sigmax, sigmaz, dummy));
+      }
       if (layer < nlayers) { 
          Add(new EXITMeasLayer(air, si, r, len, sigmax, sigmaz, active));
          Add(new EXITMeasLayer(si, air, r + thick, len, sigmax, sigmaz, dummy));
@@ -95,53 +95,4 @@ EXITKalDetector::EXITKalDetector(Int_t m)
 
 EXITKalDetector::~EXITKalDetector()
 {
-}
-
-void EXITKalDetector::ProcessHit(const TVector3    &xx,
-                                 const TVMeasLayer &ms,
-                                       TObjArray   &hits)
-{
-   // =======================================================
-   // Temporary treatment !!
-   // -------------------------------------------------------
-   const EXITMeasLayer   *msp   = dynamic_cast<const EXITMeasLayer *>(&ms);
-   const EXITFBMeasLayer *fbmsp = dynamic_cast<const EXITFBMeasLayer *>(&ms);
-   if (msp) {
-      TKalMatrix h    = msp->XvToMv(xx);
-      Double_t   rphi = h(0, 0);
-      Double_t   z    = h(1, 0);
-
-      Double_t dx = msp->GetSigmaX();
-      Double_t dz = msp->GetSigmaZ();
-      rphi += gRandom->Gaus(0., dx);   // smearing rphi
-      z    += gRandom->Gaus(0., dz);   // smearing z
-
-      Double_t meas [2];
-      Double_t dmeas[2];
-      meas [0] = rphi;
-      meas [1] = z;
-      dmeas[0] = dx;
-      dmeas[1] = dz;
-
-      hits.Add(new EXITHit(*msp, meas, dmeas, xx, GetBfield(xx)));
-   } else {
-      TKalMatrix h   = fbmsp->XvToMv(xx);
-      Double_t   x = h(0, 0); 
-      Double_t   y   = h(1, 0); 
-
-      Double_t dx = fbmsp->GetSigmaX();
-      Double_t dy = fbmsp->GetSigmaY();
-      x += gRandom->Gaus(0., dx);   // smearing x
-      y += gRandom->Gaus(0., dy);   // smearing y
-
-      Double_t meas [2];
-      Double_t dmeas[2];
-      meas [0] = x;
-      meas [1] = y;
-      dmeas[0] = dx;
-      dmeas[1] = dy;
- 
-      hits.Add(new EXITFBHit(*fbmsp, meas, dmeas, xx, GetBfield(xx)));
-   }
-   // =================================================================
 }

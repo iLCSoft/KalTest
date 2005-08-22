@@ -16,6 +16,8 @@
 
 #include "EXITMeasLayer.h"
 #include "EXITHit.h"
+#include "TRandom.h"
+#include "EXITKalDetector.h"
 
 ClassImp(EXITMeasLayer)
                                                                                 
@@ -100,3 +102,25 @@ void EXITMeasLayer::CalcDhDa(const TVTrackHit &vht,
    }
 }
 
+void EXITMeasLayer::ProcessHit(const TVector3  &xx,
+                                     TObjArray &hits)
+{
+   TKalMatrix h    = XvToMv(xx);
+   Double_t   rphi = h(0, 0);
+   Double_t   z    = h(1, 0);
+
+   Double_t dx = GetSigmaX();
+   Double_t dz = GetSigmaZ();
+   rphi += gRandom->Gaus(0., dx);   // smearing rphi
+   z    += gRandom->Gaus(0., dz);   // smearing z
+
+   Double_t meas [2];
+   Double_t dmeas[2];
+   meas [0] = rphi;
+   meas [1] = z;
+   dmeas[0] = dx;
+   dmeas[1] = dz;
+
+   Double_t b = EXITKalDetector::GetBfield();
+   hits.Add(new EXITHit(*this, meas, dmeas, xx, b));
+}

@@ -16,6 +16,8 @@
 
 #include "EXVTXMeasLayer.h"
 #include "EXVTXHit.h"
+#include "EXVTXKalDetector.h"
+#include "TRandom.h"
 
 ClassImp(EXVTXMeasLayer)
                                                                                 
@@ -98,4 +100,27 @@ void EXVTXMeasLayer::CalcDhDa(const TVTrackHit &vht,
       H(0,sdim-1) = 0.;
       H(1,sdim-1) = 0.;
    }
+}
+
+void EXVTXMeasLayer::ProcessHit(const TVector3  &xx,
+                                      TObjArray &hits)
+{
+   TKalMatrix h    = XvToMv(xx);
+   Double_t   rphi = h(0, 0);
+   Double_t   z    = h(1, 0);
+
+   Double_t dx = GetSigmaX();
+   Double_t dz = GetSigmaZ();
+   rphi += gRandom->Gaus(0., dx);   // smearing rphi
+   z    += gRandom->Gaus(0., dz);   // smearing z
+
+   Double_t meas [2];
+   Double_t dmeas[2];
+   meas [0] = rphi;
+   meas [1] = z;
+   dmeas[0] = dx;
+   dmeas[1] = dz;
+
+   Double_t b = EXVTXKalDetector::GetBfield();
+   hits.Add(new EXVTXHit(*this, meas, dmeas, xx, b));
 }

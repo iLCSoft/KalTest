@@ -8,6 +8,10 @@
 #include "EXTPCKalDetector.h"
 #include "EXITKalDetector.h"
 #include "EXVTXKalDetector.h"
+#include "EXVTXHit.h"
+#include "EXITHit.h"
+#include "EXITFBHit.h"
+#include "EXTPCHit.h"
 #include "EXEventGen.h"
 #include "TVTrackHit.h"
 
@@ -26,11 +30,17 @@ int main (Int_t argc, Char_t **argv)
    TApplication app("EXKalTest", &argc, argv, 0, 0);
 
    TFile hfile("h.root","RECREATE","KalTest");
-   TNtupleD *hTrackMonitor = new TNtupleD("track", "", "ndf:chi2:cl:cpa");
+   TNtupleD *hTrackMonitor = new TNtupleD("track", "", "ndf:chi2:cl:fi0:cpa:cs:t0");
 
-   Double_t pt      = 1.;
+   Double_t pt      =  1.;
+   Double_t t0in    = 14.;
    Int_t    nevents = 1;
    switch (argc) {
+      case 4: 
+         nevents = atoi(argv[1]);
+         pt      = atof(argv[2]);
+         t0in    = atof(argv[3]);
+         break;
       case 3: 
          nevents = atoi(argv[1]);
          pt      = atof(argv[2]);
@@ -46,7 +56,7 @@ int main (Int_t argc, Char_t **argv)
    }
 
    // ===================================================================
-   // Prepare a detector
+   //  Prepare a detector
    // ===================================================================
 
    TObjArray kalhits;
@@ -64,13 +74,14 @@ int main (Int_t argc, Char_t **argv)
    toygld.Sort();   // temporary treatment
 
    // ===================================================================
-   // Prepare a Event Generator
+   //  Prepare a Event Generator
    // ===================================================================
 
    EXEventGen gen(toygld, kalhits);
+   gen.SetT0(t0in);
 
    // ===================================================================
-   // Event loop
+   //  Event loop
    // ===================================================================
 
    for (Int_t eventno = 0; eventno < nevents; eventno++) { 
@@ -83,64 +94,74 @@ int main (Int_t argc, Char_t **argv)
       kalhits.Delete();
 
       // ============================================================
-      // Generate a partcle
+      //  Generate a partcle
       // ============================================================
 
       THelicalTrack hel = gen.GenerateHelix(pt);
 
       // ============================================================
-      // Swim the particle in detector
+      //  Swim the particle in detector
       // ============================================================
 
       gen.Swim(hel);
 
       // ============================================================
-      // Create Kalman Filter
+      //  Do Kalman Filter
       // ============================================================
 
-      // ---------------------------
-      //  Prepare hit iterrator
-      // ---------------------------
       if (kalhits.GetEntries() < 2) {
-         cerr << "<<<<<< Shortage of Hits! >>>>>>>" << endl;
+         cerr << "<<<<<< Shortage of Hits! nhits = " 
+              << kalhits.GetEntries() << " >>>>>>>" << endl;
          continue;
       }
-      TIter next(&kalhits, gkDir);   // come in to IP
+
+      Int_t i1, i2, i3;
+      if (gkDir == kIterBackward) {
+         i3 = 1;
+         i1 = kalhits.GetEntries() - 1;
+         i2 = i1 / 2;
+      } else {
+         i1 = 1;
+         i3 = kalhits.GetEntries() - 1;
+         i2 = i3 / 2;
+      }
 
       // ---------------------------
       //  Create a dummy site: sited
       // ---------------------------
 
-      TVTrackHit &hitd = *dynamic_cast<TVTrackHit *>(next());
+      TVTrackHit *ht1p = dynamic_cast<TVTrackHit *>(kalhits.At(i1));
+      TVTrackHit *htdp = 0;
+      if (dynamic_cast<EXVTXHit *>(ht1p)) {
+         htdp = new EXVTXHit(*dynamic_cast<EXVTXHit *>(ht1p));
+      } else if (dynamic_cast<EXITHit *>(ht1p)) {
+         htdp = new EXITHit(*dynamic_cast<EXITHit *>(ht1p));
+      } else if (dynamic_cast<EXITFBHit *>(ht1p)) {
+         htdp = new EXITFBHit(*dynamic_cast<EXITFBHit *>(ht1p));
+      } else if (dynamic_cast<EXTPCHit *>(ht1p)) {
+         htdp = new EXTPCHit(*dynamic_cast<EXTPCHit *>(ht1p));
+      }
+      TVTrackHit &hitd = *htdp;
+
       hitd(0,1) = 1.e6;   // give a huge error to d
       hitd(1,1) = 1.e6;   // give a huge error to z
-      next.Reset();       // rewind iterator
 
       TKalTrackSite &sited = *new TKalTrackSite(hitd);
       // sited.Lock();    // dummy site should not be used
+      sited.SetHitOwner();// site owns hit
       sited.SetOwner();   // site owns states
 
       // ---------------------------
-      // Create initial helix
+      //  Create initial helix
       // ---------------------------
 
-      Int_t i1, i2, i3;
-      if (gkDir == kIterBackward) {
-         i3 = 0;
-         i1 = kalhits.GetEntries() - 1;
-         i2 = i1 / 2;
-      } else {
-         i1 = 0;
-         i3 = kalhits.GetEntries() - 1;
-         i2 = i3 / 2;
-      }
-      TVTrackHit &h1 = *dynamic_cast<TVTrackHit *>(kalhits.At(i1));   // first hit
-      TVTrackHit &h2 = *dynamic_cast<TVTrackHit *>(kalhits.At(i2));   // middle hit
-      TVTrackHit &h3 = *dynamic_cast<TVTrackHit *>(kalhits.At(i3));   // last hit
+      TVTrackHit &h1 = *dynamic_cast<TVTrackHit *>(kalhits.At(i1)); // first hit
+      TVTrackHit &h2 = *dynamic_cast<TVTrackHit *>(kalhits.At(i2)); // middle hit
+      TVTrackHit &h3 = *dynamic_cast<TVTrackHit *>(kalhits.At(i3)); // last hit
       TVector3    x1 = h1.GetMeasLayer().HitToXv(h1);
       TVector3    x2 = h2.GetMeasLayer().HitToXv(h2);
       TVector3    x3 = h3.GetMeasLayer().HitToXv(h3);
-      THelicalTrack helstart(x1, x2, x3, h1.GetBfield());   // initial helix 
+      THelicalTrack helstart(x1, x2, x3, h1.GetBfield(), gkDir); // initial helix 
 
       // ---------------------------
       //  Set dummy state to sited
@@ -171,6 +192,12 @@ int main (Int_t argc, Char_t **argv)
       kaltrack.Add(&sited);
 
       // ---------------------------
+      //  Prepare hit iterrator
+      // ---------------------------
+
+      TIter next(&kalhits, gkDir);   // come in to IP
+
+      // ---------------------------
       //  Start Kalman Filter
       // ---------------------------
 
@@ -185,14 +212,18 @@ int main (Int_t argc, Char_t **argv)
       //kaltrack.SmoothBackTo(3);
 
       // ============================================================
-      // Monitor Fit Result
+      //  Monitor Fit Result
       // ============================================================
 
       Int_t    ndf  = kaltrack.GetNDF();
       Double_t chi2 = kaltrack.GetChi2();
       Double_t cl   = TMath::Prob(chi2, ndf);
+      Double_t fi0  = kaltrack.GetState(TVKalSite::kFiltered)(1, 0);
       Double_t cpa  = kaltrack.GetState(TVKalSite::kFiltered)(2, 0);
-      hTrackMonitor->Fill(ndf, chi2, cl, cpa);
+      Double_t tnl  = kaltrack.GetState(TVKalSite::kFiltered)(4, 0);
+      Double_t cs   = tnl/TMath::Sqrt(1.+tnl*tnl);
+      Double_t t0   = kaltrack.GetState(TVKalSite::kFiltered)(5, 0);
+      hTrackMonitor->Fill(ndf, chi2, cl, fi0, cpa, cs, t0);
    }
 
    hfile.Write();

@@ -35,8 +35,17 @@ ClassImp(TVSurface)
 //  -----------------------------------
 //
 Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
+                                         TVector3 &xx,
+                                         Double_t &phi,
+                                         Double_t  eps) const
+{
+   return CalcXingPointWith(hel,xx,phi,0,eps);
+}
+
+Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
                                                     TVector3 &xx,
                                                     Double_t &phi,
+                                                    Int_t     /* mode */,
                                                     Double_t  eps) const
 {
    static const Int_t       maxcount   = 100;

@@ -39,10 +39,6 @@ public:
    virtual Int_t CalcXingPointWith(const TVTrack  &hel,
                                          TVector3 &xx,
                                          Double_t &phi,
-                                         Double_t  eps  = 1.e-8) const;
-   virtual Int_t CalcXingPointWith(const TVTrack  &hel,
-                                         TVector3 &xx,
-                                         Double_t &phi,
                                          Int_t     mode,
                                          Double_t  eps  = 1.e-8) const;
 

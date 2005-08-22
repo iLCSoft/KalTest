@@ -90,8 +90,4 @@ private:
    ClassDef(TVKalState,1)      // Base class for state vector objects
 };
 
-//=======================================================
-// inline functions
-//=======================================================
-
 #endif

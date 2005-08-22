@@ -48,6 +48,10 @@ public:
                                  const TKalMatrix &dxphiada,
                                        TKalMatrix &H)  const;
 
+   // Methods for MC event generation
+   virtual void       ProcessHit(const TVector3    &xx,
+                                       TObjArray   &hits);
+
    Double_t GetSigmaX() const { return fgSigmaX; }
    Double_t GetSigmaZ() const { return fgSigmaZ; }
 

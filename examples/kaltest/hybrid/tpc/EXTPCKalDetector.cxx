@@ -61,28 +61,3 @@ EXTPCKalDetector::EXTPCKalDetector(Int_t m)
 EXTPCKalDetector::~EXTPCKalDetector()
 {
 }
-
-void EXTPCKalDetector::ProcessHit(const TVector3    &xx,
-                                  const TVMeasLayer &ms,
-                                        TObjArray   &hits)
-{
-   const EXTPCMeasLayer &tms = dynamic_cast<const EXTPCMeasLayer &>(ms);
-   Int_t      side = (xx.Z() < 0. ? -1 : 1);
-   TKalMatrix h    = tms.XvToMv(xx, side);
-   Double_t   rphi = h(0, 0);
-   Double_t   d    = h(1, 0);
-
-   Double_t dx = tms.GetSigmaX(d);
-   Double_t dz = tms.GetSigmaZ();
-   rphi += gRandom->Gaus(0., dx);   // smearing rphi
-   d    += gRandom->Gaus(0., dz);   // smearing drift distance
-
-   Double_t meas [2];
-   Double_t dmeas[2];
-   meas [0] = rphi;
-   meas [1] = d;
-   dmeas[0] = dx;
-   dmeas[1] = dz;
-
-   hits.Add(new EXTPCHit(tms, meas, dmeas, side, fgVdrift, xx, GetBfield(xx)));
-}

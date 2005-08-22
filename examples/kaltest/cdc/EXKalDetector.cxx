@@ -10,6 +10,8 @@
 
 ClassImp(EXKalDetector)
 
+Double_t EXKalDetector::fgBfield = 30.; // [kG]
+
 // ------------------------------------------------------------------
 // A very crude model of JLC-CDC
 // ------------------------------------------------------------------
@@ -53,16 +55,26 @@ EXKalDetector::EXKalDetector(Int_t    nlayers,
    static Bool_t kActive = kTRUE;
    static Bool_t kDummy  = kFALSE;
 
+   static Double_t kVdrift   = 0.7e-3; // [cm/nsec]
+   static Double_t kDx       = 0.0085; // [cm]
+   static Double_t kDz       = 5.0;    // [cm]
+   static Double_t kVdriftT0 = 0.0;    // [cm/nsec]
+   static Double_t kDxT0     = 0.0010; // [cm]
+   static Double_t kDzT0     = 0.0010; // [cm]
+
    // create inner timing detector
    if (rt0det > 0.) {
          TVector3 we(0., rt0det, -lhalf);
          TVector3 wd(0., 0., 1.);
          Double_t celw = 2*celhw*rt0det/rmin;
-         Add(new EXMeasLayer(rt0det      , lhalf, we, wd.Unit(), celw, air, si, kActive));
-         Add(new EXMeasLayer(rt0det+thick, lhalf, we, wd.Unit(), celw, si, air, kDummy));
-         
-         Add(new EXMeasLayer(rt0det+4.5, lhalf, we, wd.Unit(), celw, air, cfrp, kDummy));
-         Add(new EXMeasLayer(rt0det+5.0, lhalf, we, wd.Unit(), celw, cfrp, air, kDummy));
+         Add(new EXMeasLayer(rt0det      , lhalf, we, wd.Unit(), celw, air, si, 
+                       kDxT0, kDzT0, kVdriftT0, kActive));
+         Add(new EXMeasLayer(rt0det+thick, lhalf, we, wd.Unit(), celw, si, air, 
+                       kDxT0, kDzT0, kVdriftT0, kDummy));
+         Add(new EXMeasLayer(rt0det+4.5, lhalf, we, wd.Unit(), celw, air, cfrp,
+                       kDxT0, kDzT0, kVdriftT0, kDummy));
+         Add(new EXMeasLayer(rt0det+5.0, lhalf, we, wd.Unit(), celw, cfrp, air,
+                       kDxT0, kDzT0, kVdriftT0, kDummy));
    }
    // create measurement layers of central tracker
 
@@ -112,7 +124,8 @@ EXKalDetector::EXKalDetector(Int_t    nlayers,
          wd.RotateZ(fact*dfiw);
 
          Double_t r0 = r*csdelphi; // r0 = r(z=0) while r = r(z=-lhalf)
-         Add(new EXMeasLayer(r0, lhalf, we, wd.Unit(), celw, air, air, kActive));
+         Add(new EXMeasLayer(r0, lhalf, we, wd.Unit(), celw, air, air,
+                       kDx, kDz, kVdrift, kActive));
          r += rstep;
       }
    }

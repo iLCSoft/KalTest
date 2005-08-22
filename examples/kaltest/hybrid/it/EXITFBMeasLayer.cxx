@@ -17,7 +17,9 @@
 
 #include "EXITFBMeasLayer.h"
 #include "EXITFBHit.h"
+#include "EXITKalDetector.h"
 #include "TVTrack.h"
+#include "TRandom.h"
 #include <iostream>
 
 using namespace std;
@@ -102,6 +104,7 @@ void EXITFBMeasLayer::CalcDhDa(const TVTrackHit &vht,
 Int_t EXITFBMeasLayer::CalcXingPointWith(const TVTrack &hel,
                                                TVector3 &xx,
                                                Double_t &phi,
+                                               Int_t    /* mode */,
                                                Double_t  eps) const
 {
    // This assumes nonzero B field.
@@ -137,9 +140,34 @@ Int_t EXITFBMeasLayer::CalcXingPointWith(const TVTrack &hel,
    Double_t z    = GetXc().Z();
   
    phi = (-z + X0.Z() + dz) / (rho * tnl);
+#if 1
+   if (phi * chg >= 0. || TMath::Abs(phi) >= 2*TMath::Pi()) return 0;
+#endif
    Double_t x = X0.X() + dr*csf0 + rho*(csf0 - TMath::Cos(fi0 + phi));   // calculate X
    Double_t y = X0.Y() + dr*snf0 + rho*(snf0 - TMath::Sin(fi0 + phi));   // calculate Y
    xx.SetXYZ(x, y, z);
    return (IsOnSurface(xx) ? 1 : 0);
 }
 
+void EXITFBMeasLayer::ProcessHit(const TVector3  &xx,
+                                       TObjArray &hits)
+{
+   TKalMatrix h   = XvToMv(xx);
+   Double_t   x = h(0, 0); 
+   Double_t   y = h(1, 0); 
+
+   Double_t dx = GetSigmaX();
+   Double_t dy = GetSigmaY();
+   x += gRandom->Gaus(0., dx);   // smearing x
+   y += gRandom->Gaus(0., dy);   // smearing y
+
+   Double_t meas [2];
+   Double_t dmeas[2];
+   meas [0] = x;
+   meas [1] = y;
+   dmeas[0] = dx;
+   dmeas[1] = dy;
+ 
+   Double_t b = EXITKalDetector::GetBfield();
+   hits.Add(new EXITFBHit(*this, meas, dmeas, xx, b));
+}

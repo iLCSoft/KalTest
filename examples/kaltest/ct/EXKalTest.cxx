@@ -27,8 +27,14 @@ int main (Int_t argc, Char_t **argv)
    TNtupleD *hTrackMonitor = new TNtupleD("track", "", "ndf:chi2:cl:cpa");
 
    Double_t pt      = 1.;
+   Double_t t0in    = 0.;
    Int_t    nevents = 1;
    switch (argc) {
+      case 4: 
+         nevents = atoi(argv[1]);
+         pt      = atof(argv[2]);
+         t0in    = atof(argv[3]);
+         break;
       case 3: 
          nevents = atoi(argv[1]);
          pt      = atof(argv[2]);
@@ -44,7 +50,7 @@ int main (Int_t argc, Char_t **argv)
    }
 
    // ===================================================================
-   // Prepare a detector
+   //  Prepare a detector
    // ===================================================================
 
    TObjArray     kalhits;    // hit buffer
@@ -57,13 +63,14 @@ int main (Int_t argc, Char_t **argv)
 #endif
 
    // ===================================================================
-   // Prepare a Event Generator
+   //  Prepare a Event Generator
    // ===================================================================
 
    EXEventGen gen(cradle, kalhits);
+   gen.SetT0(t0in);
 
    // ===================================================================
-   // Event loop
+   //  Event loop
    // ===================================================================
 
    for (Int_t eventno = 0; eventno < nevents; eventno++) { 
@@ -76,42 +83,20 @@ int main (Int_t argc, Char_t **argv)
       kalhits.Delete();
 
       // ============================================================
-      // Generate a partcle
+      //  Generate a partcle
       // ============================================================
 
       THelicalTrack hel = gen.GenerateHelix(pt);
 
       // ============================================================
-      // Swim the particle in detector
+      //  Swim the particle in detector
       // ============================================================
 
       gen.Swim(hel);
 
       // ============================================================
-      // Create Kalman Filter
+      //  Do Kalman Filter
       // ============================================================
-
-      // ---------------------------
-      //  Prepare hit iterrator
-      // ---------------------------
-      TIter next(&kalhits, gkDir);   // come in to IP
-
-      // ---------------------------
-      //  Create a dummy site: sited
-      // ---------------------------
-
-      EXHit &hitd = *dynamic_cast<EXHit *>(next());
-      hitd(0,1) = 1.e6;   // give a huge error to d
-      hitd(1,1) = 1.e6;   // give a huge error to z
-      next.Reset();       // rewind iterator
-
-      TKalTrackSite &sited = *new TKalTrackSite(hitd);
-      // sited.Lock();    // dummy site should not be used
-      sited.SetOwner();   // site owns states
-
-      // ---------------------------
-      // Create initial helix
-      // ---------------------------
 
       Int_t i1, i2, i3;
       if (gkDir == kIterBackward) {
@@ -123,13 +108,30 @@ int main (Int_t argc, Char_t **argv)
          i3 = kalhits.GetEntries() - 1;
          i2 = i3 / 2;
       }
+
+      // ---------------------------
+      //  Create a dummy site: sited
+      // ---------------------------
+
+      EXHit hitd = *dynamic_cast<EXHit *>(kalhits.At(i1));
+      hitd(0,1) = 1.e6;   // give a huge error to d
+      hitd(1,1) = 1.e6;   // give a huge error to z
+
+      TKalTrackSite &sited = *new TKalTrackSite(hitd);
+      // sited.Lock();    // dummy site should not be used
+      sited.SetOwner();   // site owns states
+
+      // ---------------------------
+      // Create initial helix
+      // ---------------------------
+
       EXHit   &h1 = *dynamic_cast<EXHit *>(kalhits.At(i1));   // first hit
       EXHit   &h2 = *dynamic_cast<EXHit *>(kalhits.At(i2));   // last hit
       EXHit   &h3 = *dynamic_cast<EXHit *>(kalhits.At(i3));   // middle hit
       TVector3 x1 = h1.GetMeasLayer().HitToXv(h1);
       TVector3 x2 = h2.GetMeasLayer().HitToXv(h2);
       TVector3 x3 = h3.GetMeasLayer().HitToXv(h3);
-      THelicalTrack helstart(x1, x2, x3, h1.GetBfield());   // initial helix 
+      THelicalTrack helstart(x1, x2, x3, h1.GetBfield(), gkDir); // initial helix 
 
       // ---------------------------
       //  Set dummy state to sited
@@ -160,6 +162,12 @@ int main (Int_t argc, Char_t **argv)
       kaltrack.Add(&sited);  // add the dummy site to the track
 
       // ---------------------------
+      //  Prepare hit iterrator
+      // ---------------------------
+
+      TIter next(&kalhits, gkDir);   // come in to IP
+
+      // ---------------------------
       //  Start Kalman Filter
       // ---------------------------
 
@@ -174,7 +182,7 @@ int main (Int_t argc, Char_t **argv)
       //kaltrack.SmoothBackTo(3);                          // smooth back.
 
       // ============================================================
-      // Monitor Fit Result
+      //  Monitor Fit Result
       // ============================================================
 
       Int_t    ndf  = kaltrack.GetNDF();

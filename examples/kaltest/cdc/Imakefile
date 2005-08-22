@@ -6,7 +6,8 @@ PROGRAMNAME   = EXKalTest
 SRCS          = EXKalTest.$(SrcSuf) \
 		EXHit.$(SrcSuf) \
 		EXMeasLayer.$(SrcSuf) \
-		EXKalDetector.$(SrcSuf)
+		EXKalDetector.$(SrcSuf) \
+		EXEventGen.$(SrcSuf)
 
 OBJS	      =	$(subst .$(SrcSuf),.$(ObjSuf),$(SRCS)) \
 		$(PROGRAMNAME)Dict.$(ObjSuf)
@@ -20,7 +21,7 @@ PROGRAM    = prod/$(PROGRAMNAME)
 LIBINSTALLDIR = $(INSTALLDIR)/lib
 INCINSTALLDIR = $(INSTALLDIR)/include
 INCPATH	      = -I. -I$(INCINSTALLDIR)
-CXXFLAGS     += $(INCPATH) -O0 -g /* -D__TPC__ */
+CXXFLAGS     += $(INCPATH) -O -g
 
 all:: $(PROGRAM) 
 

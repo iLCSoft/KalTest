@@ -16,6 +16,8 @@
 
 #include "EXMeasLayer.h"
 #include "EXHit.h"
+#include "EXKalDetector.h"
+#include "TRandom.h"
 
 Bool_t   EXMeasLayer::kActive = kTRUE;
 Bool_t   EXMeasLayer::kDummy = kFALSE;
@@ -102,3 +104,27 @@ void EXMeasLayer::CalcDhDa(const TVTrackHit &,          // Hit: not used in this
       H(1,sdim-1) = 0.;
    }
 }
+
+void EXMeasLayer::ProcessHit(const TVector3    &xx,
+                                   TObjArray   &hits)
+{
+   TKalMatrix h    = XvToMv(xx);
+   Double_t   rphi = h(0, 0);
+   Double_t   z    = h(1, 0);
+
+   Double_t dx = GetSigmaX();
+   Double_t dz = GetSigmaZ();
+   rphi += gRandom->Gaus(0., dx);   // smearing rphi
+   z    += gRandom->Gaus(0., dz);   // smearing z
+
+   Double_t meas [2];
+   Double_t dmeas[2];
+   meas [0] = rphi;
+   meas [1] = z;
+   dmeas[0] = dx;
+   dmeas[1] = dz;
+
+   Double_t b = EXKalDetector::GetBfield();
+   hits.Add(new EXHit(*this, meas, dmeas, b));
+}
+

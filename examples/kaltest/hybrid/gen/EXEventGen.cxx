@@ -12,7 +12,7 @@
 #define __FI0__    0.
 #define __DZ__     0.
 #if 1
-#define __COSMIN__ 0.97
+#define __COSMIN__ -0.97
 #define __COSMAX__ 0.97
 #else
 #define __COSMIN__ -0.7
@@ -25,10 +25,12 @@
 
 ClassImp(EXEventGen)
 
+Double_t EXEventGen::fgT0 = 14.; // [nsec]
+
 THelicalTrack EXEventGen::GenerateHelix(Double_t pt)
 {
    // ---------------------------
-   //  Create a helix track
+   //  Generate a helical track
    // ---------------------------
 
    Double_t dr  = __DR__;
@@ -50,33 +52,33 @@ THelicalTrack EXEventGen::GenerateHelix(Double_t pt)
 
 void EXEventGen::Swim(THelicalTrack &heltrk)
 {
-   TIter next(fCradlePtr);
-   Int_t nlayers = fCradlePtr->GetEntries();
-
    // ---------------------------
-   //  Create hits
+   //  Swim track and Make hits
    // ---------------------------
 
-   Double_t dfi  = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))
-                     ->GetSortingPolicy()
-                   / heltrk.GetRho();
-   Int_t dlyr = 1;
-   for (Int_t lyr = 0; lyr < nlayers && lyr >= 0; lyr += dlyr) {
-      //if (lyr == nlayers - 1) dlyr = -1;
-      EXVMeasLayer &ms = *dynamic_cast<EXVMeasLayer *>(fCradlePtr->At(lyr));
+   Double_t dfi       = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))
+                            ->GetSortingPolicy()
+                         / heltrk.GetRho();
+   Double_t dfisum    = dfi;
+
+   Int_t nlayers      = fCradlePtr->GetEntries();
+   Int_t    dlyr      = 1;
+
+   for (Int_t lyr = 0; lyr < nlayers && lyr >= 0; lyr += dlyr) { // loop over layers
+      EXVMeasLayer &ml = *dynamic_cast<EXVMeasLayer *>(fCradlePtr->At(lyr));
       TVector3 xx;
       if (lyr) dfi  = 0.;
+      TVSurface &ms = *dynamic_cast<TVSurface *>(fCradlePtr->At(lyr));
 
-      // ==========================================
-      // Temporary treatment !!
-      // ------------------------------------------
-      Int_t nxp;
-      TCylinder *cymsp = dynamic_cast<TCylinder *>(&ms);
-      TPlane    *plmsp = dynamic_cast<TPlane *>(&ms);
-      if (cymsp) nxp = cymsp->CalcXingPointWith(heltrk, xx, dfi, 1);
-      else       nxp = plmsp->CalcXingPointWith(heltrk, xx, dfi, 1);
-      if (!nxp) continue;
-      // ==========================================
+      Double_t dfis = dfi;
+      if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
+         dfi = dfis;
+         continue;
+      }
+
+      // should use the material behind the surface since dfi is measured 
+      // from the last point to the current surface
+      Bool_t   dir    = dlyr < 0 ? kTRUE : kFALSE;
 
       if (fCradlePtr->IsMSOn()) {
          static const Double_t kMpi  = 0.13957018;
@@ -88,9 +90,8 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
          Double_t path   = TMath::Abs(heltrk.GetRho()*dfi)*cslinv;
          Double_t mom    = TMath::Abs(1/kpa) * cslinv;
          Double_t beta   = mom/TMath::Sqrt(mom*mom + kMpi2); // pion assumed
-         Bool_t   dir    = ((xx * TKalMatrix::ToThreeVec(heltrk.CalcDxDphi(dfi)))
-                         * TMath::Sign(-1., kpa)) > 0;
-         Double_t x0inv  = 1. / ms.GetMaterial(dir).GetRadLength();
+
+         Double_t x0inv  = 1. / ml.GetMaterial(dir).GetRadLength();
          Double_t xl     = path * x0inv;
          static const Double_t kMS1 = 0.01316;
          static const Double_t kMS2 = 0.038;
@@ -101,28 +102,38 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
          Double_t sgtnl  = sgms*cslinv*cslinv;
          Double_t delphi = gRandom->Gaus(0.,sgphi);
          Double_t deltnl = gRandom->Gaus(0.,sgtnl);
-
-         //dfi *= 0.5;
-         //TVector3 x0ms = heltrk.CalcXAt(dfi);
-         //heltrk.MoveTo(x0ms,dfi);     // M.S. at mid point
+#if 0
+         dfi *= 0.5;
+         TVector3 x0ms = heltrk.CalcXAt(dfi);
+         heltrk.MoveTo(x0ms,dfi);     // M.S. at mid point
 
          heltrk.ScatterBy(delphi,deltnl);
          dfi  = 0.;
+#else
+         heltrk.ScatterBy(delphi,deltnl); // multiple scattering
+#endif
+         // recalculate crossing point
+         dfis = dfi;
+         if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
+            dfi = dfis;
+            continue;
+         }
+      }
 
-         // ==========================================
-         // Temporary treatment !!
-         // ------------------------------------------
-         Int_t nxp2;
-         if (cymsp) nxp2 = cymsp->CalcXingPointWith(heltrk, xx, dfi, 1);
-         else       nxp2 = plmsp->CalcXingPointWith(heltrk, xx, dfi, 1);
-         if (!nxp2) continue;
-         // ==========================================
-       }
+      dfisum += dfi;
+      if (TMath::Abs(dfisum) >= TMath::Pi() && fHitBufPtr->GetEntries() > 3) {
+         dlyr = -1; // change direction if it starts looping back
+      }
 
-       heltrk.MoveTo(xx,dfi);	// move pivot to current hit
+      heltrk.MoveTo(xx,dfi);	// move pivot to current hit
 
-       if (ms.IsActive()) {
-          ((EXVKalDetector *)&ms.GetParent(kFALSE))->ProcessHit(xx, ms, *fHitBufPtr);
-       }
+      TKalMatrix av(5,1);
+      heltrk.PutInto(av);
+      av(2,0) += ml.GetEnergyLoss(dir, heltrk, dfi); // energy loss
+      heltrk.SetTo(av, heltrk.GetPivot());
+
+      if (ml.IsActive()) {
+         ml.ProcessHit(xx, *fHitBufPtr); // create hit point
+      }
    }
 }

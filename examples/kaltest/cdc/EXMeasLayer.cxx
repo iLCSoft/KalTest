@@ -15,7 +15,9 @@
 //
 
 #include "EXMeasLayer.h"
+#include "EXKalDetector.h"
 #include "EXHit.h"
+#include "TRandom.h"
 
 ClassImp(EXMeasLayer)
 
@@ -210,4 +212,29 @@ void EXMeasLayer::CalcDhDa(const TVTrackHit &vht,
       H(1,sdim-1) = ht.GetVdrift();
 #endif
    }
+}
+
+
+void EXMeasLayer::ProcessHit(const TVector3 &xx, TObjArray &hits)
+{
+   Int_t lr     = 0;
+   Int_t cellno = -99999999;
+   TKalMatrix h = XvToMv(xx, lr, cellno);
+   Double_t   x = h(0, 0);
+   Double_t   z = h(1, 0);
+
+   x += fVdrift * EXEventGen::GetT0() * lr;
+
+   x += gRandom->Gaus(0.,fDx);
+   z += gRandom->Gaus(0.,fDz);
+
+   Double_t meas [2];
+   Double_t dmeas[2];
+   meas [0] = x;
+   meas [1] = z;
+   dmeas[0] = fDx;
+   dmeas[1] = fDz;
+
+   Double_t b = EXKalDetector::GetBfield();
+   hits.Add(new EXHit(*this, meas, dmeas, lr, cellno, fVdrift, xx, b));
 }

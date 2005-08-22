@@ -22,6 +22,7 @@
 #include "THype.h"
 #include "TVMeasLayer.h"
 #include "KalTrackDim.h"
+#include "EXEventGen.h"
 
 using namespace std;
 
@@ -33,12 +34,16 @@ public:
    // Ctors and Dtor
 
    EXMeasLayer(Double_t r0, Double_t lhalf, TVector3 we, TVector3 wd,
-               Double_t cellw, TMaterial &min, TMaterial &mout, Bool_t isactive = kTRUE)
+               Double_t cellw, 
+               TMaterial &min, TMaterial &mout, 
+               Double_t dx, Double_t dz, Double_t vdrift,
+               Bool_t isactive = kTRUE)
          : TVMeasLayer(min, mout, isactive),
            THype(r0,lhalf,wd.Perp()/wd.Z()), fWireEnd(we), fWireDir(wd),
            fCellWidth(cellw), 
            fWirePhi(TMath::ATan2(we.Y(),we.X())), 
-           fDphi(cellw/we.Perp()) 
+           fDphi(cellw/we.Perp()),
+           fDx(dx), fDz(dz), fVdrift(vdrift)
    {
    }
    virtual ~EXMeasLayer() {}
@@ -82,12 +87,20 @@ public:
                                        Int_t       lr,
                                        Int_t       cellno) const;
 
+   // Methods for MC event generation
+
+   void ProcessHit(const TVector3 &xx, TObjArray &hits);
+
 private:
    TVector3    fWireEnd;	// wire end
    TVector3    fWireDir;	// wire direction
    Double_t    fCellWidth;      // cell width at the wire end
    Double_t    fWirePhi;	// wire phi   at the wire end
    Double_t    fDphi;		// cell width at the wire end in radian
+
+   Double_t    fDx;             // sigma_x
+   Double_t    fDz;             // sigma_z
+   Double_t    fVdrift;         // drift velocity
 
    ClassDef(EXMeasLayer,1) 	// Sample measurement layer class
 };

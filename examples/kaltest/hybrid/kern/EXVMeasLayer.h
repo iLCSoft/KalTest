@@ -35,6 +35,9 @@ public:
                 Bool_t     type = EXVMeasLayer::kActive);
    virtual ~EXVMeasLayer();
 
+   virtual void ProcessHit(const TVector3  &xx,
+                                 TObjArray &hits) = 0;
+
    ClassDef(EXVMeasLayer,1) 	// Sample measurement layer class
 };
 

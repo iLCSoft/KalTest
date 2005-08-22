@@ -104,13 +104,13 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    TKalMatrix DF(sdim, sdim);                 // propagator matrix segment
 
    // ---------------------------------------------------------------------
-   //  Loop over layers and ransport sv, F, and Q step by step
+   //  Loop over layers and transport sv, F, and Q step by step
    // ---------------------------------------------------------------------
    for (Int_t i=fridx; (di>0 && i<=toidx-di)||(di<0 && i>=toidx-di); i += di) {
       if(dynamic_cast<TVSurface *>(At(i+di))->CalcXingPointWith(hel, xx, fid)) {
          const TVMeasLayer   &ml  = *dynamic_cast<TVMeasLayer *>(At(i));
          TKalMatrix Qms(sdim, sdim);
-         ml.CalcQms(isout, hel, fid, Qms); // calculate Qms for this step
+         if (IsMSOn()) ml.CalcQms(isout, hel, fid, Qms); // Qms for this step
 
          hel.MoveTo(xx, fid, &DF);         // move to next expected hit
          if (sdim == 6) DF(5, 5) = 1.;     // t0 stays the same

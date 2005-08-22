@@ -56,8 +56,4 @@ private:
    ClassDef(TKalMatrix,1)      // Base class for Kalman matrix
 };
 
-//=======================================================
-// inline functions
-//=======================================================
-
 #endif

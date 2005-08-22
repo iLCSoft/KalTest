@@ -38,7 +38,6 @@ public:
 
    inline const TVector3 & GetExactX() const { return fXX; }
 
-private:
    inline const EXMeasLayer & GetMeasLayer() const
    {
       return *(const EXMeasLayer *)&TVTrackHit::GetMeasLayer();

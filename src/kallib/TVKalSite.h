@@ -112,6 +112,4 @@ void TVKalSite::Add(TObject *obj)
    fCurStatePtr->SetSitePtr(this);
 }
 
-
-
 #endif
