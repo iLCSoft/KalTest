@@ -35,7 +35,7 @@ ClassImp(TKalDetCradle)
 //  ----------------------------------
 
 TKalDetCradle::TKalDetCradle(Int_t n)
-             : TObjArray(n), fIsMSON(kTRUE), fDone(kFALSE)
+             : TObjArray(n), fIsMSON(kTRUE), fIsDEDXON(kTRUE), fDone(kFALSE)
 {
 }
 
@@ -119,9 +119,11 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
 
          Q = DF * (Q + Qms) * DFt;         // transport Q to next expected hit 
 
-         hel.PutInto(sv);                              // copy hel to sv
-         sv(2,0) += ml.GetEnergyLoss(isout, hel, fid); // correct for dE/dx
-         hel.SetTo(sv, hel.GetPivot());                // save sv back to hel
+         if (IsDEDXOn()) {
+            hel.PutInto(sv);                              // copy hel to sv
+            sv(2,0) += ml.GetEnergyLoss(isout, hel, fid); // correct for dE/dx
+            hel.SetTo(sv, hel.GetPivot());                // save sv back to hel
+         }
       }
    }
    // ---------------------------------------------------------------------

@@ -57,17 +57,14 @@ Bool_t TVKalSite::Filter()
 {
 
    // prea and preC should be preset by TVKalState::Propagate()
-//std::cerr << "break1" << std::endl;
    TVKalState &prea = GetState(TVKalSite::kPredicted);
    TKalMatrix h = fM;
    if (!CalcExpectedMeasVec(prea,h)) return kFALSE;
-//std::cerr << "break2" << std::endl;
    TKalMatrix pull  = fM - h;
    TKalMatrix preC  = GetState(TVKalSite::kPredicted).GetCovMat();
    // Calculate fH and fHt
 
    if (!CalcMeasVecDerivative(prea,fH)) return kFALSE;
-//std::cerr << "break3" << std::endl;
    fHt = TKalMatrix(TKalMatrix::kTransposed, fH);
 
    // Calculate covariance matrix of residual
@@ -99,7 +96,6 @@ Bool_t TVKalSite::Filter()
 
    fR      = fV - fH * curC *fHt;
    if (!CalcExpectedMeasVec(a,h)) return kFALSE;
-//std::cerr << "break4" << std::endl;
    fResVec = fM - h;
    TKalMatrix curResVect = TKalMatrix(TKalMatrix::kTransposed, fResVec);
    fDeltaChi2 = (curResVect * G * fResVec + Kpullt * preCinv * Kpull)(0,0);

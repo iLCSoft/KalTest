@@ -124,10 +124,12 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
 
       heltrk.MoveTo(xx,dfi);	// move pivot to current hit
 
-      TKalMatrix av(5,1);
-      heltrk.PutInto(av);
-      av(2,0) += ml.GetEnergyLoss(dir, heltrk, dfi); // energy loss
-      heltrk.SetTo(av, heltrk.GetPivot());
+      if (fCradlePtr->IsDEDXOn()) {
+         TKalMatrix av(5,1);
+         heltrk.PutInto(av);
+         av(2,0) += ml.GetEnergyLoss(dir, heltrk, dfi); // energy loss
+         heltrk.SetTo(av, heltrk.GetPivot());
+      }
 
       if (ml.IsActive()) {
          ml.ProcessHit(xx, *fHitBufPtr); // create hit point

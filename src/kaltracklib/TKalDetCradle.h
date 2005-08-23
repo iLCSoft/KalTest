@@ -41,9 +41,12 @@ public:
    // Utility methods
    virtual void Install(TVKalDetector &det);
 
-   inline virtual void   SwitchOnMS ()       { fIsMSON = kTRUE;  }
-   inline virtual void   SwitchOffMS()       { fIsMSON = kFALSE; }
-   inline virtual Bool_t IsMSOn     () const { return fIsMSON;   }
+   inline virtual void   SwitchOnMS   ()       { fIsMSON = kTRUE;    }
+   inline virtual void   SwitchOffMS  ()       { fIsMSON = kFALSE;   }
+   inline virtual void   SwitchOnDEDX ()       { fIsDEDXON = kTRUE;  }
+   inline virtual void   SwitchOffDEDX()       { fIsDEDXON = kFALSE; }
+   inline virtual Bool_t IsMSOn       () const { return fIsMSON;     }
+   inline virtual Bool_t IsDEDXOn     () const { return fIsDEDXON;   }
 
    void Transport(const TKalTrackSite  &from, // site from
                   const TKalTrackSite  &to,   // sit to
@@ -55,6 +58,7 @@ private:
 
 private:
    Bool_t    fIsMSON;         //! switch for multiple scattering
+   Bool_t    fIsDEDXON;       //! switch for energy loss
    Bool_t    fDone;           //! flag to tell if sorting done
 
    ClassDef(TKalDetCradle,1)  // Base class for detector system

@@ -18,6 +18,7 @@
 #include <iostream>
 
 //#define __MS_OFF__
+//#define __DEDX_OFF__
 
 static const Bool_t gkDir = kIterBackward;
 //static const Bool_t gkDir = kIterForward;
@@ -70,6 +71,9 @@ int main (Int_t argc, Char_t **argv)
    toygld.Install(tpcdet); // install tpc into its toygld
 #ifdef __MS_OFF__
    toygld.SwitchOffMS();     // switch off multiple scattering
+#endif
+#ifdef __DEDX_OFF__
+   toygld.SwitchOffDEDX();   // switch off enery loss
 #endif
    toygld.Sort();   // temporary treatment
 
