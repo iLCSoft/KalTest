@@ -104,7 +104,7 @@ void EXITFBMeasLayer::CalcDhDa(const TVTrackHit &vht,
 Int_t EXITFBMeasLayer::CalcXingPointWith(const TVTrack &hel,
                                                TVector3 &xx,
                                                Double_t &phi,
-                                               Int_t    /* mode */,
+                                               Int_t     mode,
                                                Double_t  eps) const
 {
    // This assumes nonzero B field.
@@ -141,7 +141,7 @@ Int_t EXITFBMeasLayer::CalcXingPointWith(const TVTrack &hel,
   
    phi = (-z + X0.Z() + dz) / (rho * tnl);
 #if 1
-   if (phi * chg >= 0. || TMath::Abs(phi) >= 2*TMath::Pi()) return 0;
+   if (phi * chg * mode > 0. || TMath::Abs(phi) >= 2*TMath::Pi()) return 0;
 #endif
    Double_t x = X0.X() + dr*csf0 + rho*(csf0 - TMath::Cos(fi0 + phi));   // calculate X
    Double_t y = X0.Y() + dr*snf0 + rho*(snf0 - TMath::Sin(fi0 + phi));   // calculate Y
