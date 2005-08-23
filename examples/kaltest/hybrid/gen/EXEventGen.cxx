@@ -59,18 +59,20 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
    Double_t dfi       = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))
                             ->GetSortingPolicy()
                          / heltrk.GetRho();
-   Double_t dfisum    = dfi;
 
    Int_t nlayers      = fCradlePtr->GetEntries();
    Int_t    dlyr      = 1;
 
-   for (Int_t lyr = 0; lyr < nlayers && lyr >= 0; lyr += dlyr) { // loop over layers
+   for (Int_t lyr = 0; lyr >= 0; lyr += dlyr) { // loop over layers
+      // change direction if it starts looping back
+      if (lyr == nlayers - 1) dlyr = -1;
+
       EXVMeasLayer &ml = *dynamic_cast<EXVMeasLayer *>(fCradlePtr->At(lyr));
       TVector3 xx;
+      Double_t dfis = dfi;
       if (lyr) dfi  = 0.;
       TVSurface &ms = *dynamic_cast<TVSurface *>(fCradlePtr->At(lyr));
 
-      Double_t dfis = dfi;
       if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
          dfi = dfis;
          continue;
@@ -120,11 +122,6 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
          }
       }
 
-      dfisum += dfi;
-      if (TMath::Abs(dfisum) >= TMath::Pi() && fHitBufPtr->GetEntries() > 3) {
-         dlyr = -1; // change direction if it starts looping back
-      }
-
       heltrk.MoveTo(xx,dfi);	// move pivot to current hit
 
       TKalMatrix av(5,1);
@@ -135,5 +132,6 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
       if (ml.IsActive()) {
          ml.ProcessHit(xx, *fHitBufPtr); // create hit point
       }
+      if (lyr == nlayers - 1) break;
    }
 }
