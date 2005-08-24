@@ -106,9 +106,11 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    // ---------------------------------------------------------------------
    //  Loop over layers and transport sv, F, and Q step by step
    // ---------------------------------------------------------------------
-   for (Int_t i=fridx; (di>0 && i<=toidx-di)||(di<0 && i>=toidx-di); i += di) {
-      if(dynamic_cast<TVSurface *>(At(i+di))->CalcXingPointWith(hel, xx, fid)) {
-         const TVMeasLayer   &ml  = *dynamic_cast<TVMeasLayer *>(At(i));
+   Int_t ifr = fridx;
+   Int_t ito = fridx + di;
+   while ((ifr-fridx)*(ifr-toidx)<=0 && (ito-fridx)*(ito-toidx)<=0) {
+      if(dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid)) {
+         const TVMeasLayer   &ml  = *dynamic_cast<TVMeasLayer *>(At(ifr));
          TKalMatrix Qms(sdim, sdim);
          if (IsMSOn()) ml.CalcQms(isout, hel, fid, Qms); // Qms for this step
 
@@ -124,7 +126,9 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
             sv(2,0) += ml.GetEnergyLoss(isout, hel, fid); // correct for dE/dx
             hel.SetTo(sv, hel.GetPivot());                // save sv back to hel
          }
+         ifr = ito;
       }
+      ito += di;
    }
    // ---------------------------------------------------------------------
    //  Move pivot from last expected hit to actural hit at site to

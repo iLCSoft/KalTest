@@ -139,16 +139,22 @@ Int_t EXITFBMeasLayer::CalcXingPointWith(const TVTrack &hel,
    Double_t snf0 = TMath::Sin(fi0);    // sin phi0
    Double_t z    = GetXc().Z();
   
-   phi = (-z + X0.Z() + dz) / (rho * tnl);
+   Double_t fi   = (-z + X0.Z() + dz) / (rho * tnl);
 #if 1
-   if (phi * chg * mode > 0. || 
+   if (fi * chg * mode > 0. || 
        tnl * GetXc().Z() < 0. ||
-       TMath::Abs(phi) >= 2*TMath::Pi()) return 0;
+       TMath::Abs(fi) >= 2*TMath::Pi()) return 0;
 #endif
-   Double_t x = X0.X() + dr*csf0 + rho*(csf0 - TMath::Cos(fi0 + phi));   // calculate X
-   Double_t y = X0.Y() + dr*snf0 + rho*(snf0 - TMath::Sin(fi0 + phi));   // calculate Y
+   Double_t x = X0.X() + dr*csf0 + rho*(csf0 - TMath::Cos(fi0 + fi));   // calculate X
+   Double_t y = X0.Y() + dr*snf0 + rho*(snf0 - TMath::Sin(fi0 + fi));   // calculate Y
    xx.SetXYZ(x, y, z);
-   return (IsOnSurface(xx) ? 1 : 0);
+
+   if (IsOnSurface(xx)) {
+      phi = fi;
+      return 1;
+   } else {
+      return 0;
+   }
 }
 
 void EXITFBMeasLayer::ProcessHit(const TVector3  &xx,

@@ -107,7 +107,7 @@ Double_t TVMeasLayer::GetEnergyLoss(      Bool_t    isoutgoing,
 
    static const Bool_t kForward  = kTRUE;
    static const Bool_t kBackward = kFALSE;
-   Bool_t     isfwd = (cpa > 0 && df < 0 || cpa <= 0 && df > 0) ? kForward : kBackward;
+   Bool_t isfwd = (cpa > 0 && df < 0 || cpa <= 0 && df > 0) ? kForward : kBackward;
    return isfwd ? (cpa > 0 ? dcpa : -dcpa) : (cpa > 0 ? -dcpa : dcpa);
 }
 

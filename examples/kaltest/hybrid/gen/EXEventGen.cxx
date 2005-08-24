@@ -70,8 +70,6 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
       TVSurface    &ms = *dynamic_cast<TVSurface *>(fCradlePtr->At(lyr));
       TVector3 xx;
       Double_t dfis = dfi;
-      if (lyr) dfi  = 0.;
-
       if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
          dfi = dfis;
          continue;
@@ -97,14 +95,14 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
          dfis = dfi;
 #else
          heltrk.ScatterBy(delphi,deltnl); // multiple scattering
-         dfis = 0;
+         dfis = 0.;
 #endif
          // recalculate crossing point
-         dfis += dfi;
          if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
             dfi = dfis;
             continue;
          }
+         dfis += dfi;
       }
 
       heltrk.MoveTo(xx,dfi);	// move pivot to current hit
