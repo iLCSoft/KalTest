@@ -25,6 +25,8 @@
 //
 ClassImp(TVKalSystem)
 
+TVKalSystem *TVKalSystem::fgCurInstancePtr = 0;
+
 TVKalSystem::TVKalSystem(Int_t n) 
             :TObjArray(n),
              fCurSitePtr(0),

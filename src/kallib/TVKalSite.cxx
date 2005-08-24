@@ -27,8 +27,6 @@
 //
 ClassImp(TVKalSite)
 
-TVKalSystem *TVKalSite::fgKalSysPtr = 0;
-
 TVKalSite::TVKalSite(Int_t m, Int_t p)
                    :TObjArray(2),
                     TAttLockable(),

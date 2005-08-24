@@ -72,7 +72,7 @@ Double_t TVMeasLayer::GetEnergyLoss(      Bool_t    isoutgoing,
    static const Double_t kMe  = 0.510998902e-3;  // electron mass [GeV]
    static const Double_t kMpi = 0.13957018;      // pion mass [GeV]
 
-   TKalTrack *ktp  = static_cast<TKalTrack *>(TVKalSite::GetKalSystemPtr());
+   TKalTrack *ktp  = static_cast<TKalTrack *>(TVKalSystem::GetCurInstancePtr());
    Double_t   mass = ktp ? ktp->GetMass() : kMpi;
 
    const TMaterial &mat = GetMaterial(isoutgoing);
@@ -132,7 +132,7 @@ void TVMeasLayer::CalcQms(      Bool_t       isoutgoing,
    Double_t mom    = TMath::Abs(1. / cpa) * cslinv;
 
    static const Double_t kMpi = 0.13957018; // pion mass [GeV]
-   TKalTrack *ktp  = static_cast<TKalTrack *>(TVKalSite::GetKalSystemPtr());
+   TKalTrack *ktp  = static_cast<TKalTrack *>(TVKalSystem::GetCurInstancePtr());
    Double_t   mass = ktp ? ktp->GetMass() : kMpi;
    Double_t   beta = mom / TMath::Sqrt(mom * mom + mass * mass);
 
