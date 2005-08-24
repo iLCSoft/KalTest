@@ -107,8 +107,8 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    //  Loop over layers and transport sv, F, and Q step by step
    // ---------------------------------------------------------------------
    Int_t ifr = fridx;
-   Int_t ito = fridx + di;
-   while ((ifr-fridx)*(ifr-toidx)<=0 && (ito-fridx)*(ito-toidx)<=0) {
+
+   for (Int_t ito=fridx+di; (di>0 && ito<=toidx)||(di<0 && ito>=toidx); ito += di) {
       if(dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid)) {
          const TVMeasLayer   &ml  = *dynamic_cast<TVMeasLayer *>(At(ifr));
          TKalMatrix Qms(sdim, sdim);
@@ -128,7 +128,6 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
          }
          ifr = ito;
       }
-      ito += di;
    }
    // ---------------------------------------------------------------------
    //  Move pivot from last expected hit to actural hit at site to
