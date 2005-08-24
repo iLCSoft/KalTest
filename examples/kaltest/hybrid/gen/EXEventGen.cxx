@@ -22,7 +22,6 @@
 #define __Y0__      0.
 #define __Z0__      0.
 
-
 ClassImp(EXEventGen)
 
 Double_t EXEventGen::fgT0 = 14.; // [nsec]
@@ -68,10 +67,10 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
       if (lyr == nlayers - 1) dlyr = -1;
 
       EXVMeasLayer &ml = *dynamic_cast<EXVMeasLayer *>(fCradlePtr->At(lyr));
+      TVSurface    &ms = *dynamic_cast<TVSurface *>(fCradlePtr->At(lyr));
       TVector3 xx;
       Double_t dfis = dfi;
       if (lyr) dfi  = 0.;
-      TVSurface &ms = *dynamic_cast<TVSurface *>(fCradlePtr->At(lyr));
 
       if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
          dfi = dfis;
@@ -83,25 +82,10 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
       Bool_t   dir    = dlyr < 0 ? kTRUE : kFALSE;
 
       if (fCradlePtr->IsMSOn()) {
-         static const Double_t kMpi  = 0.13957018;
-         static const Double_t kMpi2 = kMpi*kMpi;
-   
-         Double_t kpa    = heltrk.GetKappa();
-         Double_t tanl   = heltrk.GetTanLambda();
-         Double_t cslinv = TMath::Sqrt(1 + tanl*tanl);
-         Double_t path   = TMath::Abs(heltrk.GetRho()*dfi)*cslinv;
-         Double_t mom    = TMath::Abs(1/kpa) * cslinv;
-         Double_t beta   = mom/TMath::Sqrt(mom*mom + kMpi2); // pion assumed
-
-         Double_t x0inv  = 1. / ml.GetMaterial(dir).GetRadLength();
-         Double_t xl     = path * x0inv;
-         static const Double_t kMS1 = 0.01316;
-         static const Double_t kMS2 = 0.038;
-         Double_t tmp    = 1. + kMS2 * TMath::Log(TMath::Max(1.e-4, xl));
-         tmp /= (mom * beta);
-         Double_t sgms   = kMS1 * TMath::Sqrt(xl) * tmp;
-         Double_t sgphi  = sgms*cslinv;
-         Double_t sgtnl  = sgms*cslinv*cslinv;
+         TKalMatrix Qms(5,5);
+         ml.CalcQms(dir, heltrk, dfi, Qms);
+         Double_t sgphi  = TMath::Sqrt(Qms(1,1));
+         Double_t sgtnl  = TMath::Sqrt(Qms(4,4));
          Double_t delphi = gRandom->Gaus(0.,sgphi);
          Double_t deltnl = gRandom->Gaus(0.,sgtnl);
 #if 0
@@ -110,12 +94,13 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
          heltrk.MoveTo(x0ms,dfi);     // M.S. at mid point
 
          heltrk.ScatterBy(delphi,deltnl);
-         dfi  = 0.;
+         dfis = dfi;
 #else
          heltrk.ScatterBy(delphi,deltnl); // multiple scattering
+         dfis = 0;
 #endif
          // recalculate crossing point
-         dfis = dfi;
+         dfis += dfi;
          if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
             dfi = dfis;
             continue;
@@ -127,7 +112,7 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
       if (fCradlePtr->IsDEDXOn()) {
          TKalMatrix av(5,1);
          heltrk.PutInto(av);
-         av(2,0) += ml.GetEnergyLoss(dir, heltrk, dfi); // energy loss
+         av(2,0) += ml.GetEnergyLoss(dir, heltrk, dfis); // energy loss
          heltrk.SetTo(av, heltrk.GetPivot());
       }
 
