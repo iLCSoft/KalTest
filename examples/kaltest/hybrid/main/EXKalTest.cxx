@@ -121,11 +121,11 @@ int main (Int_t argc, Char_t **argv)
 
       Int_t i1, i2, i3;
       if (gkDir == kIterBackward) {
-         i3 = 1;
+         i3 = 0;
          i1 = kalhits.GetEntries() - 1;
          i2 = i1 / 2;
       } else {
-         i1 = 1;
+         i1 = 0;
          i3 = kalhits.GetEntries() - 1;
          i2 = i3 / 2;
       }

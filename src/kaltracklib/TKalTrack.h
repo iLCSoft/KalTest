@@ -30,7 +30,7 @@
 class TKalTrack : public TVKalSystem {
 public:
    TKalTrack(Int_t n = 1);
-   ~TKalTrack() {} 
+   ~TKalTrack() {}
 
    inline virtual void      SetMass(Double_t m)           { fMass = m;    }
    inline virtual Double_t  GetMass()             const   { return fMass; }
@@ -39,6 +39,8 @@ public:
 
 private:
    Double_t     fMass;        // mass [GeV]
+
+   static const Double_t kMpi = 0.13957018; //! pion mass [GeV]
 
    ClassDef(TKalTrack,1)  // Base class for Kalman Filter
 };

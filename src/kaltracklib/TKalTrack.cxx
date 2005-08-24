@@ -34,7 +34,7 @@ ClassImp(TKalTrack)
 //   Ctor
 //  ----------------------------------
 TKalTrack::TKalTrack(Int_t n)
-          :TVKalSystem(n), fMass(0.)
+          :TVKalSystem(n), fMass(kMpi)
 {
 }
 
