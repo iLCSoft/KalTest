@@ -62,7 +62,7 @@ Double_t TVMeasLayer::GetEnergyLoss(      Bool_t    isoutgoing,
    Double_t tnl    = hel.GetTanLambda(); 
    Double_t tnl2   = tnl * tnl;
    Double_t tnl21  = 1. + tnl2;
-   Double_t cslinv = TMath::Sqrt(1. + tnl2);
+   Double_t cslinv = TMath::Sqrt(tnl21);
    Double_t mom2   = tnl21 / (cpa * cpa);
 
    // -----------------------------------------
@@ -128,7 +128,7 @@ void TVMeasLayer::CalcQms(      Bool_t       isoutgoing,
    Double_t tnl2   = tnl * tnl;
    Double_t tnl21  = 1. + tnl2;
    Double_t cpatnl = cpa * tnl;
-   Double_t cslinv = TMath::Sqrt(1. + tnl2);
+   Double_t cslinv = TMath::Sqrt(tnl21);
    Double_t mom    = TMath::Abs(1. / cpa) * cslinv;
 
    static const Double_t kMpi = 0.13957018; // pion mass [GeV]
