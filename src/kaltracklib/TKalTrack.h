@@ -16,18 +16,20 @@
 //*   2005/02/23  A.Yamaguchi	Added a new data member fMass and its
 //*                             getter and setter.
 //*   2005/08/15  K.Fujii       Removed fDir and its getter and setter.
+//*   2005/08/25  K.Fujii       Added Drawable attribute.
 //*
 //*************************************************************************
                                                                                 
 #include "TVKalSystem.h"       // from KalLib
 #include "TKalTrackState.h"    // from KalTrackLib
+#include "TAttDrawable.h"      // from Utils
 
 //_________________________________________________________________________
 //  ------------------------------
 //   TKalTrack: Kalman Track class
 //  ------------------------------
                                                                                 
-class TKalTrack : public TVKalSystem {
+class TKalTrack : public TVKalSystem, public TAttDrawable {
 public:
    TKalTrack(Int_t n = 1);
    ~TKalTrack() {}
@@ -36,6 +38,9 @@ public:
    inline virtual Double_t  GetMass()             const   { return fMass; }
 
    Double_t FitToHelix(TKalTrackState &a, TKalMatrix &C, Int_t &ndf);
+
+   using TAttDrawable::Draw;
+   virtual void Draw(Int_t color, const Char_t *opt);
 
 private:
    Double_t     fMass;        // mass [GeV]

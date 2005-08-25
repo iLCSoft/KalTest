@@ -1,3 +1,7 @@
+//#define __MS_OFF__
+//#define __DEDX_OFF__
+//#define   __OED__
+
 #include "TNtupleD.h"
 #include "TFile.h"
 #include "TKalDetCradle.h"
@@ -15,10 +19,15 @@
 #include "EXEventGen.h"
 #include "TVTrackHit.h"
 
-#include <iostream>
+#ifdef __OED__
+#include "TCanvas.h"
+#include "TView.h"
+#include "TRotMatrix.h"
+#include "TTUBE.h"
+#include "TNode.h"
+#endif
 
-//#define __MS_OFF__
-//#define __DEDX_OFF__
+#include <iostream>
 
 static const Bool_t gkDir = kIterBackward;
 //static const Bool_t gkDir = kIterForward;
@@ -27,7 +36,16 @@ using namespace std;
 
 int main (Int_t argc, Char_t **argv)
 {
+#ifndef __OED__
    gROOT->SetBatch();
+#else
+   static TCanvas     *cvp    = 0;
+   static TTUBE       *itubep = 0;
+   static TTUBE       *otubep = 0;
+   static TRotMatrix  *orotp  = 0;
+   static TNode       *onodep = 0;
+   static TNode       *inodep = 0;
+#endif
    TApplication app("EXKalTest", &argc, argv, 0, 0);
 
    TFile hfile("h.root","RECREATE","KalTest");
@@ -228,6 +246,39 @@ int main (Int_t argc, Char_t **argv)
       Double_t cs   = tnl/TMath::Sqrt(1.+tnl*tnl);
       Double_t t0   = kaltrack.GetState(TVKalSite::kFiltered)(5, 0);
       hTrackMonitor->Fill(ndf, chi2, cl, fi0, cpa, cs, t0);
+
+#ifdef __OED__
+      // ============================================================
+      //  Very Primitive Event Display
+      // ============================================================
+
+      if (!cvp) {
+         cvp = new TCanvas("OED", "Event Display", 400, 10, 610, 610);
+      } else {
+         cvp->cd();
+         cvp->Clear();
+      }
+
+      TView   *vwp = new TView(1);
+      vwp->SetRange(-260.,-260.,-260.,+260.,+260.,+260.);
+      Int_t ierr;
+      vwp->SetView(10.,80.,80.,ierr);
+
+      if (!otubep) otubep = new TTUBE("TPCO","TPCO","void",210.,210.,260.);
+      if (!itubep) itubep = new TTUBE("TPCI","TPCI","void", 44., 44.,255.);
+      if (!orotp)  orotp  = new TRotMatrix("orot","orot",10.,80.,10.,80.,10.,80.);
+      if (!onodep) {
+         onodep = new TNode("ONODE","ONODE","TPCO",0.,0.,0.,"orot");
+         onodep->cd();
+         inodep = new TNode("INODE","INODE","TPCI");
+      }
+      onodep->Draw("pad same");
+      kaltrack.Draw(2,"");         
+
+      cout << "Select \"Quit ROOT\" from \"File\" to display next" << endl;
+      cout << "\"CNTRL+C\" to really quit" << endl;
+      app.Run(kTRUE);
+#endif
    }
 
    hfile.Write();
