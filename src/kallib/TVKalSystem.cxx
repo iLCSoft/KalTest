@@ -45,6 +45,8 @@ TVKalSystem::~TVKalSystem()
 
 Bool_t TVKalSystem::AddAndFilter(TVKalSite &next)
 {
+   SetCurInstancePtr(this);
+
    //
    // Propagate current state to the next site
    //

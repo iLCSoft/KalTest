@@ -75,8 +75,6 @@ void TVKalSystem::Add(TObject *obj)
 {
    TObjArray::Add(obj); 
    fCurSitePtr = (TVKalSite *)obj;
-
-   SetCurInstancePtr(this);
 }
 
 #endif
