@@ -283,7 +283,7 @@ int main (Int_t argc, Char_t **argv)
          onodep->Draw("pad same");
          kaltrack.Draw(2,"");         
 
-         cout << "Next? [yes/no/edit] " << flush;
+         cout << "Next? [yes/no/edit/quit] " << flush;
          static const Int_t kMaxLen = 1024;
          Char_t temp[kMaxLen];
          cin.getline(temp,kMaxLen);
