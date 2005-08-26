@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-2005/08/14    KalTest Package
+2005/08/26    KalTest Package
 -------------------------------------------------------------------------------
 
 0) Organization of the KalTest package
@@ -41,10 +41,13 @@ setup:           script to setup environmental variables to run the sample progr
     simple: a simple line fit example using the base kallib libraries only
 - Cd into the subsubdirectory you chose, build the test program, and run
   as follows:
+
   For hybrid:
   $ make
   $ cd main/prod
-  $ EXKalTest [# events] [pt in GeV]
+  $ ./EXKalTest [-b] [# events] [pt in GeV] [t0 in ns]
+  Notice that without -b, you will get into event display mode.
+
   For others:
   $ xmkmf -a
   $ make

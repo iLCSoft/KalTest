@@ -1,6 +1,5 @@
 //#define __MS_OFF__
 //#define __DEDX_OFF__
-//#define   __OED__
 
 #include "TNtupleD.h"
 #include "TFile.h"
@@ -19,13 +18,12 @@
 #include "EXEventGen.h"
 #include "EXHYBTrack.h"
 
-#ifdef __OED__
 #include "TCanvas.h"
 #include "TView.h"
 #include "TRotMatrix.h"
 #include "TTUBE.h"
 #include "TNode.h"
-#endif
+#include "TString.h"
 
 #include <iostream>
 
@@ -36,36 +34,31 @@ using namespace std;
 
 int main (Int_t argc, Char_t **argv)
 {
-#ifndef __OED__
-   gROOT->SetBatch();
-#else
-   static TCanvas     *cvp    = 0;
-   static TTUBE       *itubep = 0;
-   static TTUBE       *otubep = 0;
-   static TRotMatrix  *orotp  = 0;
-   static TNode       *onodep = 0;
-   static TNode       *inodep = 0;
-#endif
-   TApplication app("EXKalTest", &argc, argv, 0, 0);
+   // ===================================================================
+   //  Get job parameters from command line arguments, if any
+   // ===================================================================
 
-   TFile hfile("h.root","RECREATE","KalTest");
-   TNtupleD *hTrackMonitor = new TNtupleD("track", "", "ndf:chi2:cl:fi0:cpa:cs:t0");
+   Int_t    offset  = 0;
+   if (argc > 1 && TString(argv[1]) == "-b") {
+      offset = 1;
+      gROOT->SetBatch();
+   }
 
    Double_t pt      =  1.;
    Double_t t0in    = 14.;
    Int_t    nevents = 1;
-   switch (argc) {
+   switch (argc-offset) {
       case 4: 
-         nevents = atoi(argv[1]);
-         pt      = atof(argv[2]);
-         t0in    = atof(argv[3]);
+         nevents = atoi(argv[1+offset]);
+         pt      = atof(argv[2+offset]);
+         t0in    = atof(argv[3+offset]);
          break;
       case 3: 
-         nevents = atoi(argv[1]);
-         pt      = atof(argv[2]);
+         nevents = atoi(argv[1+offset]);
+         pt      = atof(argv[2+offset]);
          break;
       case 2:
-         nevents = atoi(argv[1]);
+         nevents = atoi(argv[1+offset]);
          break;
       case 1:
          break;
@@ -73,6 +66,22 @@ int main (Int_t argc, Char_t **argv)
          cerr << "Too many command line arguments!" << endl;
          abort();
    }
+
+   // ===================================================================
+   //  Create TApplication and an ouput ntuple file
+   // ===================================================================
+
+   static TCanvas     *cvp    = 0;
+   static TTUBE       *itubep = 0;
+   static TTUBE       *otubep = 0;
+   static TRotMatrix  *orotp  = 0;
+   static TNode       *onodep = 0;
+   static TNode       *inodep = 0;
+
+   TApplication app("EXKalTest", &argc, argv, 0, 0);
+
+   TFile hfile("h.root","RECREATE","KalTest");
+   TNtupleD *hTrackMonitor = new TNtupleD("track", "", "ndf:chi2:cl:fi0:cpa:cs:t0");
 
    // ===================================================================
    //  Prepare a detector
@@ -247,38 +256,49 @@ int main (Int_t argc, Char_t **argv)
       Double_t t0   = kaltrack.GetState(TVKalSite::kFiltered)(5, 0);
       hTrackMonitor->Fill(ndf, chi2, cl, fi0, cpa, cs, t0);
 
-#ifdef __OED__
       // ============================================================
       //  Very Primitive Event Display
       // ============================================================
+      if (!gROOT->IsBatch()) {
+         if (!cvp) {
+            cvp = new TCanvas("OED", "Event Display", 400, 10, 610, 610);
+         } else {
+            cvp->cd();
+            cvp->Clear();
+         }
 
-      if (!cvp) {
-         cvp = new TCanvas("OED", "Event Display", 400, 10, 610, 610);
-      } else {
-         cvp->cd();
-         cvp->Clear();
+         TView   *vwp = new TView(1);
+         vwp->SetRange(-260.,-260.,-260.,+260.,+260.,+260.);
+         Int_t ierr;
+         vwp->SetView(10.,80.,80.,ierr);
+
+         if (!otubep) otubep = new TTUBE("TPCO","TPCO","void",210.,210.,260.);
+         if (!itubep) itubep = new TTUBE("TPCI","TPCI","void", 44., 44.,255.);
+         if (!orotp)  orotp  = new TRotMatrix("orot","orot",10.,80.,10.,80.,10.,80.);
+         if (!onodep) {
+            onodep = new TNode("ONODE","ONODE","TPCO",0.,0.,0.,"orot");
+            onodep->cd();
+            inodep = new TNode("INODE","INODE","TPCI");
+         }
+         onodep->Draw("pad same");
+         kaltrack.Draw(2,"");         
+
+         cout << "Next? [yes/no/edit] " << flush;
+         static const Int_t kMaxLen = 1024;
+         Char_t temp[kMaxLen];
+         cin.getline(temp,kMaxLen);
+         TString opts(temp);
+         opts.ToLower();
+         if (!opts.Length()) {
+            continue;
+         } else if (opts[0] == 'n' || opts[0] == 'q') {
+            break;
+         } else if (opts[0] == 'e') {
+            cout << "Select \"Quit ROOT\" from \"File\" to display next" << endl;
+            cout << "\"CNTRL+C\" to really quit" << endl;
+            app.Run(kTRUE);
+         }
       }
-
-      TView   *vwp = new TView(1);
-      vwp->SetRange(-260.,-260.,-260.,+260.,+260.,+260.);
-      Int_t ierr;
-      vwp->SetView(10.,80.,80.,ierr);
-
-      if (!otubep) otubep = new TTUBE("TPCO","TPCO","void",210.,210.,260.);
-      if (!itubep) itubep = new TTUBE("TPCI","TPCI","void", 44., 44.,255.);
-      if (!orotp)  orotp  = new TRotMatrix("orot","orot",10.,80.,10.,80.,10.,80.);
-      if (!onodep) {
-         onodep = new TNode("ONODE","ONODE","TPCO",0.,0.,0.,"orot");
-         onodep->cd();
-         inodep = new TNode("INODE","INODE","TPCI");
-      }
-      onodep->Draw("pad same");
-      kaltrack.Draw(2,"");         
-
-      cout << "Select \"Quit ROOT\" from \"File\" to display next" << endl;
-      cout << "\"CNTRL+C\" to really quit" << endl;
-      app.Run(kTRUE);
-#endif
    }
 
    hfile.Write();
