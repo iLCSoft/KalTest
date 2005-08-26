@@ -59,8 +59,9 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
                             ->GetSortingPolicy()
                          / heltrk.GetRho();
 
-   Int_t nlayers      = fCradlePtr->GetEntries();
+   Int_t    nlayers   = fCradlePtr->GetEntries();
    Int_t    dlyr      = 1;
+   Double_t dfisum    = 0.;
 
    for (Int_t lyr = 0; lyr >= 0; lyr += dlyr) { // loop over layers
       // change direction if it starts looping back
@@ -70,11 +71,12 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
       TVSurface    &ms = *dynamic_cast<TVSurface *>(fCradlePtr->At(lyr));
       TVector3 xx;
       Double_t dfis = dfi;
-      if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
+      if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)
+       || TMath::Abs(dfi) > TMath::Pi()
+       || TMath::Abs(dfi + dfisum) > TMath::TwoPi()) {
          dfi = dfis;
          continue;
       }
-
       // should use the material behind the surface since dfi is measured 
       // from the last point to the current surface
       Bool_t   dir    = dlyr < 0 ? kTRUE : kFALSE;
@@ -98,12 +100,15 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
          dfis = 0.;
 #endif
          // recalculate crossing point
-         if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
+         if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)
+          || TMath::Abs(dfi) > TMath::Pi()
+          || TMath::Abs(dfi + dfisum) > TMath::TwoPi()) {
             dfi = dfis;
             continue;
          }
          dfis += dfi;
       }
+      dfisum += dfi;
 
       heltrk.MoveTo(xx,dfi);	// move pivot to current hit
 
