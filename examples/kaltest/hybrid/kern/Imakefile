@@ -4,7 +4,8 @@ INSTALLDIR    = ../../../..
 PACKAGENAME   = EXKern
 SOREV         = 2005.01
 SRCS          = EXVKalDetector.$(SrcSuf) \
-		EXVMeasLayer.$(SrcSuf)
+		EXVMeasLayer.$(SrcSuf) \
+		EXHYBTrack.$(SrcSuf)
 
 OBJS	      =	$(subst .$(SrcSuf),.$(ObjSuf),$(SRCS)) \
 		$(PACKAGENAME)Dict.$(ObjSuf)

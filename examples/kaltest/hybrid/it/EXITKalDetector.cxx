@@ -69,6 +69,7 @@ EXITKalDetector::EXITKalDetector(Int_t m)
          Add(new EXITFBMeasLayer(si, air, xc4, rifb, rofb, sigmax, sigmaz, dummy));
       } else {
          Add(new EXITFBMeasLayer(air, air, xc1, rifb, rofb, sigmax, sigmaz, dummy));
+         Add(new EXITFBMeasLayer(air, air, xc3, rifb, rofb, sigmax, sigmaz, dummy));
       }
       if (layer < nlayers) { 
          Add(new EXITMeasLayer(air, si, r, len, sigmax, sigmaz, active));

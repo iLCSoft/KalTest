@@ -7,7 +7,7 @@
 #include "TKalDetCradle.h"
 #include "TKalTrackState.h"
 #include "TKalTrackSite.h"
-#include "TKalTrack.h"
+#include "TVTrackHit.h"
 #include "EXKalTest.h"
 #include "EXTPCKalDetector.h"
 #include "EXITKalDetector.h"
@@ -17,7 +17,7 @@
 #include "EXITFBHit.h"
 #include "EXTPCHit.h"
 #include "EXEventGen.h"
-#include "TVTrackHit.h"
+#include "EXHYBTrack.h"
 
 #ifdef __OED__
 #include "TCanvas.h"
@@ -209,7 +209,7 @@ int main (Int_t argc, Char_t **argv)
       //  Add sited to the kaltrack
       // ---------------------------
 
-      TKalTrack kaltrack;    // a track is a kal system
+      EXHYBTrack kaltrack;    // a track is a kal system
       kaltrack.SetOwner();   // kaltrack owns sites
       kaltrack.Add(&sited);
 
