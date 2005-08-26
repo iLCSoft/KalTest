@@ -41,12 +41,12 @@ int main (Int_t argc, Char_t **argv)
    Int_t    offset  = 0;
    if (argc > 1 && TString(argv[1]) == "-b") {
       offset = 1;
-      gROOT->SetBatch();
+      gROOT->SetBatch();   // batch mode without event display
    }
 
-   Double_t pt      =  1.;
-   Double_t t0in    = 14.;
-   Int_t    nevents = 1;
+   Double_t pt      =  1.; // default Pt [GeV]
+   Double_t t0in    = 14.; // default tp [nsec]
+   Int_t    nevents = 1;   // default number of events to generate
    switch (argc-offset) {
       case 4: 
          nevents = atoi(argv[1+offset]);
@@ -87,42 +87,39 @@ int main (Int_t argc, Char_t **argv)
    //  Prepare a detector
    // ===================================================================
 
-   TObjArray kalhits;
-   TKalDetCradle    toygld;
-   EXVTXKalDetector vtxdet;
-   EXITKalDetector  itdet;
-   EXTPCKalDetector tpcdet;
+   TKalDetCradle    toygld; // toy GLD detector
+   EXVTXKalDetector vtxdet; // vertex detector (vtx)
+   EXITKalDetector  itdet;  // intermediate tracker (it)
+   EXTPCKalDetector tpcdet; // TPC (tpc)
 
-   toygld.Install(vtxdet); // install vtx into its toygld
-   toygld.Install(itdet);  // install it into its toygld
-   toygld.Install(tpcdet); // install tpc into its toygld
+   toygld.Install(vtxdet);  // install vtx into its toygld
+   toygld.Install(itdet);   // install it into its toygld
+   toygld.Install(tpcdet);  // install tpc into its toygld
+   toygld.Sort();           // sort meas. layers from inside to outside
+
 #ifdef __MS_OFF__
-   toygld.SwitchOffMS();     // switch off multiple scattering
+   toygld.SwitchOffMS();    // switch off multiple scattering
 #endif
 #ifdef __DEDX_OFF__
-   toygld.SwitchOffDEDX();   // switch off enery loss
+   toygld.SwitchOffDEDX();  // switch off enery loss
 #endif
-   toygld.Sort();   // temporary treatment
 
    // ===================================================================
-   //  Prepare a Event Generator
+   //  Prepare an Event Generator
    // ===================================================================
 
-   EXEventGen gen(toygld, kalhits);
-   gen.SetT0(t0in);
+   TObjArray kalhits;                // array to store hits
+   EXEventGen gen(toygld, kalhits);  // create event generator
+   gen.SetT0(t0in);                  // set bunch crossing timing (t0)
 
    // ===================================================================
-   //  Event loop
+   //  Loop over events
    // ===================================================================
 
    for (Int_t eventno = 0; eventno < nevents; eventno++) { 
       cerr << "------ Event " << eventno << " ------" << endl;
 
-      // ---------------------------
-      //  Reset hit data
-      // ---------------------------
-
-      kalhits.Delete();
+      kalhits.Delete(); // clear hit data
 
       // ============================================================
       //  Generate a partcle
@@ -146,7 +143,7 @@ int main (Int_t argc, Char_t **argv)
          continue;
       }
 
-      Int_t i1, i2, i3;
+      Int_t i1, i2, i3; // (i1,i2,i3) = (1st,mid,last) hit to filter
       if (gkDir == kIterBackward) {
          i3 = 0;
          i1 = kalhits.GetEntries() - 1;
@@ -199,12 +196,12 @@ int main (Int_t argc, Char_t **argv)
       // ---------------------------
 
       static TKalMatrix svd(kSdim,1);
-      svd(0,0) = 0.;
-      svd(1,0) = helstart.GetPhi0();
-      svd(2,0) = helstart.GetKappa();
-      svd(3,0) = 0.;
-      svd(4,0) = helstart.GetTanLambda();
-      if (kSdim == 6) svd(5,0) = 0.;
+      svd(0,0) = 0.;                        // dr
+      svd(1,0) = helstart.GetPhi0();        // phi0
+      svd(2,0) = helstart.GetKappa();       // kappa
+      svd(3,0) = 0.;                        // dz
+      svd(4,0) = helstart.GetTanLambda();   // tan(lambda)
+      if (kSdim == 6) svd(5,0) = 0.;        // t0
 
       static TKalMatrix C(kSdim,kSdim);
       for (Int_t i=0; i<kSdim; i++) {
@@ -218,15 +215,15 @@ int main (Int_t argc, Char_t **argv)
       //  Add sited to the kaltrack
       // ---------------------------
 
-      EXHYBTrack kaltrack;    // a track is a kal system
+      EXHYBTrack kaltrack;   // a track is a kal system
       kaltrack.SetOwner();   // kaltrack owns sites
-      kaltrack.Add(&sited);
+      kaltrack.Add(&sited);  // add the dummy site to this track
 
       // ---------------------------
       //  Prepare hit iterrator
       // ---------------------------
 
-      TIter next(&kalhits, gkDir);   // come in to IP
+      TIter next(&kalhits, gkDir); // come in to IP, if gkDir = kIterBackward
 
       // ---------------------------
       //  Start Kalman Filter
@@ -234,12 +231,16 @@ int main (Int_t argc, Char_t **argv)
 
       TVTrackHit *hitp = 0;
       while ((hitp = dynamic_cast<TVTrackHit *>(next()))) {
-         TKalTrackSite  &site = *new TKalTrackSite(*hitp);
-         if (!kaltrack.AddAndFilter(site)) {
+         TKalTrackSite  &site = *new TKalTrackSite(*hitp); // new site
+         if (!kaltrack.AddAndFilter(site)) {               // filter it
             cerr << " site discarded!" << endl;
-            delete &site;
+            delete &site;                        // delete it if failed
          }
-      }
+      } // end of Kalman filter
+
+      // ---------------------------
+      //  Smooth the track
+      // ---------------------------
       //kaltrack.SmoothBackTo(3);
 
       // ============================================================
@@ -259,6 +260,7 @@ int main (Int_t argc, Char_t **argv)
       // ============================================================
       //  Very Primitive Event Display
       // ============================================================
+
       if (!gROOT->IsBatch()) {
          if (!cvp) {
             cvp = new TCanvas("OED", "Event Display", 400, 10, 610, 610);
@@ -298,8 +300,12 @@ int main (Int_t argc, Char_t **argv)
             cout << "\"CNTRL+C\" to really quit" << endl;
             app.Run(kTRUE);
          }
-      }
-   }
+      } // endo fo event display
+   } // end of event loop
+
+   // ===================================================================
+   //  Write results to file.
+   // ===================================================================
 
    hfile.Write();
 
