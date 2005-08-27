@@ -182,7 +182,7 @@ int main (Int_t argc, Char_t **argv)
       TVKalSite::EStType stype = TVKalSite::kFiltered;
 #else
       TVKalSite::EStType stype = TVKalSite::kSmoothed;
-      kaltrack.SmoothBackTo(3);                          // smooth back.
+      kaltrack.SmoothBackTo(1);                          // smooth back.
 #endif
 
       // ============================================================
