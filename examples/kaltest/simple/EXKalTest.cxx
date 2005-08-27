@@ -1,4 +1,4 @@
-#define __DEBUG__
+//#define __DEBUG__
 
 #include "EXKalTest.h"
 #include "EXHit.h"
@@ -6,8 +6,7 @@
 #include "EXKalSite.h"
 #include "EXKalSystem.h"
 #include "TFile.h"
-#include "TH1D.h"
-
+#include "TNtupleD.h"
 
 #define __TSTEP__     1.
 #define __SLOPE__     0.2
@@ -21,24 +20,18 @@ int main (Int_t argc, Char_t **argv)
    gROOT->SetBatch();
    TApplication app("EXKalTest", &argc, argv, 0, 0);
 
-   //
    // -------------------------------------------------------------------
-   // Define Hists and Plots
+   //  Define Hists and Plots
    // -------------------------------------------------------------------
-   //
-                                                                                
-   TFile hfile("h.root","RECREATE","KalTest");
-   TH1D *hNDFPtr   = new TH1D("hNDF","NDF",200,0.,200.);
-   TH1D *hChi2Ptr  = new TH1D("hChi2","Chi2",200,0.,200.);
-   TH1D *hCLPtr    = new TH1D("hCL","CL",200,0.,1.);
 
-   //
+   TFile hfile("h.root","RECREATE","KalTest");
+   TNtupleD *hTrackMonitor = new TNtupleD("track", "", "ndf:chi2:cl");
+
    // -------------------------------------------------------------------
-   // Start event loop
+   //  Start event loop
    // -------------------------------------------------------------------
-   //
-                                                                                
-   Int_t ntrks = 1;
+
+   Int_t ntrks = 1000;
    for (Int_t itrk=0; itrk<ntrks; itrk++) {
                                                                                 
    cerr << " -------------------------------------------------- " << endl;
@@ -46,7 +39,6 @@ int main (Int_t argc, Char_t **argv)
    cerr << " track: " << itrk << endl;
    cerr << " -------------- " << endl;
                                                                                 
-
    // ---------------------------
    //  Create hits
    // ---------------------------
@@ -75,45 +67,6 @@ int main (Int_t argc, Char_t **argv)
 
    TIter next(&hits);
 
-#if 0  // no dummy site
-   // ---------------------------
-   //  Create 1st site: site1
-   // ---------------------------
-
-   EXHit      &hit1   = *(EXHit *)next();
-   EXKalSite  &site1  = *(new EXKalSite(hit1));
-
-   // ---------------------------
-   //  Set initial state to site1
-   // ---------------------------
-
-   TKalMatrix  sv1(2,1);
-   sv1(0,0) = 0.;
-   sv1(1,0) = hit1(0,0);
-
-   TKalMatrix C(2,2);
-#if 0
-   C(0,0) = 1.e8;
-   C(1,1) = 1.e8;
-#else
-   Double_t big = 1.e8;
-   C(0,0) = 1 + big;
-   C(0,1) = - big * hit1.GetT();
-   C(1,0) = - big * hit1.GetT();
-   C(1,1) = 1 + big * hit1.GetT() * hit1.GetT();
-   C *= hit1(0,1) * hit1(0,1) / (hit1.GetT() * hit1.GetT() + 1);
-#endif
-
-   site1.Add(new EXKalState(sv1,C,TVKalSite::kPredicted));
-   site1.Add(new EXKalState(sv1,C,TVKalSite::kFiltered));
-
-   // ---------------------------
-   //  Add site1 to the system
-   // ---------------------------
-
-   kalsys.Add(&site1);
-
-#else // with dummy site
    // ---------------------------
    //  Create a dummy site: sited 
    // ---------------------------
@@ -129,15 +82,19 @@ int main (Int_t argc, Char_t **argv)
                                                                                 
    // sited.Lock();                     // dummy site should not be used
    sited.SetOwner();                    // site owns states
-                                                                                
 
    // ---------------------------
    //  Set dummy state to sited
    // ---------------------------
 
+   Int_t i1st  = 0;
+   Int_t ilst  = hits.GetEntries() - 1;
+   EXHit &h1st = *(EXHit *)hits.At(i1st);
+   EXHit &hlst = *(EXHit *)hits.At(ilst);
+
    TKalMatrix  svd(2,1);
-   svd(0,0) = 0.;
-   svd(1,0) = 0.;
+   svd(0,0) = (hlst.GetX(0) - h1st.GetX(0))/(hlst.GetT() - h1st.GetT());
+   svd(1,0) = h1st.GetX(0);
 
    TKalMatrix C(2,2);
    C(0,0) = 1.e8;
@@ -151,8 +108,6 @@ int main (Int_t argc, Char_t **argv)
    // ---------------------------
 
    kalsys.Add(&sited);
-
-#endif
 
    // ---------------------------
    //  Start Kalman Filter
@@ -196,9 +151,7 @@ int main (Int_t argc, Char_t **argv)
    kalsys.GetState(TVKalSite::kSmoothed).DebugPrint();
 #endif   
 
-   hNDFPtr ->Fill(ndf,1.);
-   hChi2Ptr->Fill(chi2,1.);
-   hCLPtr  ->Fill(cl,1.);
+   hTrackMonitor->Fill(ndf,chi2,cl);
 
    }
    hfile.Write();

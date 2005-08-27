@@ -175,7 +175,6 @@ int main (Int_t argc, Char_t **argv)
       hitd(1,1) = 1.e6;   // give a huge error to z
 
       TKalTrackSite &sited = *new TKalTrackSite(hitd);
-      // sited.Lock();    // dummy site should not be used
       sited.SetHitOwner();// site owns hit
       sited.SetOwner();   // site owns states
 
@@ -241,7 +240,12 @@ int main (Int_t argc, Char_t **argv)
       // ---------------------------
       //  Smooth the track
       // ---------------------------
-      //kaltrack.SmoothBackTo(3);
+#if 1
+      TVKalSite::EStType stype = TVKalSite::kFiltered;
+#else
+      TVKalSite::EStType stype = TVKalSite::kSmoothed;
+      kaltrack.SmoothBackTo(3);
+#endif
 
       // ============================================================
       //  Monitor Fit Result
@@ -250,11 +254,11 @@ int main (Int_t argc, Char_t **argv)
       Int_t    ndf  = kaltrack.GetNDF();
       Double_t chi2 = kaltrack.GetChi2();
       Double_t cl   = TMath::Prob(chi2, ndf);
-      Double_t fi0  = kaltrack.GetState(TVKalSite::kFiltered)(1, 0);
-      Double_t cpa  = kaltrack.GetState(TVKalSite::kFiltered)(2, 0);
-      Double_t tnl  = kaltrack.GetState(TVKalSite::kFiltered)(4, 0);
+      Double_t fi0  = kaltrack.GetState(stype)(1, 0);
+      Double_t cpa  = kaltrack.GetState(stype)(2, 0);
+      Double_t tnl  = kaltrack.GetState(stype)(4, 0);
       Double_t cs   = tnl/TMath::Sqrt(1.+tnl*tnl);
-      Double_t t0   = kaltrack.GetState(TVKalSite::kFiltered)(5, 0);
+      Double_t t0   = kaltrack.GetState(stype)(5, 0);
       hTrackMonitor->Fill(ndf, chi2, cl, fi0, cpa, cs, t0);
 
       // ============================================================

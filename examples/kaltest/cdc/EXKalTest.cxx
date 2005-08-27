@@ -118,7 +118,6 @@ int main (Int_t argc, Char_t **argv)
       hitd(1,1) = 1.e6;   // give a huge error to z
 
       TKalTrackSite &sited = *new TKalTrackSite(hitd);
-      // sited.Lock();    // dummy site should not be used
       sited.SetOwner();   // site owns states
 
       // ---------------------------
@@ -179,7 +178,12 @@ int main (Int_t argc, Char_t **argv)
             delete &site;                                  // delete this site, if failed
          }
       }
-      //kaltrack.SmoothBackTo(3);                          // smooth back.
+#if 1
+      TVKalSite::EStType stype = TVKalSite::kFiltered;
+#else
+      TVKalSite::EStType stype = TVKalSite::kSmoothed;
+      kaltrack.SmoothBackTo(3);                          // smooth back.
+#endif
 
       // ============================================================
       //  Monitor Fit Result
@@ -188,8 +192,8 @@ int main (Int_t argc, Char_t **argv)
       Int_t    ndf  = kaltrack.GetNDF();
       Double_t chi2 = kaltrack.GetChi2();
       Double_t cl   = TMath::Prob(chi2, ndf);
-      Double_t cpa  = kaltrack.GetState(TVKalSite::kFiltered)(2, 0);
-      Double_t t0   = kaltrack.GetState(TVKalSite::kFiltered)(5, 0);
+      Double_t cpa  = kaltrack.GetState(stype)(2, 0);
+      Double_t t0   = kaltrack.GetState(stype)(5, 0);
       hTrackMonitor->Fill(ndf, chi2, cl, cpa, t0);
    }
 
