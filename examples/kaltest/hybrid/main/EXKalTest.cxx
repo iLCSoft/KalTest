@@ -240,12 +240,7 @@ int main (Int_t argc, Char_t **argv)
       // ---------------------------
       //  Smooth the track
       // ---------------------------
-#if 1
-      TVKalSite::EStType stype = TVKalSite::kFiltered;
-#else
-      TVKalSite::EStType stype = TVKalSite::kSmoothed;
-      kaltrack.SmoothBackTo(1);
-#endif
+      //kaltrack.SmoothBackTo(1);
 
       // ============================================================
       //  Monitor Fit Result
@@ -254,11 +249,11 @@ int main (Int_t argc, Char_t **argv)
       Int_t    ndf  = kaltrack.GetNDF();
       Double_t chi2 = kaltrack.GetChi2();
       Double_t cl   = TMath::Prob(chi2, ndf);
-      Double_t fi0  = kaltrack.GetState(stype)(1, 0);
-      Double_t cpa  = kaltrack.GetState(stype)(2, 0);
-      Double_t tnl  = kaltrack.GetState(stype)(4, 0);
+      Double_t fi0  = kaltrack.GetCurSite().GetCurState()(1, 0); 
+      Double_t cpa  = kaltrack.GetCurSite().GetCurState()(2, 0); 
+      Double_t tnl  = kaltrack.GetCurSite().GetCurState()(4, 0); 
       Double_t cs   = tnl/TMath::Sqrt(1.+tnl*tnl);
-      Double_t t0   = kaltrack.GetState(stype)(5, 0);
+      Double_t t0   = kaltrack.GetCurSite().GetCurState()(5, 0); 
       hTrackMonitor->Fill(ndf, chi2, cl, fi0, cpa, cs, t0);
 
       // ============================================================
