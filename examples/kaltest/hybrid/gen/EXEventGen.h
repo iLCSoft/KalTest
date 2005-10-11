@@ -10,7 +10,9 @@ public:
              : fCradlePtr(&cradle), fHitBufPtr(&kalhits) {}
    virtual ~EXEventGen() {}
 
-   THelicalTrack GenerateHelix(Double_t pt = 1.);
+   THelicalTrack GenerateHelix(Double_t pt,
+                               Double_t cosmin,
+                               Double_t cosmax);
    void          Swim(THelicalTrack &heltrk);
 
    static void     SetT0(Double_t t0) { fgT0 = t0;   }

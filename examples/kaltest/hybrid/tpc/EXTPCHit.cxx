@@ -80,5 +80,7 @@ void EXTPCHit::DebugPrint(Option_t *) const
            << resetiosflags(ios::showpoint)
            << endl;
    }
+   cerr << " r    = " << setw(8)
+        << static_cast<const EXTPCMeasLayer&>(GetMeasLayer()).GetR() << endl;
    cerr << "-------------------------------------------------------" << endl;
 }

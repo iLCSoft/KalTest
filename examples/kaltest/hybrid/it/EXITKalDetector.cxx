@@ -2,8 +2,6 @@
 #include "EXITKalDetector.h"
 #include "EXITMeasLayer.h"
 #include "EXITFBMeasLayer.h"
-#include "EXITHit.h"
-#include "EXITFBHit.h"
 #include "TRandom.h"
 
 ClassImp(EXITKalDetector)

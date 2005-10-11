@@ -142,8 +142,8 @@ Int_t EXITFBMeasLayer::CalcXingPointWith(const TVTrack &hel,
    Double_t fi   = (-z + X0.Z() + dz) / (rho * tnl);
 #if 1
    if (fi * chg * mode > 0. || 
-       tnl * GetXc().Z() < 0. ||
-       TMath::Abs(fi) >= 2*TMath::Pi()) return 0;
+       tnl * z < 0. ||
+       TMath::Abs(fi) >= TMath::Pi()) return 0;
 #endif
    Double_t x = X0.X() + dr*csf0 + rho*(csf0 - TMath::Cos(fi0 + fi));   // calculate X
    Double_t y = X0.Y() + dr*snf0 + rho*(snf0 - TMath::Sin(fi0 + fi));   // calculate Y

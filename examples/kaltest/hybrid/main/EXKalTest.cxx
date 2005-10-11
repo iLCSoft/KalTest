@@ -1,6 +1,3 @@
-//#define __MS_OFF__
-//#define __DEDX_OFF__
-
 #include "TNtupleD.h"
 #include "TFile.h"
 #include "TKalDetCradle.h"
@@ -44,10 +41,25 @@ int main (Int_t argc, Char_t **argv)
       gROOT->SetBatch();   // batch mode without event display
    }
 
-   Double_t pt      =  1.; // default Pt [GeV]
-   Double_t t0in    = 14.; // default tp [nsec]
-   Int_t    nevents = 1;   // default number of events to generate
+   Double_t pt      =  1.;   // default Pt [GeV]
+   Double_t t0in    = 14.;   // default tp [nsec]
+   Double_t cosmin  = -0.97; // default cos minimum [deg]
+   Double_t cosmax  = 0.97;  // default cos maximum [deg]
+   Int_t    nevents = 1;     // default number of events to generate
    switch (argc-offset) {
+      case 6: 
+         nevents = atoi(argv[1+offset]);
+         pt      = atof(argv[2+offset]);
+         t0in    = atof(argv[3+offset]);
+         cosmin  = atof(argv[4+offset]);
+         cosmax  = atof(argv[5+offset]);
+         break;
+      case 5: 
+         nevents = atoi(argv[1+offset]);
+         pt      = atof(argv[2+offset]);
+         t0in    = atof(argv[3+offset]);
+         cosmin = cosmax = atof(argv[4+offset]);
+         break;
       case 4: 
          nevents = atoi(argv[1+offset]);
          pt      = atof(argv[2+offset]);
@@ -97,12 +109,10 @@ int main (Int_t argc, Char_t **argv)
    toygld.Install(tpcdet);  // install tpc into its toygld
    toygld.Sort();           // sort meas. layers from inside to outside
 
-#ifdef __MS_OFF__
-   toygld.SwitchOffMS();    // switch off multiple scattering
-#endif
-#ifdef __DEDX_OFF__
-   toygld.SwitchOffDEDX();  // switch off enery loss
-#endif
+   //vtxdet.PowerOff();       // power off vtx not to process hit
+   //itdet.PowerOff();        // power off it not to process hit
+   //toygld.SwitchOffMS();    // switch off multiple scattering
+   //toygld.SwitchOffDEDX();  // switch off enery loss
 
    // ===================================================================
    //  Prepare an Event Generator
@@ -125,7 +135,7 @@ int main (Int_t argc, Char_t **argv)
       //  Generate a partcle
       // ============================================================
 
-      THelicalTrack hel = gen.GenerateHelix(pt);
+      THelicalTrack hel = gen.GenerateHelix(pt, cosmin, cosmax);
 
       // ============================================================
       //  Swim the particle in detector
@@ -137,7 +147,7 @@ int main (Int_t argc, Char_t **argv)
       //  Do Kalman Filter
       // ============================================================
 
-      if (kalhits.GetEntries() < 2) {
+      if (kalhits.GetEntries() < 3) {
          cerr << "<<<<<< Shortage of Hits! nhits = " 
               << kalhits.GetEntries() << " >>>>>>>" << endl;
          continue;

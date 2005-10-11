@@ -11,22 +11,17 @@
 #define __DR__     0.
 #define __FI0__    0.
 #define __DZ__     0.
-#if 1
-#define __COSMIN__ -0.97
-#define __COSMAX__ 0.97
-#else
-#define __COSMIN__ -0.7
-#define __COSMAX__  0.7
-#endif
-#define __X0__      0.
-#define __Y0__      0.
-#define __Z0__      0.
+#define __X0__     0.
+#define __Y0__     0.
+#define __Z0__     0.
 
 ClassImp(EXEventGen)
 
 Double_t EXEventGen::fgT0 = 14.; // [nsec]
 
-THelicalTrack EXEventGen::GenerateHelix(Double_t pt)
+THelicalTrack EXEventGen::GenerateHelix(Double_t pt,
+                                        Double_t cosmin,
+                                        Double_t cosmax)
 {
    // ---------------------------
    //  Generate a helical track
@@ -36,7 +31,7 @@ THelicalTrack EXEventGen::GenerateHelix(Double_t pt)
    Double_t fi0 = __FI0__ + 2*TMath::Pi()*(gRandom->Uniform()-0.5);
    Double_t cpa = 1. / pt;
    Double_t dz  = __DZ__;
-   Double_t cs  = gRandom->Uniform(__COSMIN__, __COSMAX__);
+   Double_t cs  = gRandom->Uniform(cosmin, cosmax);
    Double_t tnl = cs / TMath::Sqrt((1-cs)*(1+cs)); 
    Double_t x0  = __X0__;
    Double_t y0  = __Y0__;
@@ -118,8 +113,7 @@ void EXEventGen::Swim(THelicalTrack &heltrk)
          av(2,0) += ml.GetEnergyLoss(dir, heltrk, dfis); // energy loss
          heltrk.SetTo(av, heltrk.GetPivot());
       }
-
-      if (ml.IsActive()) {
+      if (ml.IsActive() && dynamic_cast<const EXVKalDetector &>(ml.GetParent(kFALSE)).IsPowerOn()) {
          ml.ProcessHit(xx, *fHitBufPtr); // create hit point
       }
       if (lyr == nlayers - 1) break;
