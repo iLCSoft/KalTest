@@ -45,14 +45,18 @@ public:
    inline virtual void   SwitchOffMS  ()       { fIsMSON = kFALSE;   }
    inline virtual void   SwitchOnDEDX ()       { fIsDEDXON = kTRUE;  }
    inline virtual void   SwitchOffDEDX()       { fIsDEDXON = kFALSE; }
+   inline virtual void   Close        ()       { fIsClosed = kTRUE; Update(); }
+   inline virtual void   Reopen       ()       { fIsClosed = kFALSE; }
    inline virtual Bool_t IsMSOn       () const { return fIsMSON;     }
    inline virtual Bool_t IsDEDXOn     () const { return fIsDEDXON;   }
+   inline virtual Bool_t IsClosed     () const { return fIsClosed;   }
 
    void Transport(const TKalTrackSite  &from, // site from
                   const TKalTrackSite  &to,   // sit to
                         TKalMatrix     &sv,   // state vector
                         TKalMatrix     &F,    // propagator matrix
                         TKalMatrix     &Q);   // process noise matrix
+
 private:
    void Update();
 
@@ -60,6 +64,7 @@ private:
    Bool_t    fIsMSON;         //! switch for multiple scattering
    Bool_t    fIsDEDXON;       //! switch for energy loss
    Bool_t    fDone;           //! flag to tell if sorting done
+   Bool_t    fIsClosed;       //! flag to tell if cradle closed
 
    ClassDef(TKalDetCradle,1)  // Base class for detector system
 };

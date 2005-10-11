@@ -26,6 +26,7 @@
 #include "TKalTrackState.h"  // from KalTrackLib
 #include "TVSurface.h"       // from GeomLib
 #include <memory>            // from STL
+#include <iostream>          // from STL
 
 ClassImp(TKalDetCradle)
 
@@ -35,7 +36,8 @@ ClassImp(TKalDetCradle)
 //  ----------------------------------
 
 TKalDetCradle::TKalDetCradle(Int_t n)
-             : TObjArray(n), fIsMSON(kTRUE), fIsDEDXON(kTRUE), fDone(kFALSE)
+             : TObjArray(n), fIsMSON(kTRUE), fIsDEDXON(kTRUE),
+               fDone(kFALSE), fIsClosed(kFALSE)
 {
 }
 
@@ -55,6 +57,11 @@ TKalDetCradle::~TKalDetCradle()
 //
 void TKalDetCradle::Install(TVKalDetector &det)
 {
+   if (IsClosed()) {
+      std::cerr << ">>>> Error!! >>>> TKalDetCradle::Install" << std::endl
+                << "      Cradle already closed. Abort!!"     << std::endl;
+      abort();
+   }
    TIter next(&det);
    TObject *mlp = 0;  // measment layer pointer
    while ((mlp = next())) {
