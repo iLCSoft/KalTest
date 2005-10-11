@@ -6,7 +6,7 @@
 #(Author)
 #  Akiya Miyamoto  15-April-1999   Original version
 #  A.Miyamoto  25-June-1999  Create src/JSFConfig.h, instead of conf/spec
-#$Id: configure_kaltest,v 1.1.1.1 2005-06-04 20:55:37 yamaguti Exp $
+#$Id: configure_kaltest,v 1.2 2005-10-11 00:45:56 fujiik Exp $
 #
 # ###################################################
 
@@ -54,6 +54,32 @@ set_g77info()
 
   rm -f  tmp-g77.$$ 2>&1 
 }
+
+# ##################################################
+set_g95info()
+{
+  specfile=$1
+  echo -n "gfortran version .. "
+  gfortran -v > tmp-g95.$$ 2>&1
+
+  g95versionstr=`cat tmp-g95.$$ | tail -1 | sed -e 's;.* \([0-9]*\.[0-9]*\.[0-9]*\) .*;\1;'`
+
+  g95version=`echo $g95versionstr | cut -d"." -f1`
+  echo "#define __G77EGCS_VERSION__ " $g95version >> $specfile
+  
+  g95mversion=`echo $g95versionstr | cut -d"." -f2 `
+  echo "#define __G77EGCS_MINORVERSION__ " $g95mversion >> $specfile
+  
+  g95plevel=`echo $g95versionstr | cut -d"." -f3 `
+  echo "#define __G77EGCS_PATCHLEVEL__ " $g95plevel >> $specfile
+  
+  g95lib="gfortran"
+  echo -n "#define __G77EGCS_LIBNAME__ " >> $specfile
+  echo $g95lib  >> $specfile
+  
+  rm -f  tmp-g95.$$ 2>&1
+}
+
 
 # ########################################################################
 #
@@ -157,9 +183,11 @@ uname -s >> $specfile
 
 
 if [ "$systype" != "AIX" ] ; then
-  if  [ "`which g77 | grep -c g77 `" != 0 ] ; then
+  if  [ "`which g77 | grep -v 'no g77'| grep -c g77 `" != 0 ] ; then
     set_g77info $specfile
-  fi 
+  elif [ "`which gfortran | grep -v 'no gfortran' | grep -c gfortran`" != 0 ]; then
+    set_g95info $specfile
+  fi
 fi
 
 echo '#define JSF_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))' >> $specfile
