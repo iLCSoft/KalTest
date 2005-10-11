@@ -21,6 +21,11 @@
 
 using namespace std;
 
+#if __GNUC__ < 4
+#else
+const Double_t THype::kTol = 1.e-5; // tolerance
+#endif
+
 //_____________________________________________________________________
 //  -----------------------------------
 //  THype Class

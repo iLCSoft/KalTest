@@ -19,6 +19,12 @@
 #include "TVTrack.h"
 
 using namespace std;
+#if __GNUC__ < 4
+#else
+const Double_t TVTrack::kLightVelocity = 2.99792458e8;
+const Double_t TVTrack::kGiga          = 1.e9;
+const Double_t TVTrack::kInfinity      = 1.e20;
+#endif
 
 //_____________________________________________________________________
 //  -----------------------------------

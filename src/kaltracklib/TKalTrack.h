@@ -42,7 +42,11 @@ public:
 private:
    Double_t     fMass;        // mass [GeV]
 
+#if __GNUC__ < 4
    static const Double_t kMpi = 0.13957018; //! pion mass [GeV]
+#else
+   static const Double_t kMpi;              //! pion mass [GeV]
+#endif
 
    ClassDef(TKalTrack,1)  // Base class for Kalman Filter
 };
