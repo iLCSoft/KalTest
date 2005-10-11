@@ -94,6 +94,7 @@ Int_t TTube::CalcXingPointWith(const TVTrack  &hel,
    static const Double_t kHalfPi = 0.5*TMath::Pi();
    static const Double_t kTwoPi  = 2.0*TMath::Pi();
                                                                                 
+   Int_t iret = 0;
    switch (nx) {
       case 2:  // track hitting barrel part
          phi = 9999.;
@@ -117,7 +118,6 @@ Int_t TTube::CalcXingPointWith(const TVTrack  &hel,
          }
          if (IsOnBarrel(xx)) return 1;
       default: // track hitting end cap part
-         Int_t iret = 0;
          if (TMath::Abs(tnl) < 0.1) {
             return 0;
          } else if (tnl < 0.) {
@@ -135,7 +135,7 @@ Int_t TTube::CalcXingPointWith(const TVTrack  &hel,
             xx.SetY(yc - rho*TMath::Sin(phi+fi0));
             if (IsOutside(xx)) return 0;
          }
-         return iret;
          break;
    }
+   return iret;
 }
