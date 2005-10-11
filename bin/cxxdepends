@@ -1,7 +1,7 @@
 #!/bin/csh
 #######################
 #  create a list of depend files of g++
-#$Id: cxxdepends,v 1.2 2005-10-11 00:45:56 fujiik Exp $
+#$Id: cxxdepends,v 1.3 2005-10-11 01:52:55 fujiik Exp $
 #######################
 
 #echo $argv[1]
@@ -15,10 +15,17 @@ if ( $iret > 0 ) then
     set gccvers=`$cxx -v |& head -1 | sed -e 's;[^/]*\(/.*\)/specs.*;\1;'`
     set cppfile=$gccvers/cc1
   else
-    set prefix=`$cxx -v |& grep 'prefix=' | sed -e 's;.*--prefix=\([^ ]*\).*;\1;'`
-    set osvers=`$cxx -v |& grep Target: | sed -e 's;.*Target: *;;'`
-    set gccvers=`$cxx -v |& tail -1 |& sed -e 's;.* \([0-9]*\.[0-9]*\.[0-9]*\) .*;\1;'`
-    set cppfile=$prefix/libexec/gcc/$osvers/$gccvers/cc1
+    set gccverno=`$cxx -v |& tail -1 |& sed -e 's;.* \([0-9]*\.[0-9]*\.[0-9]*\) .*;\1;'`
+    set gccmajver=`echo $gccverno | cut -d. -f1`
+    if ( $gccmajver != 4 ) then
+      set gccvers=`$cxx -v |& head -1 | sed -e 's;[^/]*\(/.*\)/specs.*;\1;'`
+      set cppfile=$gccvers/cc1
+    else
+      set prefix=`$cxx -v |& grep 'prefix=' | sed -e 's;.*--prefix=\([^ ]*\).*;\1;'`
+      set osvers=`$cxx -v |& grep Target: | sed -e 's;.*Target: *;;'`
+      set gccvers=$prefix/libexec/gcc/$osvers/$gccverno
+      set cppfile=$gccvers/cc1
+    endif
   endif
   if ( $uname == "CYGWIN_NT-5.0" ) then
      set cppfile=$gccvers/cc1plus.exe
