@@ -10,7 +10,7 @@ XCOMM #  29-May-1999 Add EXTRACXXOPT in CXXFLAGS
 XCOMM #              Define .cxx compile rule here.    
 XCOMM #  4-Feb-2000 soname option in SOFLAGS for Linux is removed.
 XCOMM # 
-XCOMM # $Id: makejsf.tmpl,v 1.4 2005-10-11 01:23:54 fujiik Exp $
+XCOMM # $Id: makejsf.tmpl,v 1.5 2006-02-04 16:00:56 fujiik Exp $
 XCOMM # 
 
 #include "include/LCBASEConfig.h"
@@ -44,10 +44,10 @@ ROOTGLIBS     = $(shell root-config --glibs)
 
 DEPENDFILES   = $(filter -I% -D%,$(CXXFLAGS)) $(INCPATH)
 
-JSFTMPDIR     = $(shell jsf-config --tmpdir)
-JSFBINDIR     = $(shell jsf-config --bindir)
-JSFLIBDIR     = $(shell jsf-config --libdir)
-JSFINCDIR     = $(shell jsf-config --incdir)
+JSFTMPDIR     = 
+JSFBINDIR     = 
+JSFLIBDIR     = 
+JSFINCDIR     = 
 
 AIXLIBS       =
 
@@ -80,7 +80,6 @@ CXX           = g++ -O2 -g
 CC            = $(CXX)
 CXXFLAGS      = -Wall -fPIC \
 		$(EXTRACXXOPT) \
-		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
 SOFLAGS       = -shared -rdynamic
 LDFLAGS       = $(ANALLIB) $(GLIBS) -rdynamic
@@ -106,7 +105,6 @@ CXX           = g++ -O2
 CC            = $(CXX)
 CXXFLAGS      = -Wall -fsigned-char -fPIC \
 		$(EXTRACXXOPT) \
-		$(shell jsf-config  --includes) \
 		$(shell root-config --cflags)
 SOFLAGS       = -shared -rdynamic
 LDFLAGS       = $(ANALLIB) $(GLIBS) -rdynamic
@@ -136,7 +134,6 @@ CC            = $(CXX)
 RCINTDEFINES  = -D__DARWIN__
 CXXFLAGS      = -pipe -Wall -fsigned-char -D__BIG_ENDIAN__ \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
-		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
 /* DYLIBFLAGS    = -dylib -r -nostartfiles -nodefaultlibs */
 /* DYLIBFLAGS    = -dylib -r -nostdlib */
@@ -196,7 +193,6 @@ CXX           = g++ -O2
 CC            = $(CXX)
 CXXFLAGS      = -Wall  -fno-rtti -fno-exceptions -fPIC \
 		$(EXTRACXXOPT) \
-		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
 SOFLAGS       = -shared -rdynamic
 LDFLAGS       = $(ANALLIB) $(GLIBS) -rdynamic
@@ -216,7 +212,6 @@ CXX           = g++ -O2
 CC            = $(CXX)
 CXXFLAGS      = -Wall  -fno-rtti -fno-exceptions -fPIC \
 		$(EXTRACXXOPT) \
-		$(shell jsf-config --includes) \
 		$(shell root-config --cflags) \
 		$(USEFORTRAN)
 SOFLAGS       = -nostdlib  -nostartfiles -Wl,-b,-E 
@@ -246,7 +241,6 @@ CXX	      = aCC -O
 CC            = $(CXX)
 CXXFLAGS      = +W70,495,740,749,829,823 -DR__ACC -z +Z \
 		$(EXTRACXXOPT) \
-		$(shell jsf-config --includes) \
 		$(shell root-config --cflags)
 SOFLAGS       = -b -z -Wl,+vnocompatwarnings -Wl,-E
 LDFLAGS       = -z -Wl,+s -Wl,-E $(ANALLIB) $(GLIBS)
@@ -267,7 +261,6 @@ LIBF2C        =
 CXX           = xlC
 CC            = $(CXX)
 CXXFLAGS      = $(EXTRACXXOPT) -DAIX \
-		$(shell jsf-config --includes) \
                 $(shell root-config --cflags) \
 		-I/usr/vacpp/include -brtl -bshared
 SOFLAGS       = -p 0

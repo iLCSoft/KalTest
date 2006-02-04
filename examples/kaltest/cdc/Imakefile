@@ -21,7 +21,10 @@ PROGRAM    = prod/$(PROGRAMNAME)
 LIBINSTALLDIR = $(INSTALLDIR)/lib
 INCINSTALLDIR = $(INSTALLDIR)/include
 INCPATH	      = -I. -I$(INCINSTALLDIR)
+#if 0
 CXXFLAGS     += $(INCPATH) -O -g
+#endif
+CXX += -O -g $(INCPATH)
 
 all:: $(PROGRAM) 
 
