@@ -1,40 +1,41 @@
 #!/bin/csh
 #######################
 #  create a list of depend files of g++
-#$Id: cxxdepends,v 1.4 2005-10-11 01:59:37 fujiik Exp $
+#$Id: cxxdepends,v 1.5 2007-04-09 10:56:57 fujiik Exp $
 #######################
 
 #echo $argv[1]
+setenv LANG C
 
 set uname=`uname`
 
 set cxx="gcc"
 set iret=`which $cxx | grep -c /`
 if ( $iret > 0 ) then
-  if ( $uname != "Darwin" ) then
+  set gccverno=`$cxx -v |& tail -1 |& sed -e 's;.* \([0-9]*\.[0-9]*\.*[0-9]*\) .*;\1;'`
+  set gccmajver=`echo $gccverno | cut -d. -f1`
+  if ( $gccmajver != 4 ) then
     set gccvers=`$cxx -v |& head -1 | sed -e 's;[^/]*\(/.*\)/specs.*;\1;'`
     set cppfile=$gccvers/cc1
   else
-    set gccverno=`$cxx -v |& tail -1 |& sed -e 's;.* \([0-9]*\.[0-9]*\.*[0-9]*\) .*;\1;'`
-    set gccmajver=`echo $gccverno | cut -d. -f1`
-    if ( $gccmajver != 4 ) then
-      set gccvers=`$cxx -v |& head -1 | sed -e 's;[^/]*\(/.*\)/specs.*;\1;'`
-      set cppfile=$gccvers/cc1
-    else
-      set prefix=`$cxx -v |& grep 'prefix=' | sed -e 's;.*--prefix=\([^ ]*\).*;\1;'`
-      set osvers=`$cxx -v |& grep Target: | sed -e 's;.*Target: *;;'`
-      set gccvers=$prefix/libexec/gcc/$osvers/$gccverno
-      set cppfile=$gccvers/cc1
-    endif
+    set prefix=`$cxx -v |& grep 'prefix=' | sed -e 's;.*--prefix=\([^ ]*\).*;\1;'`
+    set osvers=`$cxx -v |& grep Target: | sed -e 's;.*Target: *;;'`
+    set gccvers=$prefix/libexec/gcc/$osvers/$gccverno
+    set cppfile=$gccvers/cc1
   endif
   if ( $uname == "CYGWIN_NT-5.0" ) then
      set cppfile=$gccvers/cc1plus.exe
   endif
   if ( -e $cppfile ) then
   else
-    set cppfile=$gccvers/cpp
+    set cppfiled=$gccvers/cpp
+    if ( -e $cppfiled ) then
+      set cppfile=$cppfiled
+    else
+      set cppfile=`echo $cppfile | sed -e 's;/lib/;/libexec/;'`
+    endif
   endif
-  
+
   set strcmd=`which strings`
   set incdir=`$strcmd $cppfile  | grep include  | grep "/" | uniq `
   foreach i ( $incdir )
@@ -43,5 +44,4 @@ if ( $iret > 0 ) then
     endif
   end
 endif
-
 
