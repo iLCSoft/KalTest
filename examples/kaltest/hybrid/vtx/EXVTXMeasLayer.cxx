@@ -18,6 +18,7 @@
 #include "EXVTXHit.h"
 #include "EXVTXKalDetector.h"
 #include "TRandom.h"
+#include "TMath.h"
 
 ClassImp(EXVTXMeasLayer)
                                                                                 

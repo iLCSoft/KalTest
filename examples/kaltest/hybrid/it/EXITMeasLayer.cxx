@@ -17,6 +17,7 @@
 #include "EXITMeasLayer.h"
 #include "EXITHit.h"
 #include "TRandom.h"
+#include "TMath.h"
 #include "EXITKalDetector.h"
 
 ClassImp(EXITMeasLayer)

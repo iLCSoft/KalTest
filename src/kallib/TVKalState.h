@@ -67,7 +67,7 @@ public:
    inline virtual const TVKalSite  & GetSite        () const { return *fSitePtr; }
    inline virtual const TKalMatrix & GetCovMat      () const { return fC; }
    inline virtual const TKalMatrix & GetProcNoiseMat() const { return fQ; }
-   inline virtual const TKalMatrix & GetPropMat     (Char_t *t = "") const { return (t[0] == 'T' ? fFt : fF); } 
+   inline virtual const TKalMatrix & GetPropMat     (const Char_t *t = "") const { return (t[0] == 'T' ? fFt : fF); } 
 
    // Setters
 

@@ -1,4 +1,5 @@
 #include "EXITHit.h"
+#include "TMath.h"
 
 #include <iostream>
 #include <iomanip>

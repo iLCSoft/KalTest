@@ -21,6 +21,11 @@
 #include "TVector3.h"
 #include "TMatrixD.h"
 
+#if 1
+#include "TMath.h"
+#include "TCollection.h"
+#endif
+
 #include "TVCurve.h"
 
 //_____________________________________________________________________

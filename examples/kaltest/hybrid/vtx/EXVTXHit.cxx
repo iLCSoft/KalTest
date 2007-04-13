@@ -1,5 +1,6 @@
 #include "EXVTXHit.h"
 #include "EXVTXMeasLayer.h"
+#include "TMath.h"
 
 #include <iostream>
 #include <iomanip>

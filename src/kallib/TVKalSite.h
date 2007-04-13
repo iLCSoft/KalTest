@@ -26,6 +26,8 @@
 #include "TKalMatrix.h"
 #include "TVKalState.h"
 
+class TVKalSystem;
+
 //_____________________________________________________________________
 //  ------------------------------
 //  Base Class for Kalman measurement vector

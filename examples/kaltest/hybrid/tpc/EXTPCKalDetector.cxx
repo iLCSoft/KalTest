@@ -3,6 +3,7 @@
 #include "EXTPCMeasLayer.h"
 #include "EXTPCHit.h"
 #include "TRandom.h"
+#include "TMath.h"
 
 Double_t EXTPCKalDetector::fgVdrift = 5.e-3;
 ClassImp(EXTPCKalDetector)

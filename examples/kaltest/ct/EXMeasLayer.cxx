@@ -18,6 +18,7 @@
 #include "EXHit.h"
 #include "EXKalDetector.h"
 #include "TRandom.h"
+#include "TMath.h"
 
 Bool_t   EXMeasLayer::kActive = kTRUE;
 Bool_t   EXMeasLayer::kDummy = kFALSE;
