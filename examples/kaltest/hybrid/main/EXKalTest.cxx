@@ -16,7 +16,11 @@
 #include "EXHYBTrack.h"
 
 #include "TCanvas.h"
+#if ROOT_VERSION_CODE < ROOT_VERSION(5,16,0)
 #include "TView.h"
+#else
+#include "TView3D.h"
+#endif
 #include "TRotMatrix.h"
 #include "TTUBE.h"
 #include "TNode.h"
@@ -278,7 +282,12 @@ int main (Int_t argc, Char_t **argv)
             cvp->Clear();
          }
 
+#if ROOT_VERSION_CODE < ROOT_VERSION(5,16,0)
          TView   *vwp = new TView(1);
+#else
+         TView   *vwp = new TView3D();
+         vwp->SetSystem(1);
+#endif
          vwp->SetRange(-260.,-260.,-260.,+260.,+260.,+260.);
          Int_t ierr;
          vwp->SetView(10.,80.,80.,ierr);
