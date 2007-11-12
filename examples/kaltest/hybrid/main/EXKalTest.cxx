@@ -285,8 +285,7 @@ int main (Int_t argc, Char_t **argv)
 #if ROOT_VERSION_CODE < ROOT_VERSION(5,16,0)
          TView   *vwp = new TView(1);
 #else
-         TView   *vwp = new TView3D();
-         vwp->SetSystem(1);
+         TView   *vwp = TView::CreateView(1,0,0);
 #endif
          vwp->SetRange(-260.,-260.,-260.,+260.,+260.,+260.);
          Int_t ierr;
