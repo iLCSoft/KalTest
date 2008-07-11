@@ -32,6 +32,7 @@ TVKalSystem::TVKalSystem(Int_t n)
              fCurSitePtr(0),
              fChi2(0.)
 {
+   if (!fgCurInstancePtr) fgCurInstancePtr = this;
 }
 
 TVKalSystem::~TVKalSystem() 
