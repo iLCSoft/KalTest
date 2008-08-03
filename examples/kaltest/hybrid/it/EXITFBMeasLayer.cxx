@@ -22,6 +22,11 @@
 #include "TRandom.h"
 #include <iostream>
 
+#include "TVirtualPad.h"
+#include "TTUBE.h"
+#include "TNode.h"
+#include "TString.h"
+
 using namespace std;
 ClassImp(EXITFBMeasLayer)
                                                                                 
@@ -32,8 +37,9 @@ EXITFBMeasLayer::EXITFBMeasLayer(TMaterial &min,
                                  Double_t   rout,
                                  Double_t   sigmax,
                                  Double_t   sigmay,
-                                 Bool_t     type)
-               : EXVMeasLayer(min, mout, type),
+                                 Bool_t     type,
+                           const Char_t    *name)
+               : EXVMeasLayer(min, mout, type, name),
                  TPlane(xc),
                  fRin(rin),
                  fRout(rout),
@@ -178,4 +184,26 @@ void EXITFBMeasLayer::ProcessHit(const TVector3  &xx,
  
    Double_t b = EXITKalDetector::GetBfield();
    hits.Add(new EXITFBHit(*this, meas, dmeas, xx, b));
+}
+
+// -----------------
+//  Draw
+// -----------------
+//    Drawing method for event display
+//
+void EXITFBMeasLayer::Draw(Int_t color, const Char_t *opt)
+{
+   if (!gPad) return;
+   if (!IsActive()) return;
+   if (!GetNodePtr()) {
+      const Char_t *name  = GetMLName().Data();
+      const Char_t *nname = (GetMLName() + "Node").Data();
+      Double_t z = GetXc().Z();
+      TTUBE *tubep = new TTUBE(name,name,"void",fRin,fRout,0.);
+      tubep->SetBit(kCanDelete);
+      TNode *nodep = new TNode(nname,nname,name,0.,0.,z);
+      nodep->SetLineColor(color);
+      nodep->SetLineWidth(0.01);
+      SetNodePtr(nodep);
+   }
 }

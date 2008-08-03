@@ -3,6 +3,7 @@
 #include "EXVTXMeasLayer.h"
 #include "EXVTXHit.h"
 #include "TRandom.h"
+#include <sstream>
 
 ClassImp(EXVTXKalDetector)
 
@@ -39,7 +40,9 @@ EXVTXKalDetector::EXVTXKalDetector(Int_t m)
    Double_t r   = rmin;
    Double_t len = lhalf;
    for (Int_t layer=0; layer < nlayers; layer++) {
-      Add(new EXVTXMeasLayer(air, si, r, len, sigmax, sigmaz, active));
+      std::stringstream ss;
+      ss << "VTX" << layer << std::ends;
+      Add(new EXVTXMeasLayer(air, si, r, len, sigmax, sigmaz, active, ss.str().data()));
       Add(new EXVTXMeasLayer(si, air, r + thick, len, sigmax, sigmaz, dummy));
       len += lhalfstep;
       r += rstep;

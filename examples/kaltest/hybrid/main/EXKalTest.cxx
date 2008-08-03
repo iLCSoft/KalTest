@@ -16,11 +16,7 @@
 #include "EXHYBTrack.h"
 
 #include "TCanvas.h"
-#if ROOT_VERSION_CODE < ROOT_VERSION(5,16,0)
 #include "TView.h"
-#else
-#include "TView3D.h"
-#endif
 #include "TRotMatrix.h"
 #include "TTUBE.h"
 #include "TNode.h"
@@ -88,11 +84,6 @@ int main (Int_t argc, Char_t **argv)
    // ===================================================================
 
    static TCanvas     *cvp    = 0;
-   static TTUBE       *itubep = 0;
-   static TTUBE       *otubep = 0;
-   static TRotMatrix  *orotp  = 0;
-   static TNode       *onodep = 0;
-   static TNode       *inodep = 0;
 
    TApplication app("EXKalTest", &argc, argv, 0, 0);
 
@@ -291,15 +282,9 @@ int main (Int_t argc, Char_t **argv)
          Int_t ierr;
          vwp->SetView(10.,80.,80.,ierr);
 
-         if (!otubep) otubep = new TTUBE("TPCO","TPCO","void",210.,210.,260.);
-         if (!itubep) itubep = new TTUBE("TPCI","TPCI","void", 44., 44.,255.);
-         if (!orotp)  orotp  = new TRotMatrix("orot","orot",10.,80.,10.,80.,10.,80.);
-         if (!onodep) {
-            onodep = new TNode("ONODE","ONODE","TPCO",0.,0.,0.,"orot");
-            onodep->cd();
-            inodep = new TNode("INODE","INODE","TPCI");
-         }
-         onodep->Draw("pad same");
+         vtxdet.Draw(40);
+         itdet.Draw(40);
+         tpcdet.Draw(40);
          kaltrack.Draw(2,"");         
 
          cout << "Next? [yes/no/edit/quit] " << flush;

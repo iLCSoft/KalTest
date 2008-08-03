@@ -5,11 +5,16 @@
 #include "TRandom.h"
 #include "TMath.h"
 
+#include "TTUBE.h"
+#include "TNode.h"
+#include "TVirtualPad.h"
+
 Double_t EXTPCKalDetector::fgVdrift = 5.e-3;
 ClassImp(EXTPCKalDetector)
 
 EXTPCKalDetector::EXTPCKalDetector(Int_t m)
-                : EXVKalDetector(m)
+                : EXVKalDetector(m),
+		  fNodePtr(0)
 {
    Double_t A, Z, density, radlen;
    A       = 14.00674 * 0.7 + 15.9994 * 0.3;
@@ -61,4 +66,32 @@ EXTPCKalDetector::EXTPCKalDetector(Int_t m)
 
 EXTPCKalDetector::~EXTPCKalDetector()
 {
+}
+
+// -----------------
+//  Draw
+// -----------------
+//    Drawing method for event display
+//
+void EXTPCKalDetector::Draw(Int_t color, const Char_t *opt)
+{
+   if (!gPad) return;
+   TNode *nodep = GetNodePtr();
+   nodep->cd();
+
+   if (!fNodePtr) {
+      EXTPCMeasLayer *inp  = static_cast<EXTPCMeasLayer *>(First());
+      EXTPCMeasLayer *outp = static_cast<EXTPCMeasLayer *>(Last());
+      Double_t rin  = inp->GetR();
+      Double_t rout = outp->GetR();
+      Double_t hlen = outp->GetZmax();
+      const Char_t *name  = "TPC";
+      const Char_t *nname = "TPCNode";
+      TTUBE *tubep = new TTUBE(name,name,"void",rin,rout,hlen);
+      tubep->SetBit(kCanDelete);
+      fNodePtr = new TNode(nname,nname,name);
+      fNodePtr->SetLineColor(color);
+      fNodePtr->SetLineWidth(0.01);
+   }
+   EXVKalDetector::Draw(color,opt);
 }

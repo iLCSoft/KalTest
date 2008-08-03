@@ -20,6 +20,11 @@
 #include "TMath.h"
 #include "EXITKalDetector.h"
 
+#include "TVirtualPad.h"
+#include "TTUBE.h"
+#include "TNode.h"
+#include "TString.h"
+
 ClassImp(EXITMeasLayer)
                                                                                 
 EXITMeasLayer::EXITMeasLayer(TMaterial &min,
@@ -28,8 +33,9 @@ EXITMeasLayer::EXITMeasLayer(TMaterial &min,
                              Double_t   lhalf,
                              Double_t   sigmax,
                              Double_t   sigmaz,
-                             Bool_t     type)
-             : EXVMeasLayer(min, mout, type),
+                             Bool_t     type,
+                       const Char_t    *name)
+             : EXVMeasLayer(min, mout, type, name),
                TCylinder(r0, lhalf),
                fSigmaX(sigmax),
                fSigmaZ(sigmaz)
@@ -124,4 +130,27 @@ void EXITMeasLayer::ProcessHit(const TVector3  &xx,
 
    Double_t b = EXITKalDetector::GetBfield();
    hits.Add(new EXITHit(*this, meas, dmeas, xx, b));
+}
+
+// -----------------
+//  Draw
+// -----------------
+//    Drawing method for event display
+//
+void EXITMeasLayer::Draw(Int_t color, const Char_t *opt)
+{
+   if (!gPad) return;
+   if (!IsActive()) return;
+   if (!GetNodePtr()) {
+      const Char_t *name  = GetMLName().Data();
+      const Char_t *nname = (GetMLName() + "Node").Data();
+      Double_t r    = GetR();
+      Double_t hlen = GetZmax();
+      TTUBE *tubep = new TTUBE(name,name,"void",r,r,hlen);
+      tubep->SetBit(kCanDelete);
+      TNode *nodep = new TNode(nname,nname,name);
+      nodep->SetLineColor(color);
+      nodep->SetLineWidth(0.01);
+      SetNodePtr(nodep);
+   }
 }

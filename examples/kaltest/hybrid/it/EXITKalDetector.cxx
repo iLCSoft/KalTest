@@ -3,6 +3,7 @@
 #include "EXITMeasLayer.h"
 #include "EXITFBMeasLayer.h"
 #include "TRandom.h"
+#include <sstream>
 
 ClassImp(EXITKalDetector)
 
@@ -60,17 +61,23 @@ EXITKalDetector::EXITKalDetector(Int_t m)
 
       if (layer < nlayersfb) {
          //  Forward part
-         Add(new EXITFBMeasLayer(air, si, xc1, rifb, rofb, sigmax, sigmaz, active));
+         std::stringstream ss;
+	 ss << "ITF" << layer << std::ends;
+         Add(new EXITFBMeasLayer(air, si, xc1, rifb, rofb, sigmax, sigmaz, active,ss.str().data()));
          Add(new EXITFBMeasLayer(si, air, xc2, rifb, rofb, sigmax, sigmaz, dummy));
          //  Backward part
-         Add(new EXITFBMeasLayer(air, si, xc3, rifb, rofb, sigmax, sigmaz, active));
+	 ss.clear();
+	 ss << "ITB" << layer << std::ends;
+         Add(new EXITFBMeasLayer(air, si, xc3, rifb, rofb, sigmax, sigmaz, active,ss.str().data()));
          Add(new EXITFBMeasLayer(si, air, xc4, rifb, rofb, sigmax, sigmaz, dummy));
       } else {
          Add(new EXITFBMeasLayer(air, air, xc1, rifb, rofb, sigmax, sigmaz, dummy));
          Add(new EXITFBMeasLayer(air, air, xc3, rifb, rofb, sigmax, sigmaz, dummy));
       }
       if (layer < nlayers) { 
-         Add(new EXITMeasLayer(air, si, r, len, sigmax, sigmaz, active));
+         std::stringstream ss;
+	 ss << "IT" << layer << std::ends;
+         Add(new EXITMeasLayer(air, si, r, len, sigmax, sigmaz, active, ss.str().data()));
          Add(new EXITMeasLayer(si, air, r + thick, len, sigmax, sigmaz, dummy));
       }
       len += lstep;

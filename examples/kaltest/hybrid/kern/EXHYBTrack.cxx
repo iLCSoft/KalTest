@@ -46,6 +46,7 @@ void EXHYBTrack::Draw(Int_t color, const Char_t *opt)
    TPolyMarker3D *pm3dp = new TPolyMarker3D(this->GetEntries());
    pm3dp->SetBit(kCanDelete);
    pm3dp->SetMarkerColor(color);
+   pm3dp->SetMarkerStyle(6);
 
    Int_t nhits = 0;
    TIter next(this);

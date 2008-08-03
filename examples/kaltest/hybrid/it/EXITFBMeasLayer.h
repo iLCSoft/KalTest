@@ -35,7 +35,8 @@ public:
                   Double_t    rout,
                   Double_t    sigmax,
                   Double_t    sigmar,
-                  Bool_t      type = EXVMeasLayer::kActive);
+                  Bool_t      type = EXVMeasLayer::kActive,
+            const Char_t     *name = "ITFBML");
    virtual ~EXITFBMeasLayer();
 
    // Parrent's pure virtuals that must be implemented
@@ -62,6 +63,9 @@ public:
 
    inline Double_t GetSigmaX() const { return fSigmaX; } // by yikim 2005/07/28
    inline Double_t GetSigmaY() const { return fSigmaY; }
+
+   using TAttDrawable::Draw;
+   virtual void Draw(Int_t color, const Char_t *opt);
 
 private:
    Double_t fRin;     // inner radius

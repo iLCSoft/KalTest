@@ -23,8 +23,11 @@ ClassImp(EXVMeasLayer)
                                                                                 
 EXVMeasLayer::EXVMeasLayer(TMaterial &min,
                            TMaterial &mout,
-                           Bool_t     isactive)
-            : TVMeasLayer(min, mout, isactive)
+                           Bool_t     isactive,
+                     const Char_t    *name)  
+            : TVMeasLayer(min, mout, isactive),
+	      fName(name),
+	      fNodePtr(0)
 {
 }
 

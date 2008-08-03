@@ -33,7 +33,8 @@ public:
                   Double_t   lhalf,
                   Double_t   sigmax,
                   Double_t   sigmaz,
-                  Bool_t     type = EXVMeasLayer::kActive);
+                  Bool_t     type = EXVMeasLayer::kActive,
+            const Char_t    *name = "VTXML");
    virtual ~EXVTXMeasLayer();
 
    // Parrent's pure virtuals that must be implemented
@@ -53,6 +54,9 @@ public:
 
    Double_t GetSigmaX() const { return fSigmaX; }
    Double_t GetSigmaZ() const { return fSigmaZ; }
+
+   using TAttDrawable::Draw;
+   virtual void Draw(Int_t color, const Char_t *opt);
 
 private:
    Double_t fSigmaX;  // sigma_x
