@@ -37,9 +37,9 @@ void EXVKalDetector::Draw(Int_t color, const Char_t *opt)
    TNode *nodep = GetNodePtr();
    nodep->cd();
    TIter next(this);
-   EXVMeasLayer *mlp;
-   while ((mlp = dynamic_cast<EXVMeasLayer *>(next()))) {
-      mlp->Draw(color, opt); 
+   TAttDrawable *objp;
+   while ((objp = dynamic_cast<TAttDrawable *>(next()))) {
+      if (objp) objp->Draw(color, opt); 
    }
    nodep->Draw("pad same");
 }
