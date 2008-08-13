@@ -37,9 +37,10 @@ void EXVKalDetector::Draw(Int_t color, const Char_t *opt)
    TNode *nodep = GetNodePtr();
    nodep->cd();
    TIter next(this);
-   TAttDrawable *objp;
-   while ((objp = dynamic_cast<TAttDrawable *>(next()))) {
-      if (objp) objp->Draw(color, opt); 
+   TObject *objp;
+   while ((objp = next())) {
+      TAttDrawable *dp = dynamic_cast<TAttDrawable *>(objp);
+      if (dp) dp->Draw(color, opt); 
    }
    nodep->Draw("pad same");
 }
