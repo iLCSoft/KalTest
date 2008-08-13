@@ -23,11 +23,6 @@
 #include "KalTrackDim.h"
 #include "TString.h"
 
-#if 1
-#include "TAttDrawable.h"      // from Utils
-#include "TString.h"           // from ROOT
-#endif
-
 class TVTrackHit;
 class TNode;
 
