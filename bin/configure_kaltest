@@ -6,7 +6,7 @@
 #(Author)
 #  Akiya Miyamoto  15-April-1999   Original version
 #  A.Miyamoto  25-June-1999  Create src/JSFConfig.h, instead of conf/spec
-#$Id: configure_kaltest,v 1.2 2005-10-11 00:45:56 fujiik Exp $
+#$Id: configure_kaltest,v 1.3 2009-04-06 23:09:41 fujiik Exp $
 #
 # ###################################################
 
@@ -94,8 +94,8 @@ cat > temp.cxx <<EOF
 #include <stdio.h>
 main()
 {
- char *date=__DATE__;
- char *time=__TIME__;
+ const char *date=__DATE__;
+ const char *time=__TIME__;
  printf("#define __CONFIG_DATE__ \"%s\"\n",date);
  printf("#define __CONFIG_TIME__ \"%s\"\n",time);
 
@@ -109,7 +109,7 @@ main()
  printf("#define __GNUC_MINOR__      %d\n",gnuc_minor);
  printf("#define __GNUC_PATCHLEVEL__ %d\n",gnuc_patch);
 
- char *version=__VERSION__;
+ const char *version=__VERSION__;
  printf("#define __GNUC_VERSION_STRING__  \"%s\"\n",version);
  printf("#define __JSF_GNUC_VERSION_STRING__  \"%s\"\n",version);
 

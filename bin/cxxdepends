@@ -1,17 +1,18 @@
 #!/bin/sh
 #######################
 #  create a list of depend files of g++
-#$Id: cxxdepends,v 1.6 2007-04-12 05:54:36 fujiik Exp $
+#$Id: cxxdepends,v 1.7 2009-04-06 23:09:42 fujiik Exp $
 #######################
 
 
 UNAME=`uname`
 
+echocmd=`which echo`
 cxx=gcc
 iret=`which $cxx | grep -c /`
-if [ $iret > 0 ]; then
+if [ $iret != 0 ]; then
   gccverno=`$cxx -v 2>&1 | tail -1 | sed -e 's;.* \([0-9]*\.[0-9]*\.*[0-9]*\) .*;\1;'`
-  gccmajver=`echo $gccverno | cut -d. -f1`
+  gccmajver=`$echocmd $gccverno | cut -d. -f1`
   if [ $gccmajver != 4 ]; then
     gccvers=`$cxx -v 2>&1 | head -1 | sed -e 's;[^/]*\(/.*\)/specs.*;\1;'`
     cppfile=$gccvers/cc1
@@ -29,17 +30,18 @@ if [ $iret > 0 ]; then
     if [ -e $cppfiled ]; then
       cppfile=$cppfiled
     else
-      cppfile=`echo $cppfile | sed -e 's;/lib/;/libexec/;'`
+      cppfile=`$echocmd $cppfile | sed -e 's;/lib/;/libexec/;'`
     fi
   fi
 
   strcmd=`which strings`
   incdir=`$strcmd $cppfile  | grep include  | grep "/" | uniq `
   usrinclude=/usr/include
-  for i  in `echo ${incdir}`
+  for i  in `$echocmd ${incdir}`
   do
     if [ -d $i -a "$i" != "/usr/include" ]; then
-	echo -n " -I$i" 
+	$echocmd -n " -I$i" 
     fi
   done
 fi
+exit 0
