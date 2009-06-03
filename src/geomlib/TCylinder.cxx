@@ -12,6 +12,7 @@
 //* (Update Recored)
 //*   2003/10/03  K.Fujii       Original version.  Currently fXc is 
 //*                             supposed to be at the origin
+//*   2009/05/30  K.Fujii       Now allow nonzero fXc.
 //*
 //*************************************************************************
 //
@@ -48,9 +49,10 @@ Double_t TCylinder::CalcS(const TVector3 &xx) const
 //
 TMatrixD TCylinder::CalcDSDx(const TVector3 &xx) const
 {
+   TVector3 xxc = xx - fXc;
    TMatrixD dsdx(1,3);
-   dsdx(0,0) = 2.*xx.X();
-   dsdx(0,1) = 2.*xx.Y();
+   dsdx(0,0) = 2.*xxc.X();
+   dsdx(0,1) = 2.*xxc.Y();
    dsdx(0,2) = 0.;
    return dsdx;
 }
