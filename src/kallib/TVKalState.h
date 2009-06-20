@@ -1,5 +1,5 @@
-#ifndef __TVKALSTATE__
-#define __TVKALSTATE__
+#ifndef TVKALSTATE_H
+#define TVKALSTATE_H
 //*************************************************************************
 //* ====================
 //*  TVKalState Class
@@ -24,7 +24,6 @@ class TVKalSite;
 //  -----------------------------------
 //
 class TVKalState : public TKalMatrix { 
-
 public:
 
    // Ctors and Dtor
@@ -89,5 +88,4 @@ private:
   
    ClassDef(TVKalState,1)      // Base class for state vector objects
 };
-
 #endif

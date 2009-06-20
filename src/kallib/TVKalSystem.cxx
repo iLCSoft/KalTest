@@ -11,10 +11,12 @@
 //* 	class TVKalSystem
 //* (Update Recored)
 //*   2003/09/30  K.Fujii	Original version.
+//*   2009/06/18  K.Fujii       Implement inverse Kalman filter
 //*
 //*************************************************************************
-//
+
 #include <iostream>
+#include <cstdlib>
 #include "TVKalSystem.h"
 #include "TVKalState.h"
 
@@ -80,7 +82,7 @@ Int_t TVKalSystem::GetNDF(Bool_t self)
    Int_t ndf    = 0;
    Int_t nsites = GetEntries();
    for (Int_t isite=1; isite<nsites; isite++) {
-       TVKalSite &site = *(TVKalSite *)At(isite);
+       TVKalSite &site = *static_cast<TVKalSite *>(At(isite));
        if (!site.IsLocked()) ndf += site.GetDimension();
    }
    if (self) ndf -= GetCurSite().GetCurState().GetDimension();
@@ -93,22 +95,24 @@ Int_t TVKalSystem::GetNDF(Bool_t self)
 
 void TVKalSystem::SmoothBackTo(Int_t k)
 {
-
    TIter previous(this,kIterBackward);
    TIter cur     (this,kIterBackward);
 
    TVKalSite  *prePtr;
-   TVKalSite  *curPtr = (TVKalSite *)cur();
+   TVKalSite  *curPtr = static_cast<TVKalSite *>(cur());
    TVKalState &cura   = curPtr->GetState(TVKalSite::kFiltered);
-   curPtr->Add(&curPtr->CreateState(cura, cura.GetCovMat(),
-                                    TVKalSite::kSmoothed));
+   TVKalState &scura  = curPtr->GetState(TVKalSite::kSmoothed); 
+   if (!&scura) {
+      curPtr->Add(&curPtr->CreateState(cura, cura.GetCovMat(),
+                                       TVKalSite::kSmoothed));
+   }
 
-   while((curPtr = (TVKalSite *)cur()) && (prePtr = (TVKalSite *)previous())){
+   while ((curPtr = static_cast<TVKalSite *>(cur())) && 
+          (prePtr = static_cast<TVKalSite *>(previous()))) {
       curPtr->Smooth(*prePtr);
       fCurSitePtr = curPtr;
       if (IndexOf(curPtr) == k) break;
    }
-
 }
 
 //-------------------------------------------------------
@@ -118,4 +122,32 @@ void TVKalSystem::SmoothBackTo(Int_t k)
 void TVKalSystem::SmoothAll()
 {
    SmoothBackTo(0);
+}
+
+//-------------------------------------------------------
+// InvFilter
+//-------------------------------------------------------
+
+void TVKalSystem::InvFilter(Int_t k)
+{
+   using namespace std;
+   //
+   // Check if site k exists
+   //
+   TVKalSite  *curPtr = static_cast<TVKalSite *>(At(k));
+   if (!curPtr) {
+      cerr << "::::: ERROR in TVKalSystem::InvFilter(k=" << k << ")"  << endl
+           << "  Site " << k << " nonexistent! Abort!"
+           << endl;
+      ::abort();
+   }
+   //
+   // Check if site k already smoothed
+   //
+   if (!&curPtr->GetState(TVKalSite::kSmoothed)) SmoothBackTo(k);
+   //
+   // Inverse filter site k
+   //
+   fCurSitePtr = curPtr;
+   curPtr->InvFilter();
 }

@@ -12,11 +12,13 @@
 //* 	class TVKalSite
 //* (Update Recored)
 //*   2003/09/30  K.Fujii	Original version.
+//*   2009/06/18  K.Fujii       Implement inverse Kalman filter
 //*
 //*************************************************************************
 //
 
 #include <iostream>
+#include <cstdlib>
 #include "TVKalSite.h"
 #include "TVKalState.h"
 
@@ -53,7 +55,6 @@ TVKalSite::~TVKalSite()
 
 Bool_t TVKalSite::Filter()
 {
-
    // prea and preC should be preset by TVKalState::Propagate()
    TVKalState &prea = GetState(TVKalSite::kPredicted);
    TKalMatrix h = fM;
@@ -108,6 +109,7 @@ Bool_t TVKalSite::Filter()
 
 void TVKalSite::Smooth(TVKalSite &pre)
 {
+   if (&GetState(TVKalSite::kSmoothed)) return;
 
    TVKalState &cura  = GetState(TVKalSite::kFiltered);
    TVKalState &prea  = pre.GetState(TVKalSite::kPredicted);
@@ -125,4 +127,63 @@ void TVKalSite::Smooth(TVKalSite &pre)
    TKalMatrix sv = cura + curA * (sprea - prea);
    Add(&CreateState(sv,scurC,TVKalSite::kSmoothed));
    SetOwner();
+#if 1
+   fR       = fV - fH * scurC *fHt;
+   fResVec -= fH * (sv - cura);
+   TKalMatrix curResVect = TKalMatrix(TKalMatrix::kTransposed, fResVec);
+   TKalMatrix curRinv    = TKalMatrix(TKalMatrix::kInverted, fR);
+   fDeltaChi2 = (curResVect * curRinv * fResVec)(0,0);
+#endif
+}
+
+//---------------------------------------------------------------
+// InvFilter
+//---------------------------------------------------------------
+
+Bool_t TVKalSite::InvFilter()
+{
+   if (&GetState(TVKalSite::kInvFiltered)) return kTRUE;
+
+   TVKalState &sa = GetState(TVKalSite::kSmoothed);
+   TKalMatrix sh  = fM;
+   if (!CalcExpectedMeasVec(sa,sh)) return kFALSE;
+   TKalMatrix pull = fM - sh;
+
+   TKalMatrix sC     = sa.GetCovMat();
+   TKalMatrix sR     = fH * sC * fHt - fV;
+   TKalMatrix sRinv  = TKalMatrix(TKalMatrix::kInverted, sR);
+   TKalMatrix Kstar  = sC * fHt * sRinv;
+   TKalMatrix svstar = sa + Kstar * pull;
+   TKalMatrix sCinv  = TKalMatrix(TKalMatrix::kInverted, sC);
+   TKalMatrix G      = TKalMatrix(TKalMatrix::kInverted, fV);
+   TKalMatrix Cstar  = TKalMatrix(TKalMatrix::kInverted, sCinv + fHt * G * fH);
+   Add(&CreateState(svstar,Cstar,TVKalSite::kInvFiltered));
+   SetOwner();
+
+   return kTRUE;
+}
+
+//---------------------------------------------------------------
+// Getters
+//---------------------------------------------------------------
+
+TKalMatrix TVKalSite::GetResVec (TVKalSite::EStType t)
+{
+   using namespace std;
+   TVKalState &a  = GetState(t);
+   TVKalState &sa = (&GetState(TVKalSite::kSmoothed) != 0
+                    ? GetState(TVKalSite::kSmoothed)
+                    : GetState(TVKalSite::kFiltered));
+   if (!&a || !&sa) {
+     cerr << ":::::: ERROR in TVKalSite::GetResVec(EStType) " << endl
+          << " Invalid states requested"                      << endl
+          << " &a = " << &a << " &sa = " << &sa               << endl
+          << " Abort!"                                        << endl;
+     ::abort();
+   }
+   if (&a == &sa) {
+      return fResVec;
+   } else {
+      return (fResVec - fH * (a - sa));
+   }
 }

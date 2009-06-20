@@ -117,6 +117,4 @@ void TVKalState::Propagate(TVKalSite &to)
    prea.SetCovMat(preC);
    to.Add(preaPtr);
    to.SetOwner();
-
 }
-

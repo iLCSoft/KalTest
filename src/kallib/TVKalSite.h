@@ -1,5 +1,5 @@
-#ifndef __TVKALSITE__
-#define __TVKALSITE__
+#ifndef TVKALSITE_H
+#define TVKALSITE_H
 //*************************************************************************
 //* ===================
 //*  TVKalSite Class
@@ -17,6 +17,7 @@
 //*                             data member, fgKalSysPtr.
 //*   2005/08/25  A.Yamaguchi	Removed getter and setter for a new static
 //*                             data member, fgKalSysPtr.
+//*   2009/06/18  K.Fujii       Implement inverse Kalman filter
 //*
 //*************************************************************************
 //
@@ -61,6 +62,8 @@ public:
 
    virtual void    Smooth(TVKalSite &pre);
 
+   virtual Bool_t  InvFilter();
+
    inline  void    Add(TObject *obj);
    
    // Getters
@@ -68,12 +71,13 @@ public:
    inline virtual Int_t        GetDimension() const { return fM.GetNrows(); }
    inline virtual TVKalState & GetCurState ()       { return *fCurStatePtr; }
    inline virtual TVKalState & GetCurState () const { return *fCurStatePtr; }
-   inline virtual TVKalState & GetState (EStType t) { return *(TVKalState *)(*this)[t]; }
-   inline virtual TKalMatrix & GetMeasVec      ()   { return fM; }
-   inline virtual TKalMatrix & GetMeasNoiseMat ()   { return fV; }
-   inline virtual TKalMatrix & GetResVec       ()   { return fResVec; }
-   inline virtual TKalMatrix & GetCovMat       ()   { return fR; }
-   inline virtual Double_t     GetDeltaChi2() const { return fDeltaChi2; }
+   inline virtual TVKalState & GetState (EStType t);
+   inline virtual TKalMatrix & GetMeasVec      ()   { return fM;            }
+   inline virtual TKalMatrix & GetMeasNoiseMat ()   { return fV;            }
+   inline virtual TKalMatrix & GetResVec       ()   { return fResVec;       }
+   inline virtual TKalMatrix & GetCovMat       ()   { return fR;            }
+   inline virtual Double_t     GetDeltaChi2() const { return fDeltaChi2;    }
+          virtual TKalMatrix   GetResVec (EStType t);
 
 private:
    // Private utility methods
@@ -105,8 +109,20 @@ private:
 void TVKalSite::Add(TObject *obj)
 {
    TObjArray::Add(obj);
-   fCurStatePtr = (TVKalState *)obj;
+   fCurStatePtr = static_cast<TVKalState *>(obj);
    fCurStatePtr->SetSitePtr(this);
 }
 
+TVKalState & TVKalSite::GetState(TVKalSite::EStType t)
+{
+#if 0
+   return *static_cast<TVKalState *>((*this)[t]);
+#else
+   TVKalState *ap = 0;
+   if (t >= 0 && t < GetEntries()) {
+      ap = static_cast<TVKalState *>(UncheckedAt(t));
+   }
+   return *ap;
+#endif
+}
 #endif

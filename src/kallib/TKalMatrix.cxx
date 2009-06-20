@@ -19,8 +19,6 @@
 #include "TString.h"
 #include "TKalMatrix.h"
 
-using namespace std;
-
 //_____________________________________________________________________
 //  ------------------------------
 //  A Wrapper for TMatrixD
@@ -84,6 +82,8 @@ TKalMatrix::TKalMatrix(const TVector3 &v)
 
 void TKalMatrix::DebugPrint(Option_t *opt, Int_t ncolsps) const
 {
+   using namespace std;
+
    Int_t ncols   = GetNcols();
    Int_t nrows   = GetNrows();
    Int_t nsheets = (ncols-1)/ncolsps + 1;
@@ -146,6 +146,3 @@ TVector3 TKalMatrix::ToThreeVec(const TMatrixD &a)
    v.SetXYZ(a(0,0), a(1,0),a(2,0));
    return v;
 }
-
-
-

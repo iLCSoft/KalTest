@@ -1,5 +1,5 @@
-#ifndef __TVKALSYSTEM__
-#define __TVKALSYSTEM__
+#ifndef TVKALSYSTEM_H
+#define TVKALSYSTEM_H
 //*************************************************************************
 //* ===================
 //*  TVKalSystem Class
@@ -14,6 +14,7 @@
 //* (Update Recored)
 //*   2003/09/30  K.Fujii	Original version.
 //*   2005/08/25  A.Yamaguchi	Added fgCurInstancePtr and its getter & setter.
+//*   2009/06/18  K.Fujii       Implement inverse Kalman filter
 //*
 //*************************************************************************
 
@@ -41,6 +42,7 @@ public:
    virtual Bool_t AddAndFilter(TVKalSite &next);
    virtual void   SmoothBackTo(Int_t k);
    virtual void   SmoothAll();
+   virtual void   InvFilter(Int_t k);
 
    inline  void   Add(TObject *obj);
 
@@ -53,6 +55,7 @@ public:
           virtual Int_t        GetNDF (Bool_t self = kTRUE);
    
    static         TVKalSystem *GetCurInstancePtr() { return fgCurInstancePtr; }
+
    // Setters
 
 private:
@@ -74,7 +77,6 @@ private:
 void TVKalSystem::Add(TObject *obj)
 {
    TObjArray::Add(obj); 
-   fCurSitePtr = (TVKalSite *)obj;
+   fCurSitePtr = static_cast<TVKalSite *>(obj);
 }
-
 #endif

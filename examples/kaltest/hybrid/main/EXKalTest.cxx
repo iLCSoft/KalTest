@@ -23,6 +23,9 @@
 #include "TString.h"
 
 #include <iostream>
+#include <sstream>
+
+#define SAVE_RESIDUAL
 
 static const Bool_t gkDir = kIterBackward;
 //static const Bool_t gkDir = kIterForward;
@@ -80,15 +83,10 @@ int main (Int_t argc, Char_t **argv)
    }
 
    // ===================================================================
-   //  Create TApplication and an ouput ntuple file
+   //  Create TApplication
    // ===================================================================
 
-   static TCanvas     *cvp    = 0;
-
    TApplication app("EXKalTest", &argc, argv, 0, 0);
-
-   TFile hfile("h.root","RECREATE","KalTest");
-   TNtupleD *hTrackMonitor = new TNtupleD("track", "", "ndf:chi2:cl:fi0:cpa:cs:t0");
 
    // ===================================================================
    //  Prepare a detector
@@ -102,12 +100,41 @@ int main (Int_t argc, Char_t **argv)
    toygld.Install(vtxdet);  // install vtx into its toygld
    toygld.Install(itdet);   // install it into its toygld
    toygld.Install(tpcdet);  // install tpc into its toygld
+   toygld.Close();          // close the cradle
    toygld.Sort();           // sort meas. layers from inside to outside
 
    //vtxdet.PowerOff();       // power off vtx not to process hit
    //itdet.PowerOff();        // power off it not to process hit
    //toygld.SwitchOffMS();    // switch off multiple scattering
    //toygld.SwitchOffDEDX();  // switch off enery loss
+
+   // ===================================================================
+   //  Prepare an output n-tuple
+   // ===================================================================
+
+   TFile hfile("h.root","RECREATE","KalTest");
+
+   stringstream sout;
+   sout << "ndf:chi2:cl:fi0:cpa:cs:t0"; // 7 items
+#ifdef SAVE_RESIDUAL
+   Int_t nitems  = 7;
+   Int_t itemID[2000][2];
+   TIter nextlayer(&toygld);
+   TVMeasLayer *mlp;
+   while ((mlp = dynamic_cast<TVMeasLayer *>(nextlayer()))) {
+      TVMeasLayer &ml = *mlp;
+      if (ml.IsActive()) {
+         Int_t index = ml.GetIndex();
+         sout << ":dxin" << setw(3) << setfill('0') << index;
+	 itemID[index][0] = nitems++;
+         sout << ":dxot" << setw(3) << setfill('0') << index;
+	 itemID[index][1] = nitems++;
+      }
+   }
+   Double_t *data = new Double_t [nitems];
+#endif
+   sout << ends;
+   TNtupleD *hTrackMonitor = new TNtupleD("track", "", sout.str().data());
 
    // ===================================================================
    //  Prepare an Event Generator
@@ -245,7 +272,13 @@ int main (Int_t argc, Char_t **argv)
       // ---------------------------
       //  Smooth the track
       // ---------------------------
-      //kaltrack.SmoothBackTo(1);
+#ifndef SAVE_RESIDUAL
+      TVKalSite &cursite = kaltrack.GetCurSite();
+#else
+      Int_t isite = 1;
+      kaltrack.SmoothBackTo(isite);
+      TVKalSite &cursite = static_cast<TVKalSite &>(*kaltrack[isite]);
+#endif
 
       // ============================================================
       //  Monitor Fit Result
@@ -254,17 +287,41 @@ int main (Int_t argc, Char_t **argv)
       Int_t    ndf  = kaltrack.GetNDF();
       Double_t chi2 = kaltrack.GetChi2();
       Double_t cl   = TMath::Prob(chi2, ndf);
-      Double_t fi0  = kaltrack.GetCurSite().GetCurState()(1, 0); 
-      Double_t cpa  = kaltrack.GetCurSite().GetCurState()(2, 0); 
-      Double_t tnl  = kaltrack.GetCurSite().GetCurState()(4, 0); 
+      Double_t fi0  = cursite.GetCurState()(1, 0); 
+      Double_t cpa  = cursite.GetCurState()(2, 0); 
+      Double_t tnl  = cursite.GetCurState()(4, 0); 
       Double_t cs   = tnl/TMath::Sqrt(1.+tnl*tnl);
-      Double_t t0   = kaltrack.GetCurSite().GetCurState()(5, 0); 
+      Double_t t0   = cursite.GetCurState()(5, 0); 
+#ifndef SAVE_RESIDUAL
       hTrackMonitor->Fill(ndf, chi2, cl, fi0, cpa, cs, t0);
+#else
+      data[0] = ndf;
+      data[1] = chi2;
+      data[2] = cl;
+      data[3] = fi0;
+      data[4] = cpa;
+      data[5] = cs;
+      data[6] = t0;
+      for (Int_t i=7; i<nitems; i++) data[i] = 9999999.;
+      TIter nextsite(&kaltrack);
+            nextsite(); // skip dummy site
+      TKalTrackSite *sitep;
+      while ((sitep = static_cast<TKalTrackSite *>(nextsite()))) {
+         TKalTrackSite &site = *sitep;
+         Int_t index = site.GetHit().GetMeasLayer().GetIndex();
+	 data[itemID[index][0]] = site.GetResVec(TVKalSite::kSmoothed)(0,0);
+	 if (site.InvFilter()) {
+	    data[itemID[index][1]] = site.GetResVec(TVKalSite::kInvFiltered)(0,0);
+	 }
+      }
+      hTrackMonitor->Fill(data);
+#endif
 
       // ============================================================
       //  Very Primitive Event Display
       // ============================================================
 
+      static TCanvas     *cvp    = 0;
       if (!gROOT->IsBatch()) {
          if (!cvp) {
             cvp = new TCanvas("OED", "Event Display", 400, 10, 610, 610);

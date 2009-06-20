@@ -1,5 +1,5 @@
-#ifndef __TKALMATRIX__
-#define __TKALMATRIX__
+#ifndef TKALMATRIX_H
+#define TKALMATRIX_H
 //*************************************************************************
 //* ===================
 //*  TKalMatrix Class
@@ -15,7 +15,7 @@
 //*   2003/09/30  K.Fujii	Original version.
 //*
 //*************************************************************************
-//
+
 #include "TMatrixD.h"
 #include "TVector3.h"
 //_____________________________________________________________________
@@ -55,5 +55,4 @@ private:
    
    ClassDef(TKalMatrix,1)      // Base class for Kalman matrix
 };
-
 #endif
