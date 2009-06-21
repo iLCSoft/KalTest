@@ -47,7 +47,7 @@ int main (Int_t argc, Char_t **argv)
    Double_t pt      =  1.;   // default Pt [GeV]
    Double_t t0in    = 14.;   // default tp [nsec]
    Double_t cosmin  = -0.97; // default cos minimum [deg]
-   Double_t cosmax  = 0.97;  // default cos maximum [deg]
+   Double_t cosmax  =  0.97; // default cos maximum [deg]
    Int_t    nevents = 1;     // default number of events to generate
    switch (argc-offset) {
       case 6: 
@@ -118,7 +118,7 @@ int main (Int_t argc, Char_t **argv)
    sout << "ndf:chi2:cl:fi0:cpa:cs:t0"; // 7 items
 #ifdef SAVE_RESIDUAL
    Int_t nitems  = 7;
-   Int_t itemID[2000][2];
+   Int_t itemID[2000][3];
    TIter nextlayer(&toygld);
    TVMeasLayer *mlp;
    while ((mlp = dynamic_cast<TVMeasLayer *>(nextlayer()))) {
@@ -129,6 +129,8 @@ int main (Int_t argc, Char_t **argv)
 	 itemID[index][0] = nitems++;
          sout << ":dxot" << setw(3) << setfill('0') << index;
 	 itemID[index][1] = nitems++;
+         sout << ":z" << setw(3) << setfill('0') << index;
+	 itemID[index][2] = nitems++;
       }
    }
    Double_t *data = new Double_t [nitems];
@@ -313,6 +315,7 @@ int main (Int_t argc, Char_t **argv)
 	 if (site.InvFilter()) {
 	    data[itemID[index][1]] = site.GetResVec(TVKalSite::kInvFiltered)(0,0);
 	 }
+	 data[itemID[index][2]] = site.GetPivot().Z();
       }
       hTrackMonitor->Fill(data);
 #endif
