@@ -32,4 +32,15 @@ void Plot(int layer=259, const char *fname="p-100.0t000.10k.root")
   h2_2->SetMarkerStyle(5);
   h2_2->SetMarkerSize(1);
   h2_2->Draw("same");
+
+  TH1D *h12 = new TH1D((*h1_2) * (*h2_2));
+  int nbins = h12->GetNbinsX();
+  for (int i=0; i<=nbins; i++) {
+    h12->SetBinContent(i,TMath::Sqrt(h12->GetBinContent(i)));
+    h12->SetBinError  (i,(h1_2->GetBinError(i)+h2_2->GetBinError(i))/2);
+  }
+  h12->SetMarkerStyle(20);
+  h12->SetMarkerSize(1);
+  h12->SetMarkerColor(2);
+  h12->Draw("same");
 }
