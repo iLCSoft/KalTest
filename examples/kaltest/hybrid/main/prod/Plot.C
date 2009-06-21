@@ -5,42 +5,60 @@ void Plot(int layer=259, const char *fname="p-100.0t000.10k.root")
 {
   using namespace std;
 
-  TFile *filep = TFile::Open(fname);
+  gStyle->SetOptStat(0);
 
-  TH2D *h1 = new TH2D("h1","",15,0.,250.,10,-0.05,+0.05);
+  TFile *filep = TFile::Open(fname);
+  //--
+  // Residual including the hit in fit
+  //--
+  TH2D *hin = new TH2D("hin","",15,0.,250.,10,-0.05,+0.05);
   stringstream str1;
   str1 << "dxin"      << setw(3) << setfill('0') << layer << ":"
        << "250-abs(z" << setw(3) << setfill('0') << layer << ")"
-       << ">>h1" << ends;
+       << ">>hin" << ends;
   track->Draw(str1.str().data(),"");
-  h1->FitSlicesY();
-
-  TH2D *h2 = new TH2D("h2","",15,0.,250.,10,-0.05,+0.05);
+  hin->FitSlicesY();
+  //--
+  // Residual excluding the hit in fit
+  //--
+  TH2D *hot = new TH2D("hot","",15,0.,250.,10,-0.05,+0.05);
   stringstream str2;
   str2 << "dxot"      << setw(3) << setfill('0') << layer << ":"
        << "250-abs(z" << setw(3) << setfill('0') << layer << ")"
-       << ">>h2" << ends;
+       << ">>hot" << ends;
   track->Draw(str2.str().data(),"");
-  h2->FitSlicesY();
+  hot->FitSlicesY();
+  //--
+  // Plot them together
+  //--
+  hin_2->SetMinimum(0.);
+  hin_2->SetMaximum(0.03);
+  hin_2->SetMarkerStyle(4);
+  hin_2->SetMarkerSize(1);
+  hin_2->Draw();
 
-  h1_2->SetMinimum(0.);
-  h1_2->SetMaximum(0.03);
-  h1_2->SetMarkerStyle(4);
-  h1_2->SetMarkerSize(1);
-  h1_2->Draw();
-
-  h2_2->SetMarkerStyle(5);
-  h2_2->SetMarkerSize(1);
-  h2_2->Draw("same");
-
-  TH1D *h12 = new TH1D((*h1_2) * (*h2_2));
-  int nbins = h12->GetNbinsX();
+  hot_2->SetMarkerStyle(5);
+  hot_2->SetMarkerSize(1);
+  hot_2->Draw("same");
+  //--
+  // Calculate and plot geometric mean
+  //--
+  TH1D *hgm = new TH1D((*hin_2) * (*hot_2));
+  int nbins = hgm->GetNbinsX();
   for (int i=0; i<=nbins; i++) {
-    h12->SetBinContent(i,TMath::Sqrt(h12->GetBinContent(i)));
-    h12->SetBinError  (i,(h1_2->GetBinError(i)+h2_2->GetBinError(i))/2);
+    hgm->SetBinContent(i,TMath::Sqrt(hgm->GetBinContent(i)));
+    hgm->SetBinError  (i,(hin_2->GetBinError(i)+hot_2->GetBinError(i))/2);
   }
-  h12->SetMarkerStyle(20);
-  h12->SetMarkerSize(1);
-  h12->SetMarkerColor(2);
-  h12->Draw("same");
+
+  stringstream titlestr;
+  titlestr << "GM Resolutin (Row" << layer << ")" << ends;
+  hin_2->SetTitle(titlestr.str().data());
+  hin_2->GetXaxis()->SetTitle("Drift Length [cm]");
+  hin_2->GetYaxis()->SetTitle("#sigma_{x} [cm]");
+  hin_2->GetYaxis()->SetTitleOffset(1.24);
+
+  hgm->SetMarkerStyle(20);
+  hgm->SetMarkerSize(1);
+  hgm->SetMarkerColor(2);
+  hgm->Draw("same");
 }
