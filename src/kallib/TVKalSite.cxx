@@ -127,27 +127,26 @@ void TVKalSite::Smooth(TVKalSite &pre)
    TKalMatrix sv = cura + curA * (sprea - prea);
    Add(&CreateState(sv,scurC,TVKalSite::kSmoothed));
    SetOwner();
-#if 1
+
+   // Update residual vector
+
    fR       = fV - fH * scurC *fHt;
    fResVec -= fH * (sv - cura);
    TKalMatrix curResVect = TKalMatrix(TKalMatrix::kTransposed, fResVec);
    TKalMatrix curRinv    = TKalMatrix(TKalMatrix::kInverted, fR);
    fDeltaChi2 = (curResVect * curRinv * fResVec)(0,0);
-#endif
 }
 
 //---------------------------------------------------------------
 // InvFilter
 //---------------------------------------------------------------
 
-Bool_t TVKalSite::InvFilter()
+void TVKalSite::InvFilter()
 {
-   if (&GetState(TVKalSite::kInvFiltered)) return kTRUE;
+   if (&GetState(TVKalSite::kInvFiltered)) return;
 
    TVKalState &sa = GetState(TVKalSite::kSmoothed);
-   TKalMatrix sh  = fM;
-   if (!CalcExpectedMeasVec(sa,sh)) return kFALSE;
-   TKalMatrix pull = fM - sh;
+   TKalMatrix pull = fResVec;
 
    TKalMatrix sC     = sa.GetCovMat();
    TKalMatrix sR     = fH * sC * fHt - fV;
@@ -159,8 +158,6 @@ Bool_t TVKalSite::InvFilter()
    TKalMatrix Cstar  = TKalMatrix(TKalMatrix::kInverted, sCinv + fHt * G * fH);
    Add(&CreateState(svstar,Cstar,TVKalSite::kInvFiltered));
    SetOwner();
-
-   return kTRUE;
 }
 
 //---------------------------------------------------------------

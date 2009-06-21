@@ -62,7 +62,7 @@ public:
 
    virtual void    Smooth(TVKalSite &pre);
 
-   virtual Bool_t  InvFilter();
+   virtual void    InvFilter();
 
    inline  void    Add(TObject *obj);
    
@@ -115,14 +115,10 @@ void TVKalSite::Add(TObject *obj)
 
 TVKalState & TVKalSite::GetState(TVKalSite::EStType t)
 {
-#if 0
-   return *static_cast<TVKalState *>((*this)[t]);
-#else
    TVKalState *ap = 0;
    if (t >= 0 && t < GetEntries()) {
       ap = static_cast<TVKalState *>(UncheckedAt(t));
    }
    return *ap;
-#endif
 }
 #endif

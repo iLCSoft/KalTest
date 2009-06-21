@@ -312,9 +312,8 @@ int main (Int_t argc, Char_t **argv)
          TKalTrackSite &site = *sitep;
          Int_t index = site.GetHit().GetMeasLayer().GetIndex();
 	 data[itemID[index][0]] = site.GetResVec(TVKalSite::kSmoothed)(0,0);
-	 if (site.InvFilter()) {
-	    data[itemID[index][1]] = site.GetResVec(TVKalSite::kInvFiltered)(0,0);
-	 }
+         site.InvFilter();
+         data[itemID[index][1]] = site.GetResVec(TVKalSite::kInvFiltered)(0,0);
 	 data[itemID[index][2]] = site.GetPivot().Z();
       }
       hTrackMonitor->Fill(data);

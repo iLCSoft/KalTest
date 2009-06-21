@@ -141,7 +141,7 @@ Int_t TKalTrackSite::CalcMeasVecDerivative(const TVKalState &a,
 Bool_t TKalTrackSite::IsAccepted()
 {
    // return kTRUE if this site is accepted by Filter()
-#if 1
+#if 0
    Double_t delchi2 = GetDeltaChi2();
    if (delchi2 > 25.) {
       cerr << ">>>> TKalTrackSite::IsAccepted >>>>>>>>>>>>> " << endl
