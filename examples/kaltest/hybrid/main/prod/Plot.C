@@ -18,6 +18,8 @@ void Plot(int layer=259, const char *fname="p-100.0t000.10k.root")
        << ">>hin" << ends;
   track->Draw(str1.str().data(),"");
   hin->FitSlicesY();
+  hin_2->SetMarkerStyle(4);
+  hin_2->SetMarkerSize(1);
   //--
   // Residual excluding the hit in fit
   //--
@@ -28,18 +30,8 @@ void Plot(int layer=259, const char *fname="p-100.0t000.10k.root")
        << ">>hot" << ends;
   track->Draw(str2.str().data(),"");
   hot->FitSlicesY();
-  //--
-  // Plot them together
-  //--
-  hin_2->SetMinimum(0.);
-  hin_2->SetMaximum(0.03);
-  hin_2->SetMarkerStyle(4);
-  hin_2->SetMarkerSize(1);
-  hin_2->Draw();
-
   hot_2->SetMarkerStyle(5);
   hot_2->SetMarkerSize(1);
-  hot_2->Draw("same");
   //--
   // Calculate and plot geometric mean
   //--
@@ -52,13 +44,19 @@ void Plot(int layer=259, const char *fname="p-100.0t000.10k.root")
 
   stringstream titlestr;
   titlestr << "GM Resolutin (Row" << layer << ")" << ends;
-  hin_2->SetTitle(titlestr.str().data());
-  hin_2->GetXaxis()->SetTitle("Drift Length [cm]");
-  hin_2->GetYaxis()->SetTitle("#sigma_{x} [cm]");
-  hin_2->GetYaxis()->SetTitleOffset(1.24);
-
+  hgm->SetTitle(titlestr.str().data());
+  hgm->GetXaxis()->SetTitle("Drift Length [cm]");
+  hgm->GetYaxis()->SetTitle("#sigma_{x} [cm]");
+  hgm->GetYaxis()->SetTitleOffset(1.24);
+  hgm->SetMinimum(0.);
+  hgm->SetMaximum(0.03);
   hgm->SetMarkerStyle(20);
   hgm->SetMarkerSize(1);
   hgm->SetMarkerColor(2);
+
+  TF1 fun("fun","sqrt([0]**2+[1]**2*x)");
+  hgm->Fit(&fun);
+  hin_2->Draw("same");
+  hot_2->Draw("same");
   hgm->Draw("same");
 }
