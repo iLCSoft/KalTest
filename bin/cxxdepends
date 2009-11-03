@@ -1,7 +1,7 @@
 #!/bin/sh
 #######################
 #  create a list of depend files of g++
-#$Id: cxxdepends,v 1.7 2009-04-06 23:09:42 fujiik Exp $
+#$Id: cxxdepends,v 1.8 2009-11-03 10:30:44 fujiik Exp $
 #######################
 
 
@@ -30,7 +30,12 @@ if [ $iret != 0 ]; then
     if [ -e $cppfiled ]; then
       cppfile=$cppfiled
     else
-      cppfile=`$echocmd $cppfile | sed -e 's;/lib/;/libexec/;'`
+      cppfiled=`$echocmd $cppfile | sed -e 's;/lib/;/libexec/;'`
+      if [ -e $cppfiled ]; then
+        cppfile=$cppfiled
+      else
+        cppfile=`$echocmd $cppfile | sed -e 's;/libexec/;/lib64/;'`
+      fi
     fi
   fi
 
