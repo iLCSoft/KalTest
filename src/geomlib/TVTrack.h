@@ -132,7 +132,7 @@ protected:
    TVector3 fX0;        // pivot
    Double_t fAlpha;     // alpha
 
-#if __GNUC__ < 4
+#if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
    static const Double_t kLightVelocity = 2.99792458e8; //! light velocity [cm/sec]
    static const Double_t kGiga          = 1.0e9;        //! Giga = 10^{9}
    static const Double_t kInfinity      = 1.e+20;       //! infinity

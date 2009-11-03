@@ -19,7 +19,7 @@
 #include "TVTrack.h"
 
 using namespace std;
-#if __GNUC__ < 4
+#if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
 #else
 const Double_t TVTrack::kLightVelocity = 2.99792458e8;
 const Double_t TVTrack::kGiga          = 1.e9;

@@ -23,7 +23,7 @@
 #include <iostream>            // from STL
 
 using namespace std;
-#if __GNUC__ < 4
+#if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
 #else
 const Double_t TKalTrack::kMpi = 0.13957018; // pion mass [GeV]
 #endif

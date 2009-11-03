@@ -56,7 +56,7 @@ private:
    Double_t fHalfLen;     // half length
    TVector3 fXc;          // center
    Double_t fTanA;        // tan(stereo angle)
-#if __GNUC__ < 4
+#if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
    static const Double_t kTol = 1.e-5; // tolerance
 #else
    static const Double_t kTol; // tolerance

@@ -21,7 +21,7 @@
 
 using namespace std;
 
-#if __GNUC__ < 4
+#if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
 #else
 const Double_t THype::kTol = 1.e-5; // tolerance
 #endif
