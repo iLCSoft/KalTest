@@ -32,8 +32,6 @@ INCPATH	      = -I. -I$(INCINSTALLDIR)
 CXXFLAGS     += $(INCPATH) -O0 -g 
 SHLIBLDFLAGS  = $(DYLIBFLAGS)
 
-INSTALLFLAGS += -C
-
 all:: $(SONAME)
 
 SharedLibraryTarget($(LIBNAME),$(SOREV),$(OBJS),.,.)
