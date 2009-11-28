@@ -1,5 +1,5 @@
-#ifndef __TCIRCLE__
-#define __TCIRCLE__
+#ifndef TCIRCLE_H
+#define TCIRCLE_H
 //*************************************************************************
 //* ====================
 //*  TCircle Class

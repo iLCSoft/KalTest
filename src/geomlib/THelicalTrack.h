@@ -1,5 +1,5 @@
-#ifndef __THELICALTRACK__
-#define __THELICALTRACK__
+#ifndef THELICALTRACK_H
+#define THELICALTRACK_H
 //*************************************************************************
 //* ====================
 //*  THelicalTrack Class

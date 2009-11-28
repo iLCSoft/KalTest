@@ -1,5 +1,5 @@
-#ifndef __TPLANE__
-#define __TPLANE__
+#ifndef TPLANE_H
+#define TPLANE_H
 //*************************************************************************
 //* ====================
 //*  TPlane Class

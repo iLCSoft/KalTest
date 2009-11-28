@@ -1,5 +1,5 @@
-#ifndef __TKALTRACK__
-#define __TKALTRACK__
+#ifndef TKALTRACK_H
+#define TKALTRACK_H
 //*************************************************************************
 //* =================
 //*  TKalTrack Class

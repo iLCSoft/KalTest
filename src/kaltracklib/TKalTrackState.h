@@ -1,5 +1,5 @@
-#ifndef __TKALTRACKSTATE__
-#define __TKALTRACKSTATE__
+#ifndef TKALTRACKSTATE_H
+#define TKALTRACKSTATE_H
 //*************************************************************************
 //* ======================
 //*  TKalTrackState Class

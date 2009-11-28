@@ -1,5 +1,5 @@
-#ifndef __TVTRACKHIT__
-#define __TVTRACKHIT__
+#ifndef TVTRACKHIT_H
+#define TVTRACKHIT_H
 
 //*************************************************************************
 //* ====================

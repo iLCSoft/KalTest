@@ -1,5 +1,5 @@
-#ifndef __TCYLINDER__
-#define __TCYLINDER__
+#ifndef TCYLINDER_H
+#define TCYLINDER_H
 //*************************************************************************
 //* ====================
 //*  TCylinder Class

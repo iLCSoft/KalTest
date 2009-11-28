@@ -1,5 +1,5 @@
-#ifndef __TVSOLID__
-#define __TVSOLID__
+#ifndef TVSOLID_H
+#define TVSOLID_H
 //*************************************************************************
 //* ====================
 //*  TVSolid Class

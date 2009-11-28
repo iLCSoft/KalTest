@@ -1,5 +1,5 @@
-#ifndef __TVTRACK__
-#define __TVTRACK__
+#ifndef TVTRACK_H
+#define TVTRACK_H
 //*************************************************************************
 //* ===============
 //*  TVTrack Class

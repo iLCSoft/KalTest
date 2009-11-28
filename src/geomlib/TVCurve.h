@@ -1,5 +1,5 @@
-#ifndef __TVCURVE__
-#define __TVCURVE__
+#ifndef TVCURVE_H
+#define TVCURVE_H
 //*************************************************************************
 //* ====================
 //*  TVCurve Class

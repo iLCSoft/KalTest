@@ -1,5 +1,5 @@
-#ifndef __TVSURFACE__
-#define __TVSURFACE__
+#ifndef TVSURFACE_H
+#define TVSURFACE_H
 //*************************************************************************
 //* ====================
 //*  TVSurface Class

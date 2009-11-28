@@ -1,5 +1,5 @@
-#ifndef __TKALTRACKSITE__
-#define __TKALTRACKSITE__
+#ifndef TKALTRACKSITE_H
+#define TKALTRACKSITE_H
 //*************************************************************************
 //* =====================
 //*  TKalTrackSite Class

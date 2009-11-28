@@ -1,5 +1,5 @@
-#ifndef __KALDIM__
-#define __KALDIM__
+#ifndef KALDIM_H
+#define KALDIM_H
 #define kMdim 2
 #ifdef __NOT0__
 #define kSdim 5

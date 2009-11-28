@@ -1,5 +1,5 @@
-#ifndef __TVKALDETECTOR__
-#define __TVKALDETECTOR__
+#ifndef TVKALDETECTOR_H
+#define TVKALDETECTOR_H
 //*************************************************************************
 //* =====================
 //*  TVKalDetector Class

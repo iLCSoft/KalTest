@@ -1,5 +1,5 @@
-#ifndef __TATTELEMENT__
-#define __TATTELEMENT__
+#ifndef TATTELEMENT_H
+#define TATTELEMENT_H
 //*************************************************************************
 //* ===================
 //*  TAttElement Class

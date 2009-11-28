@@ -1,5 +1,5 @@
-#ifndef __TKALDETCRADLE__
-#define __TKALDETCRADLE__
+#ifndef TKALDETCRADLE_H
+#define TKALDETCRADLE_H
 //*************************************************************************
 //* =====================
 //*  TKalDetCradle Class

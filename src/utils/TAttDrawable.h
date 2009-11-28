@@ -1,5 +1,5 @@
-#ifndef __TATTDRAWABLE__
-#define __TATTDRAWABLE__
+#ifndef TATTDRAWABLE_H
+#define TATTDRAWABLE_H
 //*************************************************************************
 //* ===================
 //*  TAttDrawable Class

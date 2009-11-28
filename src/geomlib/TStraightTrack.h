@@ -1,5 +1,5 @@
-#ifndef __TSTRAIGHTTRACK__
-#define __TSTRAIGHTTRACK__
+#ifndef TSTRAIGHTTRACK_H
+#define TSTRAIGHTTRACK_H
 //*************************************************************************
 //* ======================
 //*  TStraightTrack Class

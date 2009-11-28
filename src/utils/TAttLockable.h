@@ -1,5 +1,5 @@
-#ifndef __TATTLOCKABLE__
-#define __TATTLOCKABLE__
+#ifndef TATTLOCKABLE_H
+#define TATTLOCKABLE_H
 //*************************************************************************
 //* ===================
 //*  TAttLockable Class

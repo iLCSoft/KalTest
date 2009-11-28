@@ -1,5 +1,5 @@
-#ifndef __TVMEASLAYER__
-#define __TVMEASLAYER__
+#ifndef TVMEASLAYER_H
+#define TVMEASLAYER_H
 //*************************************************************************
 //* ====================
 //*  TVMeasLayer Class
