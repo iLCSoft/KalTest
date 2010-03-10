@@ -10,7 +10,7 @@ XCOMM #  29-May-1999 Add EXTRACXXOPT in CXXFLAGS
 XCOMM #              Define .cxx compile rule here.    
 XCOMM #  4-Feb-2000 soname option in SOFLAGS for Linux is removed.
 XCOMM # 
-XCOMM # $Id: makejsf.tmpl,v 1.5 2006-02-04 16:00:56 fujiik Exp $
+XCOMM # $Id: makejsf.tmpl,v 1.6 2010-03-10 14:23:00 fujiik Exp $
 XCOMM # 
 
 #include "include/LCBASEConfig.h"
@@ -132,15 +132,17 @@ LIBF2C	      = -l$(G77EGCS_LIBNAME)
 CXX           = c++ -O
 CC            = $(CXX)
 RCINTDEFINES  = -D__DARWIN__
-CXXFLAGS      = -pipe -Wall -fsigned-char -D__BIG_ENDIAN__ \
+CXXFLAGS      = -m32 -pipe -Wall -fsigned-char -D__BIG_ENDIAN__ \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell root-config --cflags)
 /* DYLIBFLAGS    = -dylib -r -nostartfiles -nodefaultlibs */
 /* DYLIBFLAGS    = -dylib -r -nostdlib */
-DYLIBFLAGS    = -dynamiclib -flat_namespace -undefined suppress
+DYLIBFLAGS    = -m32 -dynamiclib -flat_namespace -undefined suppress -single_module
 /* DYLDFLAGS     = -dynamiclib -undefined suppress -nostdlib -bind_at_load */
-DYLDFLAGS     = -dynamiclib -flat_namespace -undefined suppress
-SOFLAGS       = -bundle -flat_namespace -undefined suppress
+DYLDFLAGS     = $(DYLIBFLAGS)
+/* SOFLAGS       = -m32 -bundle -flat_namespace -undefined suppress */
+SOFLAGS       = $(DYLIBFLAGS)
+SHLIBLDFLAGS  = $(DYLDFLAGS)
 LDFLAGS       = $(ANALLIB) $(GLIBS) -Xlinker -bind_at_load
 LIBS          = $(ROOTLIBS) -L/usr/local/lib -lm -ldl
 GLIBS         = $(ROOTLIBS) $(ROOTGLIBS) -L/usr/X11R6/lib \
@@ -159,7 +161,7 @@ INSTALLFLAGS = -c
 #  ifdef SharedLibraryTarget
 #  undef SharedLibraryTarget
 #  endif
-#  define SharedLibraryTarget(libname,rev,solist,down,up)                @@\
+#  define SharedLibraryTarget(libname,rev,solist,down,up)               @@\
 AllTarget(Concat(lib,libname.rev.dylib))                                @@\
                                                                         @@\
 Concat(lib,libname.rev.dylib):  solist $(EXTRALIBRARYDEPS)              @@\
@@ -173,14 +175,37 @@ Concat(lib,libname.rev.dylib):  solist $(EXTRALIBRARYDEPS)              @@\
 	$(MV) $@~ $@                                                    @@\
 	@if $(SOSYMLINK); then (set -x; \                               @@\
 	  $(RM) Concat(lib,libname.dylib); \                            @@\
-	  $(LN) $@ Concat(lib,libname.dylib)); fi                       @@\
+	  $(LN) $@ Concat(lib,libname.dylib); \                         @@\
+	  $(RM) Concat(lib,libname.so); \                               @@\
+	  $(LN) $@ Concat(lib,libname.so)); fi                          @@\
 	LinkBuildLibrary($@)                                            @@\
 	LinkBuildLibraryMaybe(Concat(lib,libname.dylib),$(SOSYMLINK))   @@\
+	LinkBuildLibraryMaybe(Concat(lib,libname.so),$(SOSYMLINK))      @@\
 									@@\
 clean::                                                                 @@\
 	@MAJREV=`echo rev | sed 's/\.[^\.]*$$//'`; \                    @@\
 	set -x; $(RM) Concat(lib,libname.$$MAJREV.dylib)                @@\
-	$(RM) Concat(lib,libname.rev.dylib) Concat(lib,libname.dylib)
+	$(RM) Concat(lib,libname.rev.dylib) Concat(lib,libname.dylib) Concat(lib,libname.so)
+
+/*
+ * InstallSharedLibrary - generate rules to install the shared library.
+ */
+#  ifdef InstallSharedLibrary
+#  undef InstallSharedLibrary
+#  endif
+#  define InstallSharedLibrary(libname,rev,dest)			@@\
+install:: Concat(lib,libname.rev.dylib)					@@\
+	MakeDir($(DESTDIR)dest)						@@\
+	$(INSTALL) $(INSTALLFLAGS) $(INSTLIBFLAGS) Concat(lib,libname.rev.dylib) $(DESTDIR)dest @@\
+	@MAJREV=`echo rev | sed 's/\([0-9]*\)\(\.[0-9]*\)\{1,2\}/\1/'`; \	@@\
+	  set -x; $(RM) Concat($(DESTDIR)dest/lib,libname.$$MAJREV.dylib) && \ @@\
+	  $(LN) Concat(lib,libname.rev.dylib) Concat($(DESTDIR)dest/lib,libname.$$MAJREV.dylib) @@\
+	@if $(SOSYMLINK); then (set -x; \				@@\
+	  $(RM) Concat($(DESTDIR)dest/lib,libname.so); \		@@\
+	  $(RM) Concat($(DESTDIR)dest/lib,libname.dylib); \		@@\
+	  $(LN) Concat(lib,libname.rev.dylib) Concat($(DESTDIR)dest/lib,libname.so); \		@@\
+	  $(LN) Concat(lib,libname.rev.dylib) Concat($(DESTDIR)dest/lib,libname.dylib)); fi
+
 #endif
 
 XCOMM # -----------------------------------------------------
