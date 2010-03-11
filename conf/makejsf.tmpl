@@ -10,7 +10,7 @@ XCOMM #  29-May-1999 Add EXTRACXXOPT in CXXFLAGS
 XCOMM #              Define .cxx compile rule here.    
 XCOMM #  4-Feb-2000 soname option in SOFLAGS for Linux is removed.
 XCOMM # 
-XCOMM # $Id: makejsf.tmpl,v 1.6 2010-03-10 14:23:00 fujiik Exp $
+XCOMM # $Id: makejsf.tmpl,v 1.7 2010-03-11 15:10:12 fujiik Exp $
 XCOMM # 
 
 #include "include/LCBASEConfig.h"
@@ -167,8 +167,8 @@ AllTarget(Concat(lib,libname.rev.dylib))                                @@\
 Concat(lib,libname.rev.dylib):  solist $(EXTRALIBRARYDEPS)              @@\
 	$(RM) $@~                                                       @@\
 	@MAJREV=`echo rev | sed 's/\.[^\.]*$$//'`; \                    @@\
-	  INSTALLNAME=Concat(lib,libname.$$MAJREV.dylib); \             @@\
-	  set -x; (cd down; $(CC) -o up/$@~ $(SHLIBLDFLAGS) -install_name $(KALTESTROOT)/lib/$$INSTALLNAME -current_version rev -compatibility_version rev solist $(REQUIREDLIBS)); \ @@\
+	  INSTALLNAME=$(KALTESTROOT)/lib/Concat(lib,libname.$$MAJREV.dylib); \             @@\
+	  set -x; (cd down; $(CC) -o up/$@~ $(SHLIBLDFLAGS) -install_name $$INSTALLNAME -current_version rev -compatibility_version rev solist $(REQUIREDLIBS)); \ @@\
 	  $(RM) $$INSTALLNAME; $(LN) $@ $$INSTALLNAME; \                @@\
 	  LinkBuildSonameLibrary($$INSTALLNAME)                         @@\
 	$(RM) $@                                                        @@\
