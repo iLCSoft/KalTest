@@ -11,12 +11,17 @@
 //*     class TKalTrackSite
 //* (Update Recored)
 //*   2003/09/30  Y.Nakashima       Original version.
+//*   2010/04/06  K.Fujii           Modified a c-tor to allow a 1-dim hit,
+//*                                 for which pivot is at the xpected hit.
+//*                                 Modified IsAccepted() to allow user-
+//*                                 defined filter conditions.
 //*
 //*************************************************************************
 
 #include "TKalTrackSite.h"    // from KalTrackLib
 #include "TKalTrackState.h"   // from KalTrackLib
 #include "TVTrackHit.h"       // from KalTrackLib
+#include "TKalFilterCond.h"   // from KalTrackLib
 #include "TVSurface.h"        // from GeomLib
 
 #include <iostream>           // from STL
@@ -36,7 +41,8 @@ ClassImp(TKalTrackSite)
 //  Ctors and Dtor
 //  ----------------------------------
 TKalTrackSite::TKalTrackSite(Int_t m, Int_t p)
-              : TVKalSite(m,p), fHitPtr(0), fX0(), fIsHitOwner(kFALSE)
+              : TVKalSite(m,p), fHitPtr(0), fX0(), fIsHitOwner(kFALSE),
+                fCondPtr(0)
 {
 }
 
@@ -46,13 +52,15 @@ TKalTrackSite::TKalTrackSite(const TVTrackHit &ht,
               : TVKalSite(m,p),
                 fHitPtr((TVTrackHit *)&ht), 
                 fX0(),
-                fIsHitOwner(kFALSE)
+                fIsHitOwner(kFALSE),
+                fCondPtr(0)
 {
    for (Int_t i=0; i<m; i++) {
       GetMeasVec     ()(i,0) = ht.GetX(i);
       GetMeasNoiseMat()(i,i) = TMath::Power(ht.GetDX(i),2);
    }
-   fX0 = ht.GetMeasLayer().HitToXv(ht); // Set pivot to the hit position
+   // Leave the pivot at the origin for a 1-dim hit
+   if (m > 1) fX0 = ht.GetMeasLayer().HitToXv(ht);
 }
 
 TKalTrackSite::~TKalTrackSite()
@@ -140,17 +148,8 @@ Int_t TKalTrackSite::CalcMeasVecDerivative(const TVKalState &a,
 
 Bool_t TKalTrackSite::IsAccepted()
 {
-   // return kTRUE if this site is accepted by Filter()
-#if 0
-   Double_t delchi2 = GetDeltaChi2();
-   if (delchi2 > 25.) {
-      cerr << ">>>> TKalTrackSite::IsAccepted >>>>>>>>>>>>> " << endl
-           << " Too big chi2 increment!!! " << endl;
-      DebugPrint();
-      //return kFALSE;
-   }
-#endif
-   return kTRUE;
+   if (fCondPtr) return fCondPtr->IsAccepted(*this);
+   else          return kTRUE;
 }
 
 void TKalTrackSite::DebugPrint() const

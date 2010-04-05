@@ -47,13 +47,12 @@ public:
    // and return a^k-1_k.
    //
 
-   virtual TVKalState * MoveTo(const TVKalSite  &to,
-                                     TKalMatrix &F,
-                                     TKalMatrix *QPtr = 0) const = 0;
-
-   virtual TVKalState & MoveTo(const TVKalSite  &to,
-                                     TKalMatrix &F,
-                                     TKalMatrix &Q) const = 0;
+   virtual TVKalState * MoveTo(TVKalSite  &to,
+                               TKalMatrix &F,
+                               TKalMatrix *QPtr = 0) const = 0;
+   virtual TVKalState & MoveTo(TVKalSite  &to,
+                               TKalMatrix &F,
+                               TKalMatrix &Q) const = 0;
 
    virtual void         DebugPrint() const = 0;
 

@@ -16,6 +16,8 @@
 //*   2005/02/23  A.Yamaguchi       Added CalcDapDa method.
 //*   2005/02/XX  A.Yamaguchi       Moved CalcDapDa method to THelicalTrack.
 //*   2005/08/13  K.Fujii           Removed CalcProcessNoise method.
+//*   2010/04/06  K.Fujii           Modified MoveTo to allow a 1-dim hit,
+//*                                 for which pivot is at the xpected hit.
 //*
 //*************************************************************************
 
@@ -50,12 +52,12 @@ public:
                                                                                 
    // Implementation of paraent class pure virtuals
                                                                                 
-   TKalTrackState * MoveTo(const TVKalSite  &to, 
-                                 TKalMatrix &F, 
-                                 TKalMatrix *QPtr = 0) const;
-   TKalTrackState & MoveTo(const TVKalSite  &to, 
-                                 TKalMatrix &F, 
-                                 TKalMatrix &Q) const;
+   TKalTrackState * MoveTo(TVKalSite  &to, 
+                           TKalMatrix &F, 
+                           TKalMatrix *QPtr = 0) const;
+   TKalTrackState & MoveTo(TVKalSite  &to, 
+                           TKalMatrix &F, 
+                           TKalMatrix &Q) const;
    void         DebugPrint() const;
 
    // Derived class methods

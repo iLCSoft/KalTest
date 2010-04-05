@@ -16,6 +16,8 @@
 //*   2005/08/14  K.Fujii        Removed CalcTable(), GetMeasLayerTable(),
 //*                              GetPhiTable(), and GetDir() and added
 //*                              Transport() to do their functions.
+//*   2010/04/06  K.Fujii        Modified Transport() to allow a 1-dim hit,
+//*                              for which pivot is at the xpected hit.
 //*
 //*************************************************************************
 
@@ -81,7 +83,7 @@ void TKalDetCradle::Install(TVKalDetector &det)
 //    propagator matrix (F), and process noise matrix (Q).
 //
 void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
-                              const TKalTrackSite  &to,    // site to
+                                    TKalTrackSite  &to,    // site to
                                     TKalMatrix     &sv,    // state vector
                                     TKalMatrix     &F,     // propagator matrix
                                     TKalMatrix     &Q)     // process noise matrix
@@ -116,7 +118,7 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    Int_t ifr = fridx;
 
    for (Int_t ito=fridx+di; (di>0 && ito<=toidx)||(di<0 && ito>=toidx); ito += di) {
-      if(dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid)) {
+      if (dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid)) {
          const TVMeasLayer   &ml  = *dynamic_cast<TVMeasLayer *>(At(ifr));
          TKalMatrix Qms(sdim, sdim);
          if (IsMSOn()) ml.CalcQms(isout, hel, fid, Qms); // Qms for this step
@@ -139,7 +141,14 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    // ---------------------------------------------------------------------
    //  Move pivot from last expected hit to actural hit at site to
    // ---------------------------------------------------------------------
-   hel.MoveTo(to.GetPivot(), fid, &DF); // move pivot to actual hit (to)
+   if (to.GetDimension() > 1) {
+      hel.MoveTo(to.GetPivot(), fid, &DF); // move pivot to actual hit (to)
+   } else {
+      const TVMeasLayer &ml  = to.GetHit().GetMeasLayer();
+      dynamic_cast<const TVSurface *>(&ml)->CalcXingPointWith(hel, xx, fid);
+      hel.MoveTo(xx, fid, &DF); // move pivot to expected hit
+      to.SetPivot(xx);          // if it is a 1-dim hit
+   }
    hel.PutInto(sv);                     // save updated hel to sv
    F = DF * F;                          // update F accordingly
 }

@@ -14,10 +14,12 @@
 //* (Provides)
 //* 	class TKalDetCradle
 //* (Update Recored)
-//*   2005/02/23  A.Yamaguchi	   Original Version.
+//*   2005/02/23  A.Yamaguchi	 Original Version.
 //*   2005/08/14  K.Fujii        Removed CalcTable(), GetMeasLayerTable(),
 //*                              GetPhiTable(), and GetDir() and added
 //*                              Transport() to do their functions.
+//*   2010/04/06  K.Fujii        Modified Transport() to allow a 1-dim hit,
+//*                              for which pivot is at the xpected hit.
 //*
 //*************************************************************************
 
@@ -52,7 +54,7 @@ public:
    inline virtual Bool_t IsClosed     () const { return fIsClosed;   }
 
    void Transport(const TKalTrackSite  &from, // site from
-                  const TKalTrackSite  &to,   // sit to
+                        TKalTrackSite  &to,   // sit to
                         TKalMatrix     &sv,   // state vector
                         TKalMatrix     &F,    // propagator matrix
                         TKalMatrix     &Q);   // process noise matrix

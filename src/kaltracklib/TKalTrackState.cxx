@@ -15,6 +15,8 @@
 //*   2005/08/14  K.Fujii           Removed CalcProcessNoise() and
 //*                                 let TKalDetCradle::Transport() do its
 //*                                 function.
+//*   2010/04/06  K.Fujii           Modified MoveTo to allow a 1-dim hit,
+//*                                 for which pivot is at the xpected hit.
 //*
 //*************************************************************************
 
@@ -73,19 +75,19 @@ TKalTrackState::TKalTrackState(const TKalMatrix &sv, const TKalMatrix &c,
 //  Implementation of base-class pure virtuals
 // ----------------------------------------------
 //
-TKalTrackState * TKalTrackState::MoveTo(const TVKalSite  &to,
-                                              TKalMatrix &F,
-                                              TKalMatrix *QPtr) const
+TKalTrackState * TKalTrackState::MoveTo(TVKalSite  &to,
+                                        TKalMatrix &F,
+                                        TKalMatrix *QPtr) const
 {	
    if (QPtr) {
       const TKalTrackSite &from   = static_cast<const TKalTrackSite &>(GetSite());
-      const TKalTrackSite &siteto = static_cast<const TKalTrackSite &>(to);
+            TKalTrackSite &siteto = static_cast<TKalTrackSite &>(to);
             TKalDetCradle &det    = const_cast<TKalDetCradle &>
                                        (static_cast<const TKalDetCradle &>
                                           (from.GetHit().GetMeasLayer().GetParent()));
       Int_t sdim = GetDimension();
       TKalMatrix sv(sdim,1);
-      det.Transport(from, siteto, sv, F, *QPtr);
+      det.Transport(from, siteto, sv, F, *QPtr); // siteto's pivot might be modified
       if (sdim == 6) {
          sv(5,0) = (*this)(5,0);
          F (5,5) = 1.;
@@ -96,9 +98,9 @@ TKalTrackState * TKalTrackState::MoveTo(const TVKalSite  &to,
    }
 }
 
-TKalTrackState & TKalTrackState::MoveTo(const TVKalSite  &to,
-                                              TKalMatrix &F,
-                                              TKalMatrix &Q) const
+TKalTrackState & TKalTrackState::MoveTo(TVKalSite  &to,
+                                        TKalMatrix &F,
+                                        TKalMatrix &Q) const
 {
    return *MoveTo(to, F, &Q);
 }

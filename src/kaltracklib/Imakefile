@@ -12,7 +12,8 @@ SRCS          = TVTrackHit.$(SrcSuf) \
 		TKalTrackState.$(SrcSuf) \
 		TKalTrack.$(SrcSuf) \
 		TKalDetCradle.$(SrcSuf) \
-		TVKalDetector.$(SrcSuf)
+		TVKalDetector.$(SrcSuf) \
+		TKalFilterCond.$(SrcSuf)
 
 
 OBJS	      =	$(subst .$(SrcSuf),.$(ObjSuf),$(SRCS)) \
