@@ -10,7 +10,7 @@ XCOMM #  29-May-1999 Add EXTRACXXOPT in CXXFLAGS
 XCOMM #              Define .cxx compile rule here.    
 XCOMM #  4-Feb-2000 soname option in SOFLAGS for Linux is removed.
 XCOMM # 
-XCOMM # $Id: makejsf.tmpl,v 1.9 2010-04-06 03:55:00 fujiik Exp $
+XCOMM # $Id: makejsf.tmpl,v 1.10 2010-04-06 06:45:07 fujiik Exp $
 XCOMM # 
 
 #include "include/LCBASEConfig.h"
@@ -132,7 +132,7 @@ LIBF2C	      = -l$(G77EGCS_LIBNAME)
 CXX           = c++ -O
 CC            = $(CXX)
 RCINTDEFINES  = -D__DARWIN__
-CXXFLAGS      = -m32 -pipe -Wall -fsigned-char -D__BIG_ENDIAN__ \
+CXXFLAGS      = -m32 -pipe -Wall -fsigned-char \
 		$(EXTRACXXOPT) $(RCINTDEFINES) \
 		$(shell root-config --cflags)
 /* DYLIBFLAGS    = -dylib -r -nostartfiles -nodefaultlibs */
