@@ -34,7 +34,8 @@ public:
                   Double_t   sigmax0,
                   Double_t   sigmax1,
                   Double_t   sigmaz,
-                  Bool_t     type = EXVMeasLayer::kActive);
+                  Bool_t     type = EXVMeasLayer::kActive,
+            const Char_t     *name = "TPCML");
    virtual ~EXTPCMeasLayer();
 
    // Parrent's pure virtuals that must be implemented

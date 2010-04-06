@@ -29,8 +29,9 @@ EXTPCMeasLayer::EXTPCMeasLayer(TMaterial &min,
                                Double_t   sigmax0,
                                Double_t   sigmax1,
                                Double_t   sigmaz,
-                               Bool_t     type)
-              : EXVMeasLayer(min, mout, type),
+                               Bool_t     type,
+                         const Char_t     *name)
+              : EXVMeasLayer(min, mout, type, name),
                 TCylinder(r0, lhalf),
                 fSigmaX0(sigmax0),
                 fSigmaX1(sigmax1),

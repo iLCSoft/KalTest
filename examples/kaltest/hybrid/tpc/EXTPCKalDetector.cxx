@@ -9,6 +9,9 @@
 #include "TNode.h"
 #include "TVirtualPad.h"
 
+#include <sstream>
+#include <iomanip>
+
 Double_t EXTPCKalDetector::fgVdrift = 5.e-3;
 ClassImp(EXTPCKalDetector)
 
@@ -55,7 +58,9 @@ EXTPCKalDetector::EXTPCKalDetector(Int_t m)
    // create measurement layers of central tracker
    Double_t r = rmin;
    for (Int_t layer = 0; layer < nlayers; layer++) {
-      Add(new EXTPCMeasLayer(gas, gas, r, lhalf, sigmax0, sigmax1, sigmaz, active));
+      std::stringstream ss;
+      ss << "TPC" << std::setw(3) << std::setfill('0') << layer << std::ends;
+      Add(new EXTPCMeasLayer(gas, gas, r, lhalf, sigmax0, sigmax1, sigmaz, active, ss.str().data()));
       r += rstep;
    }
    Add(new EXTPCMeasLayer(gas, cfrp, outerr-outthick, lhalf, sigmax0, sigmax1, sigmaz, dummy));

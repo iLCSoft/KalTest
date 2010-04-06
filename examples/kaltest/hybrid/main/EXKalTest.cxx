@@ -102,6 +102,14 @@ int main (Int_t argc, Char_t **argv)
    toygld.Install(tpcdet);  // install tpc into its toygld
    toygld.Close();          // close the cradle
    toygld.Sort();           // sort meas. layers from inside to outside
+#if 0
+   EXVMeasLayer *mlpp;
+   TIter nextlyr(&toygld);
+   while ((mlpp = dynamic_cast<EXVMeasLayer *>(nextlyr()))) {
+      cerr << "index = " << mlpp->GetIndex() << " "
+           << "name = "  << mlpp->GetMLName() << endl;
+   }
+#endif
 
    //vtxdet.PowerOff();       // power off vtx not to process hit
    //itdet.PowerOff();        // power off it not to process hit
