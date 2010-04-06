@@ -1,5 +1,7 @@
 #include "../../../../conf/makejsf.tmpl"
 
+CXXFLAGS     += /* -DTWO_DIM */
+
 INSTALLDIR    = ../../../..
 PACKAGENAME   = EXIT
 SOREV         = 2005.01

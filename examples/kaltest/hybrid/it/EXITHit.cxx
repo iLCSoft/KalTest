@@ -55,7 +55,9 @@ TKalMatrix EXITHit::XvToMv(const TVector3 &xv, Double_t /*t0*/) const
    while (dphi >  kPi) dphi -= kTwoPi;
 
    h(0,0)  = r * (phim + dphi);
+#ifdef TWO_DIM
    h(1,0) += 0.;
+#endif
 
    return h;
 }

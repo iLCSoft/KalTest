@@ -47,20 +47,19 @@ TKalTrackSite::TKalTrackSite(Int_t m, Int_t p)
 }
 
 TKalTrackSite::TKalTrackSite(const TVTrackHit &ht,
-                                   Int_t       m, 
                                    Int_t       p)
-              : TVKalSite(m,p),
-                fHitPtr((TVTrackHit *)&ht), 
+              : TVKalSite(ht.GetDimension(),p),
+                fHitPtr(static_cast<const TVTrackHit *>(&ht)), 
                 fX0(),
                 fIsHitOwner(kFALSE),
                 fCondPtr(0)
 {
-   for (Int_t i=0; i<m; i++) {
+   for (Int_t i=0; i<ht.GetDimension(); i++) {
       GetMeasVec     ()(i,0) = ht.GetX(i);
       GetMeasNoiseMat()(i,i) = TMath::Power(ht.GetDX(i),2);
    }
    // Leave the pivot at the origin for a 1-dim hit
-   if (m > 1) fX0 = ht.GetMeasLayer().HitToXv(ht);
+   if (ht.GetDimension() > 1) fX0 = ht.GetMeasLayer().HitToXv(ht);
 }
 
 TKalTrackSite::~TKalTrackSite()

@@ -36,7 +36,6 @@ class TKalTrackSite : public TVKalSite {
 public:
    TKalTrackSite(Int_t m = kMdim, Int_t p = kSdim);
    TKalTrackSite( const TVTrackHit &ht, 
-                        Int_t       m = kMdim, 
                         Int_t       p = kSdim);
    ~TKalTrackSite();
 
@@ -66,10 +65,10 @@ private:
                                   Double_t   &phi) const;
 
 private:
-   TVTrackHit     *fHitPtr;     // pointer to corresponding hit
-   TVector3        fX0;         // pivot
-   Bool_t          fIsHitOwner; // true if site owns hit
-   TKalFilterCond *fCondPtr;    // pointer to filter condition object
+   const TVTrackHit     *fHitPtr;     // pointer to corresponding hit
+         TVector3        fX0;         // pivot
+         Bool_t          fIsHitOwner; // true if site owns hit
+         TKalFilterCond *fCondPtr;    // pointer to filter condition object
 
    ClassDef(TKalTrackSite,1)  // sample measurement site class
 };

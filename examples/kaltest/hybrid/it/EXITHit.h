@@ -7,6 +7,7 @@
 
 class EXITHit : public TVTrackHit {
 public:
+#ifdef TWO_DIM
    EXITHit(Int_t m = kMdim);
 
    EXITHit(const EXITMeasLayer &ms,
@@ -15,6 +16,16 @@ public:
            const TVector3      &xx,
                  Double_t       b,
                  Int_t          m = kMdim);
+#else
+   EXITHit(Int_t m = 1);
+
+   EXITHit(const EXITMeasLayer &ms,
+                 Double_t      *x,
+                 Double_t      *dx,
+           const TVector3      &xx,
+                 Double_t       b,
+                 Int_t          m = 1);
+#endif
 
    virtual ~EXITHit();
 

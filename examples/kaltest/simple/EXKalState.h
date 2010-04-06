@@ -44,12 +44,12 @@ public:
                                                                                 
    // Implementation of paraent class pure virtuals
                                                                                 
-   EXKalState * MoveTo(const TVKalSite  &to, 
-                             TKalMatrix &F, 
-                             TKalMatrix *QPtr = 0) const;
-   EXKalState & MoveTo(const TVKalSite  &to, 
-                             TKalMatrix &F, 
-                             TKalMatrix &Q) const;
+   EXKalState * MoveTo(TVKalSite  &to, 
+                       TKalMatrix &F, 
+                       TKalMatrix *QPtr = 0) const;
+   EXKalState & MoveTo(TVKalSite  &to, 
+                       TKalMatrix &F, 
+                       TKalMatrix &Q) const;
    void         DebugPrint() const;
 
    // Derived class methods

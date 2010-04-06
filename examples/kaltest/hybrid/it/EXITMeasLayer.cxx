@@ -52,9 +52,14 @@ TKalMatrix EXITMeasLayer::XvToMv(const TVector3 &xv) const
    //	mv(0,0) = r * phi 
    //     (1,0) = z
 
+#ifdef TWO_DIM
    TKalMatrix mv(kMdim,1);
    mv(0,0)  = GetR() * TMath::ATan2(xv.Y(), xv.X());
    mv(1,0)  = xv.Z();
+#else
+   TKalMatrix mv(1,1);
+   mv(0,0)  = GetR() * TMath::ATan2(xv.Y(), xv.X());
+#endif
    return mv;
 }
 
@@ -69,7 +74,11 @@ TVector3 EXITMeasLayer::HitToXv(const TVTrackHit &vht) const
    const EXITHit &ht = dynamic_cast<const EXITHit &>(vht);
 
    Double_t phi = ht(0,0) / GetR();
+#ifdef TWO_DIM
    Double_t z   = ht(1,0);
+#else
+   Double_t z   = 0;
+#endif
    Double_t x   = GetR() * TMath::Cos(phi);
    Double_t y   = GetR() * TMath::Sin(phi);
 
@@ -101,11 +110,15 @@ void EXITMeasLayer::CalcDhDa(const TVTrackHit &vht,
       H(0,i) = - (yv / xxyy) * dxphiada(0,i) 
                + (xv / xxyy) * dxphiada(1,i);
       H(0,i) *= GetR();
+#ifdef TWO_DIM
       H(1,i) =  dxphiada(2,i);
+#endif
    }
    if (sdim == 6) {
       H(0,sdim-1) = 0.;
+#ifdef TWO_DIM
       H(1,sdim-1) = 0.;
+#endif
    }
 }
 
@@ -114,19 +127,32 @@ void EXITMeasLayer::ProcessHit(const TVector3  &xx,
 {
    TKalMatrix h    = XvToMv(xx);
    Double_t   rphi = h(0, 0);
+#ifdef TWO_DIM
    Double_t   z    = h(1, 0);
+#endif
 
    Double_t dx = GetSigmaX();
+#ifdef TWO_DIM
    Double_t dz = GetSigmaZ();
+#endif
    rphi += gRandom->Gaus(0., dx);   // smearing rphi
+#ifdef TWO_DIM
    z    += gRandom->Gaus(0., dz);   // smearing z
+#endif
 
+#ifdef TWO_DIM
    Double_t meas [2];
    Double_t dmeas[2];
    meas [0] = rphi;
    meas [1] = z;
    dmeas[0] = dx;
    dmeas[1] = dz;
+#else
+   Double_t meas [1];
+   Double_t dmeas[1];
+   meas [0] = rphi;
+   dmeas[0] = dx;
+#endif
 
    Double_t b = EXITKalDetector::GetBfield();
    hits.Add(new EXITHit(*this, meas, dmeas, xx, b));

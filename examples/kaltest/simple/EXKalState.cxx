@@ -61,9 +61,9 @@ EXKalState::EXKalState(const TKalMatrix &sv, const TKalMatrix &c,
 // Implementation of base-class pure virtuals
 //
 
-EXKalState * EXKalState::MoveTo(const TVKalSite  &to,
-                                      TKalMatrix &F,
-                                      TKalMatrix *QPtr) const
+EXKalState * EXKalState::MoveTo(TVKalSite  &to,
+                                TKalMatrix &F,
+                                TKalMatrix *QPtr) const
 {
    Int_t p = GetDimension();
    for (Int_t i=0; i<p; i++) F(i,i) = 1.;
@@ -75,9 +75,9 @@ EXKalState * EXKalState::MoveTo(const TVKalSite  &to,
    }
 }
 
-EXKalState & EXKalState::MoveTo(const TVKalSite  &to,
-                                      TKalMatrix &F,
-                                      TKalMatrix &Q) const
+EXKalState & EXKalState::MoveTo(TVKalSite  &to,
+                                TKalMatrix &F,
+                                TKalMatrix &Q) const
 {
    return *MoveTo(to, F, &Q);
 }
