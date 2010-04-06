@@ -62,7 +62,7 @@ int main (Int_t argc, Char_t **argv)
          nevents = atoi(argv[1+offset]);
          pt      = atof(argv[2+offset]);
          t0in    = atof(argv[3+offset]);
-         cosmin = cosmax = atof(argv[4+offset]);
+         cosmin  = cosmax = atof(argv[4+offset]);
          break;
       case 4: 
          nevents = atoi(argv[1+offset]);
