@@ -23,6 +23,7 @@
 #include "TString.h"
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 
 #define SAVE_RESIDUAL
@@ -102,14 +103,6 @@ int main (Int_t argc, Char_t **argv)
    toygld.Install(tpcdet);  // install tpc into its toygld
    toygld.Close();          // close the cradle
    toygld.Sort();           // sort meas. layers from inside to outside
-#if 0
-   EXVMeasLayer *mlpp;
-   TIter nextlyr(&toygld);
-   while ((mlpp = dynamic_cast<EXVMeasLayer *>(nextlyr()))) {
-      cerr << "index = " << mlpp->GetIndex() << " "
-           << "name = "  << mlpp->GetMLName() << endl;
-   }
-#endif
 
    //vtxdet.PowerOff();       // power off vtx not to process hit
    //itdet.PowerOff();        // power off it not to process hit
@@ -128,9 +121,9 @@ int main (Int_t argc, Char_t **argv)
    Int_t nitems  = 7;
    Int_t itemID[2000][3];
    TIter nextlayer(&toygld);
-   TVMeasLayer *mlp;
-   while ((mlp = dynamic_cast<TVMeasLayer *>(nextlayer()))) {
-      TVMeasLayer &ml = *mlp;
+   EXVMeasLayer *mlp;
+   while ((mlp = dynamic_cast<EXVMeasLayer *>(nextlayer()))) {
+      EXVMeasLayer &ml = *mlp;
       if (ml.IsActive()) {
          Int_t index = ml.GetIndex();
          sout << ":dxin" << setw(3) << setfill('0') << index;
@@ -139,6 +132,10 @@ int main (Int_t argc, Char_t **argv)
 	 itemID[index][1] = nitems++;
          sout << ":z" << setw(3) << setfill('0') << index;
 	 itemID[index][2] = nitems++;
+#if 1
+         cerr << "index = " << setw(4) << setfill(' ') << index << " "
+              << "name = "  << ml.GetMLName() << endl;
+#endif
       }
    }
    Double_t *data = new Double_t [nitems];
