@@ -109,7 +109,9 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    Double_t fid     = 0.;      // deflection angle from the last hit
 
    Int_t sdim = sv.GetNrows();                // # track parameters
-   for (Int_t p=0; p<sdim; p++) F(p, p) = 1.; // initialize F to unity
+   F.UnitMatrix();
+   Q.Zero();
+
    TKalMatrix DF(sdim, sdim);                 // propagator matrix segment
 
    // ---------------------------------------------------------------------
