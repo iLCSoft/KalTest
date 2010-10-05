@@ -15,7 +15,7 @@ FIND_PATH( KalTest_INCLUDE_DIR
 	NO_DEFAULT_PATH
 )
 IF( NOT KalTest_INCLUDE_DIR )
-    MESSAGE( STATUS "Check for KalTest: ${KalTest_HOME}"
+    MESSAGE( STATUS "Check for KalTest: @CMAKE_INSTALL_PREFIX@"
 					" -- failed to find KalTest include directory!!" )
 ELSE( NOT KalTest_INCLUDE_DIR )
     MARK_AS_ADVANCED( KalTest_INCLUDE_DIR )
@@ -37,14 +37,14 @@ FOREACH( libname ${KalTest_LIB_NAMES} )
 
     FIND_LIBRARY( KalTest_LIB_${ulibname}
         NAMES ${libname}
-        PATHS ${KalTest_HOME}
+        PATHS @CMAKE_INSTALL_PREFIX@
         PATH_SUFFIXES lib
         NO_DEFAULT_PATH )
 
     IF( NOT KalTest_LIB_${ulibname} )
         SET( KalTest_FINDLIB_FAILED TRUE )
         IF( NOT KalTest_FIND_QUIETLY )
-            MESSAGE( STATUS "Check for KalTest: ${KalTest_HOME}"
+            MESSAGE( STATUS "Check for KalTest: @CMAKE_INSTALL_PREFIX@"
                     " -- failed to find KalTest ${libname} library!!" )
         ENDIF()
     ELSE()
@@ -59,12 +59,12 @@ IF( KalTest_INCLUDE_DIR AND NOT KalTest_FINDLIB_FAILED )
     SET( KalTest_LIBRARY_DIRS "@CMAKE_INSTALL_PREFIX@/lib" )
 	SET( KalTest_LIBRARIES ${KalTest_LIBS} )
     MARK_AS_ADVANCED( KalTest_INCLUDE_DIRS KalTest_LIBRARY_DIRS KalTest_LIBRARIES )
-	MESSAGE( STATUS "Check for KalTest: ${KalTest_HOME} -- works" )
+	MESSAGE( STATUS "Check for KalTest: @CMAKE_INSTALL_PREFIX@ -- works" )
 ELSE()
 	IF( KalTest_FIND_REQUIRED )
-		MESSAGE( FATAL_ERROR "Check for KalTest: ${KalTest_HOME} -- failed!!" )
+		MESSAGE( FATAL_ERROR "Check for KalTest: @CMAKE_INSTALL_PREFIX@ -- failed!!" )
     ELSE( KalTest_FIND_REQUIRED )
-        MESSAGE( STATUS "Check for KalTest: ${KalTest_HOME}"
+        MESSAGE( STATUS "Check for KalTest: @CMAKE_INSTALL_PREFIX@"
 						" -- failed!! will skip this package..." )
     ENDIF( KalTest_FIND_REQUIRED )
 ENDIF()
