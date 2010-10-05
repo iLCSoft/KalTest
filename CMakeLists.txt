@@ -129,10 +129,10 @@ MESSAGE( STATUS )
 
 # export build settings
 INCLUDE( CMakeExportBuildSettings )
-CMAKE_EXPORT_BUILD_SETTINGS( "KALTESTBuildSettings.cmake" )
-INSTALL( FILES "${PROJECT_BINARY_DIR}/KALTESTBuildSettings.cmake" DESTINATION lib/cmake )
+CMAKE_EXPORT_BUILD_SETTINGS( "KalTestBuildSettings.cmake" )
+INSTALL( FILES "${PROJECT_BINARY_DIR}/KalTestBuildSettings.cmake" DESTINATION lib/cmake )
 
 # export library dependencies (keep this as the last line in the file)
-EXPORT_LIBRARY_DEPENDENCIES( "KALTESTLibDeps.cmake" )
-INSTALL( FILES "${PROJECT_BINARY_DIR}/KALTESTLibDeps.cmake" DESTINATION lib/cmake )
+EXPORT_LIBRARY_DEPENDENCIES( "KalTestLibDeps.cmake" )
+INSTALL( FILES "${PROJECT_BINARY_DIR}/KalTestLibDeps.cmake" DESTINATION lib/cmake )
 
