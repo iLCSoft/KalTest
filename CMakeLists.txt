@@ -19,6 +19,7 @@ PROJECT( KalTest )
 
 # project options
 OPTION( BUILD_SHARED_LIBS "Set to OFF to build static libraries" ON )
+OPTION( BUILD_EXAMPLES "Set to ON to build examples" OFF )
 
 # project version
 SET( KALTEST_MAJOR_VERSION 0 )
@@ -85,7 +86,7 @@ INCLUDE( cmake/MacroRootDict.cmake )
 # KalTest library
 ADD_SUBDIRECTORY( src )
 
-# build with 'make examples'
+# examples (build with 'make examples')
 ADD_SUBDIRECTORY( examples/kaltest )
 ###################################################################################
 
@@ -116,6 +117,7 @@ MESSAGE( STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}" )
 #IF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 #    MESSAGE( STATUS "BUILD_32BIT_COMPATIBLE = ${BUILD_32BIT_COMPATIBLE}" )
 #ENDIF()
+MESSAGE( STATUS "BUILD_EXAMPLES = ${BUILD_EXAMPLES}" )
 MESSAGE( STATUS "Change a value with: cmake -D<Variable>=<Value>" )
 MESSAGE( STATUS "-------------------------------------------------------------------------------" )
 MESSAGE( STATUS )

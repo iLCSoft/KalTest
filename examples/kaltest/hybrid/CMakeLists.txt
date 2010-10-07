@@ -12,22 +12,22 @@ FOREACH( input_dir ${hybrid_input_dirs} )
     AUX_SOURCE_DIRECTORY( ${input_dir} hybrid_sources )
 
     PREPARE_ROOT_DICT_HEADERS( ${input_dir} )
+
     GEN_ROOT_DICT_SOURCES( ${input_dir}Dict.cxx )
 
     LIST( APPEND hybrid_sources ${ROOT_DICT_OUTPUT_SOURCES} )
 
 ENDFOREACH()
 
+INCLUDE_DIRECTORIES( main )
+INCLUDE_DIRECTORIES( ${ROOT_DICT_INCLUDE_DIRS} )
 
 AUX_SOURCE_DIRECTORY( main hybrid_sources )
 
-INCLUDE_DIRECTORIES( main )
-INCLUDE_DIRECTORIES( ${ROOT_INCLUDE_DIRS} )
-INCLUDE_DIRECTORIES( ${ROOT_DICT_INCLUDE_DIRS} )
+# for backwards compatibility with cmake 2.4
+IF( "${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" LESS 2.6 )
+    ADD_CUSTOM_TARGET( examples )
+ENDIF()
 
-ADD_EXECUTABLE( hybrid EXCLUDE_FROM_ALL ${hybrid_sources} )
-
-ADD_DEPENDENCIES( examples hybrid )
-
-TARGET_LINK_LIBRARIES( hybrid KalTest )
+ADD_KALTEST_EXAMPLE( hybrid ${hybrid_sources} )
 
