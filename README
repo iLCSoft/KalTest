@@ -1,3 +1,85 @@
+
+-------------------------------------------------------------------------------
+  KalTest Package now part of iLCSoft
+  
+  ( F.Gaede, 2010/10/08)
+-------------------------------------------------------------------------------
+
+The KalTest package has been included in the iLCSoft framework and can be 
+installed with ilcinstall and built with cmake. The old Makefiles still work,
+see description below (2005/08/26).
+
+
+---- Building the KalTest library with cmake : 
+
+  mkdir build
+  cd build
+
+  # initialize ROOT, e.g.
+  . /afs/desy.de/project/ilcsoft/sw/i386_gcc34_sl4/root/5.27.06/bin/thisroot.sh
+
+  # configure cmake
+  cmake -DROOT_HOME=$ROOTSYS ..
+
+  #build:
+  make install
+
+
+---- Building against the KalTest Library with cmake:
+
+ a) in an iLCSoft package, simply add KalTest to your project dependencies in the CMakeLists.txt, e.g:
+
+
+      SET( ${PROJECT_NAME}_DEPENDS "Marlin LCIO GEAR KalTest")
+
+     
+
+ b) use the usual cmake mechanism in your CMakeLists.txt :
+
+      FIND_PACKAGE( KalTest ) 
+    
+      # -- and then use the following variables, as needed:
+      #
+      #  KalTest_INCLUDE_DIRS KalTest_LIBRARY_DIRS KalTest_LIBRARIES 
+      #
+      # e.g: 
+
+      INCLUDE_DIRECTORIES( ${KalTest_INCLUDE_DIRS} )
+    
+      TARGET_LINK_LIBRARIES( ${LIBNAME} ${KalTest_LIBRARIES})
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  Note: with a cmake install the KalTest header files will be installed in 
+        ./include/kaltest  so make sure you use this in your C++ files, eg:
+
+      #include "kaltest/TKalTrackState.h"
+      #include "kaltest/TKalTrackSite.h"
+      #include "kaltest/TVKalState.h"
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+=====================================================================================
+
+  Release Notes:
+
+=====================================================================================
+	
+ --------
+| v01-00 |  - first release as part of iLCSoft - no code changes.
+ --------     (except header in subdirectory 'kaltestl, when installed with cmake)
+ 
+
+
+
+
+
+
+
 -------------------------------------------------------------------------------
 2005/08/26    KalTest Package
 -------------------------------------------------------------------------------
