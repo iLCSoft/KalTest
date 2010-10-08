@@ -22,8 +22,8 @@ OPTION( BUILD_SHARED_LIBS "Set to OFF to build static libraries" ON )
 OPTION( BUILD_EXAMPLES "Set to ON to build examples" OFF )
 
 # project version
-SET( KALTEST_MAJOR_VERSION 0 )
-SET( KALTEST_MINOR_VERSION 6 )
+SET( KALTEST_MAJOR_VERSION 1 )
+SET( KALTEST_MINOR_VERSION 0 )
 SET( KALTEST_PATCH_LEVEL 0 )
 
 # set default install prefix to project root directory
