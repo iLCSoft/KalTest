@@ -100,7 +100,13 @@ Double_t TVMeasLayer::GetEnergyLoss(      Bool_t    isoutgoing,
    Double_t path = hel.IsInB()
                  ? TMath::Abs(hel.GetRho()*df)*cslinv
                  : TMath::Abs(df)*cslinv;
+
+   //fg: switched from using cm to mm in KalTest - material (density) and energy still in GeV and cm
+   path /= 10. ; 
+
    Double_t edep = dedx * dnsty * path;
+
+
    Double_t cpaa = TMath::Sqrt(tnl21 / (mom2 + edep
                  * (edep + 2. * TMath::Sqrt(mom2 + mass * mass))));
    Double_t dcpa = TMath::Abs(cpa) - cpaa;
@@ -147,6 +153,10 @@ void TVMeasLayer::CalcQms(      Bool_t       isoutgoing,
    Double_t path = hel.IsInB()
                  ? TMath::Abs(hel.GetRho()*df)*cslinv
                  : TMath::Abs(df)*cslinv;
+
+   //fg: switched from using cm to mm in KalTest - material (density) and energy still in GeV and cm
+   path /= 10. ; 
+
    Double_t xl   = path * x0inv;
    // ------------------------------------------------------------------
    // Very Crude Treatment!!

@@ -116,9 +116,11 @@ public:
 
    inline virtual void SetMagField(Double_t b)
    {
-      // units: cm, sec, kGaus
-      if (b != 0.) fAlpha = kGiga/kLightVelocity*100./(b/10);
-      else         fAlpha = kInfinity;
+     // // units: mm, sec, Tesla
+     if (b != 0.) fAlpha = kGiga/kLightVelocity*1000./b;
+     // units: cm, sec, kGaus
+     //if (b != 0.) fAlpha = kGiga/kLightVelocity*100./(b/10);
+     else         fAlpha = kInfinity;
    }
 	
    inline virtual Bool_t IsInB() const { return fAlpha < kInfinity ? kTRUE : kFALSE; }
@@ -133,11 +135,11 @@ protected:
    Double_t fAlpha;     // alpha
 
 #if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
-   static const Double_t kLightVelocity = 2.99792458e8; //! light velocity [cm/sec]
+   static const Double_t kLightVelocity = 2.99792458e8; //! light velocity [m/sec]
    static const Double_t kGiga          = 1.0e9;        //! Giga = 10^{9}
    static const Double_t kInfinity      = 1.e+20;       //! infinity
 #else
-   static const Double_t kLightVelocity;                //! light velocity [cm/sec]
+   static const Double_t kLightVelocity;                //! light velocity [m/sec]
    static const Double_t kGiga;                         //! Giga = 10^{9}
    static const Double_t kInfinity;                     //! infinity
 #endif
