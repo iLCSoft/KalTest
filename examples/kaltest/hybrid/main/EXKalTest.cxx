@@ -26,7 +26,15 @@
 #include <iomanip>
 #include <sstream>
 
-#define SAVE_RESIDUAL
+
+/**************************************************************************
+ * Changes:
+ * F.Gaede, 10.11.2010 : added track parameters d0,tnl and errors^2 
+ *                       d0err2,fi0err2,cpaerr2,dzerr2,tnlerr2 to ntuple
+ **************************************************************************/
+
+//FG: if this is active errors^2 for fi0, tnl and cpa are partly negative !?
+//#define SAVE_RESIDUAL
 
 static const Bool_t gkDir = kIterBackward;
 //static const Bool_t gkDir = kIterForward;
@@ -116,9 +124,14 @@ int main (Int_t argc, Char_t **argv)
    TFile hfile("h.root","RECREATE","KalTest");
 
    stringstream sout;
-   sout << "ndf:chi2:cl:fi0:cpa:cs:t0"; // 7 items
+   //   sout << "ndf:chi2:cl:fi0:cpa:cs:t0"; // 7 items
+   sout << "ndf:chi2:cl:d0:fi0:cpa:dz:tnl:cs:t0:d0err2:fi0err2:cpaerr2:dzerr2:tnlerr2";  // 15 items
+
 #ifdef SAVE_RESIDUAL
-   Int_t nitems  = 7;
+   //   Int_t nitems  = 7;
+   Int_t nitems0  = 15;
+   Int_t nitems  = nitems0 ;
+   
    Int_t itemID[2000][3];
    TIter nextlayer(&toygld);
    EXVMeasLayer *mlp;
@@ -294,22 +307,46 @@ int main (Int_t argc, Char_t **argv)
       Int_t    ndf  = kaltrack.GetNDF();
       Double_t chi2 = kaltrack.GetChi2();
       Double_t cl   = TMath::Prob(chi2, ndf);
-      Double_t fi0  = cursite.GetCurState()(1, 0); 
-      Double_t cpa  = cursite.GetCurState()(2, 0); 
-      Double_t tnl  = cursite.GetCurState()(4, 0); 
-      Double_t cs   = tnl/TMath::Sqrt(1.+tnl*tnl);
-      Double_t t0   = cursite.GetCurState()(5, 0); 
+      Double_t d0  =  cursite.GetCurState()(0, 0 ); 
+      Double_t fi0  = cursite.GetCurState()(1, 0 ); 
+      Double_t cpa  = cursite.GetCurState()(2, 0 ); 
+      Double_t dz   = cursite.GetCurState()(3, 0 ); 
+      Double_t tnl  = cursite.GetCurState()(4, 0 ); 
+      Double_t cs   = tnl/TMath::Sqrt(1.+tnl*tnl );
+      Double_t t0   = cursite.GetCurState()(5, 0 ); 
+
+      const TKalMatrix& covK = cursite.GetCurState().GetCovMat() ; 
+
+      // errors^2 of track parameters
+      double d0err2  = covK( 0 , 0 )   ;
+      double fi0err2 = covK( 1 , 1 )   ;
+      double cpaerr2 = covK( 2 , 2 )   ;
+      double dzerr2  = covK( 3 , 3 )   ;
+      double tnlerr2 = covK( 4 , 4 )   ;
+
+
 #ifndef SAVE_RESIDUAL
-      hTrackMonitor->Fill(ndf, chi2, cl, fi0, cpa, cs, t0);
+      hTrackMonitor->Fill(ndf, chi2, cl, d0, fi0, cpa, dz, tnl , cs, t0 , 
+			  d0err2, fi0err2, cpaerr2, dzerr2, tnlerr2 ) ;
+
 #else
-      data[0] = ndf;
-      data[1] = chi2;
-      data[2] = cl;
-      data[3] = fi0;
-      data[4] = cpa;
-      data[5] = cs;
-      data[6] = t0;
-      for (Int_t i=7; i<nitems; i++) data[i] = 9999999.;
+      data[0] = ndf ;
+      data[1] = chi2 ;
+      data[2] = cl ;
+      data[3] = d0 ;
+      data[4] = fi0 ;
+      data[5] = cpa ;
+      data[6] = dz ;
+      data[7] = tnl ;
+      data[8] = cs ;
+      data[9] = t0 ;
+      data[10] = d0err2 ;
+      data[11] = fi0err2 ;
+      data[12] = cpaerr2 ;
+      data[13] = dzerr2 ;
+      data[14] = tnlerr2 ;
+
+      for (Int_t i=nitems0; i<nitems; i++) data[i] = 9999999.;
       TIter nextsite(&kaltrack);
             nextsite(); // skip dummy site
       TKalTrackSite *sitep;
