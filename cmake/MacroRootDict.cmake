@@ -72,15 +72,16 @@ MACRO( GEN_ROOT_DICT_SOURCES ROOT_DICT_INPUT_SOURCES )
     # need to prefix all include dirs with -I
     set( _dict_includes )
     FOREACH( _inc ${ROOT_DICT_INCLUDE_DIRS} )
-        #SET( _dict_includes "${_dict_includes}\t-I${_inc}")  #fg: the \t fixes a wired string expansion 
-        SET( _dict_includes ${_dict_includes} -I${_inc} )
+        SET( _dict_includes "${_dict_includes}\t-I${_inc}")  #fg: the \t fixes a wired string expansion 
+        #SET( _dict_includes ${_dict_includes} -I${_inc} )
     ENDFOREACH()
 
 
     SET( ROOT_DICT_OUTPUT_SOURCES )
     FOREACH( _dict_src_filename ${ROOT_DICT_INPUT_SOURCES} )
+        STRING( REPLACE "/" "_" _dict_src_filename ${_dict_src_filename} )
         SET( _dict_src_file ${ROOT_DICT_OUTPUT_DIR}/${_dict_src_filename} )
-        STRING(REGEX REPLACE "^(.*)\\.(.*)$" "\\1.h" _dict_hdr_file "${_dict_src_file}")
+        STRING( REGEX REPLACE "^(.*)\\.(.*)$" "\\1.h" _dict_hdr_file "${_dict_src_file}" )
         ADD_CUSTOM_COMMAND(
             OUTPUT  ${_dict_src_file} ${_dict_hdr_file}
             COMMAND mkdir ARGS -p ${ROOT_DICT_OUTPUT_DIR}
