@@ -55,7 +55,7 @@ ENDFOREACH()
 # set variables and display results
 IF( KalTest_INCLUDE_DIR AND NOT KalTest_FINDLIB_FAILED )
     SET( KalTest_FOUND TRUE )
-    SET( KalTest_INCLUDE_DIRS ${KalTest_INCLUDE_DIR} )
+    SET( KalTest_INCLUDE_DIRS ${KalTest_INCLUDE_DIR} ${KalTest_INCLUDE_DIR}/kaltest )
     SET( KalTest_LIBRARY_DIRS "@CMAKE_INSTALL_PREFIX@/lib" )
 	SET( KalTest_LIBRARIES ${KalTest_LIBS} )
     MARK_AS_ADVANCED( KalTest_INCLUDE_DIRS KalTest_LIBRARY_DIRS KalTest_LIBRARIES )
