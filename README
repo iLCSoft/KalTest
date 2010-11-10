@@ -24,6 +24,13 @@ see description below (2005/08/26).
   #build:
   make install
 
+  # --- optionally the examples can be built with
+
+  cmake -DROOT_HOME=$ROOTSYS -DBUILD_EXAMPLES=1 ..
+  make
+
+  # ---creates the example binaries simple and hybrid in build/bin 
+ 
 
 ---- Building against the KalTest Library with cmake:
 
@@ -70,14 +77,18 @@ see description below (2005/08/26).
 =====================================================================================
 	
  --------
-| v01-00 |  - first release as part of iLCSoft - no code changes.
- --------     (except header in subdirectory 'kaltestl, when installed with cmake)
- 
+| v01-00 |  - first release as part of iLCSoft
+ --------      
+            - introduced new default units: mm, Tesla (was cm, kGauss)
+                 
+            - introduced cmake build files
 
+            - updated 
+              examples/kaltest/hybrid/main/EXKalTest.cxx
+              to write track parameters d0 and tnl and errors^2 to ntuple
 
-
-
-
+              [ Note: default units are not yet changed in example, thus the 
+               detector is scaled to 1/10 of its size with the BField 10 times larger ...]
 
 
 -------------------------------------------------------------------------------
