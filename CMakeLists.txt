@@ -78,8 +78,10 @@ ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
 #-----------------------------------------------------
 
 # macros for generating root dict sources with rootcint
+LIST( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
+FIND_PACKAGE( ROOT REQUIRED )
 SET( ROOT_DICT_CINT_DEFINITIONS "-DHANDLE_DICT_EXCEPTIONS=IGNORED_FOR_CINT" )
-INCLUDE( cmake/MacroRootDict.cmake )
+INCLUDE( ${ROOT_DICT_MACROS_FILE} )
 
 ###################################################################################
 
