@@ -9,13 +9,15 @@ ENDFOREACH()
 #MESSAGE( STATUS "ROOT_DICT_INCLUDE_DIRS: ${ROOT_DICT_INCLUDE_DIRS}" )
 
 
-SET( HEADERS_INSTALL_DIR "include/kaltest" )
-
 FOREACH( lib_input_dir ${lib_input_dirs} )
 
     AUX_SOURCE_DIRECTORY( ${lib_input_dir} lib_sources )
 
     PREPARE_ROOT_DICT_HEADERS( ${lib_input_dir} )
+
+    INSTALL( DIRECTORY ${lib_input_dir}/ DESTINATION "include/kaltest"
+        FILES_MATCHING PATTERN "*.h" PATTERN "LinkDef.h" EXCLUDE )
+
     GEN_ROOT_DICT_SOURCES( ${lib_input_dir}Dict.cxx )
     
     LIST( APPEND lib_sources ${ROOT_DICT_OUTPUT_SOURCES} )
