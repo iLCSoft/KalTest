@@ -19,14 +19,14 @@ see description below (2005/08/26).
   . /afs/desy.de/project/ilcsoft/sw/i386_gcc34_sl4/root/5.27.06/bin/thisroot.sh
 
   # configure cmake
-  cmake -DROOT_HOME=$ROOTSYS ..
+  cmake -DROOT_DIR=$ROOTSYS ..
 
   #build:
   make install
 
   # --- optionally the examples can be built with
 
-  cmake -DROOT_HOME=$ROOTSYS -DBUILD_EXAMPLES=1 ..
+  cmake -DROOT_DIR=$ROOTSYS -DBUILD_EXAMPLES=1 ..
   make
 
   # ---creates the example binaries simple and hybrid in build/bin 
@@ -34,25 +34,26 @@ see description below (2005/08/26).
 
 ---- Building against the KalTest Library with cmake:
 
- a) in an iLCSoft package, simply add KalTest to your project dependencies in the CMakeLists.txt, e.g:
+
+    # configure your project with option -DKalTest_DIR as follows:
+    cmake -DKalTest_DIR=/path/to/KalTest ..
 
 
-      SET( ${PROJECT_NAME}_DEPENDS "Marlin LCIO GEAR KalTest")
+    # add the usual cmake mechanism to the CMakeLists.txt of your project, e.g.:
 
-     
+      FIND_PACKAGE( KalTest ) # if KalTest is optional
 
- b) use the usual cmake mechanism in your CMakeLists.txt :
+      IF( KalTest_FOUND )
+        INCLUDE_DIRECTORIES( ${KalTest_INCLUDE_DIRS} )
+        TARGET_LINK_LIBRARIES( ${LIBNAME} ${KalTest_LIBRARIES})
+        #ADD_DEFINITIONS( "-DMYPKG_USE_KALTEST" ) # just an example to activate source code
+      ENDIF( KalTest_FOUND )
 
-      FIND_PACKAGE( KalTest ) 
-    
-      # -- and then use the following variables, as needed:
-      #
-      #  KalTest_INCLUDE_DIRS KalTest_LIBRARY_DIRS KalTest_LIBRARIES 
-      #
-      # e.g: 
+
+      # if your package doesn't make sense without KalTest, use the REQUIRED option:
+      FIND_PACKAGE( KalTest REQUIRED ) # gives an error if KalTest is not found
 
       INCLUDE_DIRECTORIES( ${KalTest_INCLUDE_DIRS} )
-    
       TARGET_LINK_LIBRARIES( ${LIBNAME} ${KalTest_LIBRARIES})
 
 
