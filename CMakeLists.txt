@@ -79,6 +79,10 @@ ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
 
 # macros for generating root dict sources with rootcint
 LIST( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
+# fix for backwards compatibility
+IF( NOT ROOT_DIR AND DEFINED ROOT_HOME )
+    SET( ROOT_DIR ${ROOT_HOME} )
+ENDIF()
 FIND_PACKAGE( ROOT REQUIRED )
 SET( ROOT_DICT_CINT_DEFINITIONS "-DHANDLE_DICT_EXCEPTIONS=IGNORED_FOR_CINT" )
 INCLUDE( ${ROOT_DICT_MACROS_FILE} )
