@@ -1,70 +1,70 @@
-###############################################
+##############################################################################
 # cmake configuration file for KalTest
-# @author Jan Engels, DESY
-###############################################
+#
+# requires:
+#   MacroCheckPackageLibs.cmake for checking package libraries
+#
+# returns following variables:
+#
+#   KalTest_FOUND      : set to TRUE if KalTest found
+#       if FIND_PACKAGE called with REQUIRED and COMPONENTS arguments
+#       KalTest_FOUND is only set to TRUE if ALL components are also found
+#       if REQUIRED is NOT set components may or may not be available
+#
+#   KalTest_ROOT       : path to this KalTest installation
+#   KalTest_LIBRARIES  : list of KalTest libraries (NOT including COMPONENTS)
+#   KalTest_INCLUDE_DIRS  : list of paths to be used with INCLUDE_DIRECTORIES
+#   KalTest_LIBRARY_DIRS  : list of paths to be used with LINK_DIRECTORIES
+#   KalTest_COMPONENT_LIBRARIES      : list of KalTest component libraries
+#   KalTest_${COMPONENT}_FOUND       : set to TRUE or FALSE for each library
+#   KalTest_${COMPONENT}_LIBRARY     : path to individual libraries
+#   KalTest_${COMPONENT}_LIB_DEPENDS : individual library dependencies
+#
+# @author Jan Engels, Desy
+##############################################################################
 
-SET( KalTest_FOUND FALSE )
-MARK_AS_ADVANCED( KalTest_FOUND )
+SET( KalTest_ROOT "@CMAKE_INSTALL_PREFIX@" )
 
+
+# ---------- include dirs -----------------------------------------------------
 # do not store find results in cache
-SET( KalTest_INCLUDE_DIR KalTest_INCLUDE_DIR-NOTFOUND )
+SET( KalTest_INCLUDE_DIRS KalTest_INCLUDE_DIRS-NOTFOUND )
+MARK_AS_ADVANCED( KalTest_INCLUDE_DIRS )
 
-FIND_PATH( KalTest_INCLUDE_DIR
+FIND_PATH( KalTest_INCLUDE_DIRS
 	NAMES kaltest/TVTrack.h
-	PATHS @CMAKE_INSTALL_PREFIX@/include
+	PATHS ${KalTest_ROOT}/include
 	NO_DEFAULT_PATH
 )
-IF( NOT KalTest_INCLUDE_DIR )
-    MESSAGE( STATUS "Check for KalTest: @CMAKE_INSTALL_PREFIX@"
-					" -- failed to find KalTest include directory!!" )
-ELSE( NOT KalTest_INCLUDE_DIR )
-    MARK_AS_ADVANCED( KalTest_INCLUDE_DIR )
-ENDIF( NOT KalTest_INCLUDE_DIR )
 
-# libraries
-#SET( KalTest_LIB_NAMES S4Kalman S4KalTrack S4KalGeom S4Utils )
-SET( KalTest_LIB_NAMES KalTest )
-SET( KalTest_FINDLIB_FAILED FALSE )
-MARK_AS_ADVANCED( KalTest_LIB_NAMES KalTest_FINDLIB_FAILED )
+# fix for backwards compatibility
+IF( KalTest_INCLUDE_DIRS )
+    LIST( APPEND KalTest_INCLUDE_DIRS ${KalTest_INCLUDE_DIRS}/kaltest )
+ENDIF( KalTest_INCLUDE_DIRS )
 
-FOREACH( libname ${KalTest_LIB_NAMES} )
 
-    # name of the component in upper case
-    STRING( TOUPPER ${libname} ulibname)
+# ---------- libraries --------------------------------------------------------
+LIST( APPEND CMAKE_MODULE_PATH "${KalTest_ROOT}/cmake/MacroCheckPackageLibs.cmake" )
+INCLUDE( MacroCheckPackageLibs )
 
-    SET( KalTest_LIB_${ulibname} KalTest_LIB_${ulibname}-NOTFOUND )
-    MARK_AS_ADVANCED( KalTest_LIB_${ulibname} )
+# only standard libraries should be passed as arguments to CHECK_PACKAGE_LIBS
+# additional components are set by cmake in variable PKG_FIND_COMPONENTS
+# first argument should be the package name
+CHECK_PACKAGE_LIBS( KalTest KalTest )
 
-    FIND_LIBRARY( KalTest_LIB_${ulibname}
-        NAMES ${libname}
-        PATHS @CMAKE_INSTALL_PREFIX@
-        PATH_SUFFIXES lib
-        NO_DEFAULT_PATH )
 
-    IF( NOT KalTest_LIB_${ulibname} )
-        SET( KalTest_FINDLIB_FAILED TRUE )
-        IF( NOT KalTest_FIND_QUIETLY )
-            MESSAGE( STATUS "Check for KalTest: @CMAKE_INSTALL_PREFIX@"
-                    " -- failed to find KalTest ${libname} library!!" )
-        ENDIF()
-    ELSE()
-        LIST( APPEND KalTest_LIBS ${KalTest_LIB_${ulibname}} )
-    ENDIF()
-ENDFOREACH()
 
-# set variables and display results
-IF( KalTest_INCLUDE_DIR AND NOT KalTest_FINDLIB_FAILED )
-    SET( KalTest_FOUND TRUE )
-    SET( KalTest_INCLUDE_DIRS ${KalTest_INCLUDE_DIR} ${KalTest_INCLUDE_DIR}/kaltest )
-    SET( KalTest_LIBRARY_DIRS "@CMAKE_INSTALL_PREFIX@/lib" )
-	SET( KalTest_LIBRARIES ${KalTest_LIBS} )
-    MARK_AS_ADVANCED( KalTest_INCLUDE_DIRS KalTest_LIBRARY_DIRS KalTest_LIBRARIES )
-	MESSAGE( STATUS "Check for KalTest: @CMAKE_INSTALL_PREFIX@ -- works" )
-ELSE()
-	IF( KalTest_FIND_REQUIRED )
-		MESSAGE( FATAL_ERROR "Check for KalTest: @CMAKE_INSTALL_PREFIX@ -- failed!!" )
-    ELSE( KalTest_FIND_REQUIRED )
-        MESSAGE( STATUS "Check for KalTest: @CMAKE_INSTALL_PREFIX@"
-						" -- failed!! will skip this package..." )
-    ENDIF( KalTest_FIND_REQUIRED )
-ENDIF()
+
+# ---------- libraries dependencies -------------------------------------------
+# this sets KalTest_${COMPONENT}_LIB_DEPENDS variables
+INCLUDE( "${KalTest_ROOT}/lib/cmake/KalTestLibDeps.cmake" )
+ 
+
+
+
+# ---------- final checking ---------------------------------------------------
+INCLUDE( FindPackageHandleStandardArgs )
+# set KalTest_FOUND to TRUE if all listed variables are TRUE and not empty
+# KalTest_COMPONENT_VARIABLES will be set if FIND_PACKAGE is called with REQUIRED argument
+FIND_PACKAGE_HANDLE_STANDARD_ARGS( KalTest DEFAULT_MSG KalTest_ROOT KalTest_INCLUDE_DIRS KalTest_LIBRARIES ${KalTest_COMPONENT_VARIABLES} )
+

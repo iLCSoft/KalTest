@@ -52,10 +52,10 @@ ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
 
 
 # KalTest library
-ADD_SUBDIRECTORY( src )
+ADD_SUBDIRECTORY( ./src )
 
 # examples (build with 'make examples')
-ADD_SUBDIRECTORY( examples/kaltest )
+ADD_SUBDIRECTORY( ./examples/kaltest )
 
 
 #############################################################################
