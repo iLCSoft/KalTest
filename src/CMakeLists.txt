@@ -15,8 +15,9 @@ FOREACH( lib_input_dir ${lib_input_dirs} )
 
     PREPARE_ROOT_DICT_HEADERS( ${lib_input_dir} )
 
-    INSTALL( DIRECTORY ${lib_input_dir}/ DESTINATION "include/kaltest"
-        FILES_MATCHING PATTERN "*.h" PATTERN "LinkDef.h" EXCLUDE )
+    INSTALL_DIRECTORY( ${lib_input_dir}/ DESTINATION "include/kaltest"
+        FILES_MATCHING PATTERN "*.h" PATTERN "LinkDef.h" EXCLUDE
+    )
 
     GEN_ROOT_DICT_SOURCES( ${lib_input_dir}Dict.cxx )
     
@@ -29,31 +30,14 @@ INCLUDE_DIRECTORIES( ${ROOT_INCLUDE_DIRS} )
 
 #MESSAGE( STATUS "KalTest lib sources: ${lib_sources}" )
 
-ADD_LIBRARY( KalTest ${lib_sources} )
-
-ADD_CUSTOM_TARGET( lib DEPENDS KalTest )
-
+ADD_SHARED_LIBRARY( KalTest ${lib_sources} )
+INSTALL_SHARED_LIBRARY( KalTest DESTINATION lib )
 TARGET_LINK_LIBRARIES( KalTest ${ROOT_LIBRARIES} )
-
-SET_TARGET_PROPERTIES( KalTest PROPERTIES
-    # create *nix style library versions + symbolic links
-    VERSION ${KALTEST_VERSION}
-    SOVERSION ${KALTEST_SOVERSION}
-    # allow creating static and shared libs without conflicts
-    CLEAN_DIRECT_OUTPUT 1
-)
 
 IF( APPLE ) #---- need special linker flags for ROOT dictionary on MacOS
     SET_TARGET_PROPERTIES( KalTest PROPERTIES
         LINK_FLAGS "-single_module -undefined dynamic_lookup -bind_at_load"
     )
 ENDIF( APPLE )
-
-# install library
-INSTALL( TARGETS KalTest DESTINATION lib PERMISSIONS
-    OWNER_READ OWNER_WRITE OWNER_EXECUTE
-    GROUP_READ GROUP_EXECUTE
-    WORLD_READ WORLD_EXECUTE
-)
 
 
