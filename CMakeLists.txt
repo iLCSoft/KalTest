@@ -17,15 +17,15 @@ SET( KALTEST_VERSION_PATCH 0 )
 
 
 
-### SETTINGS ################################################################
+### DEPENDENCIES ############################################################
 
-# ilcsoft_default_settings.cmake needs to be in CMAKE_MODULE_PATH
+# FindILCSOFT_CMAKE_MODULES.cmake needs to be in CMAKE_MODULE_PATH
+FIND_PACKAGE( ILCSOFT_CMAKE_MODULES 0.11 REQUIRED )
+
+# load default settings from ILCSOFT_CMAKE_MODULES
 INCLUDE( ilcsoft_default_settings )
 #INCLUDE( build_32bit_compatible )
 
-
-
-### DEPENDENCIES ############################################################
 
 # fix for backwards compatibility
 IF( NOT ROOT_DIR AND DEFINED ROOT_HOME )
@@ -54,6 +54,10 @@ ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
 # KalTest library
 ADD_SUBDIRECTORY( ./src )
 
+# if this option is set to ON examples will be built with default target 'make'
+# if set to OFF examples will only be built with target 'make examples'
+OPTION( BUILD_EXAMPLES "Set to ON to build examples" OFF )
+
 # examples (build with 'make examples')
 ADD_SUBDIRECTORY( ./examples/kaltest )
 
@@ -63,7 +67,9 @@ ADD_SUBDIRECTORY( ./examples/kaltest )
 # display some variables and write them to cache
 DISPLAY_STD_VARIABLES()
 
-# export library dependencies (keep this as the last line in the file)
-EXPORT_LIBRARY_DEPENDENCIES( "KalTestLibDeps.cmake" )
-INSTALL( FILES "${PROJECT_BINARY_DIR}/KalTestLibDeps.cmake" DESTINATION lib/cmake )
+MESSAGE( STATUS "BUILD_EXAMPLES = ${BUILD_EXAMPLES}" )
+MESSAGE( STATUS )
+
+# generate and install following configuration files
+GENERATE_PACKAGE_CONFIGURATION_FILES( KalTestConfig.cmake KalTestConfigVersion.cmake KalTestLibDeps.cmake )
 
