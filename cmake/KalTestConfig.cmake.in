@@ -63,7 +63,9 @@ INCLUDE( "${KalTest_ROOT}/lib/cmake/KalTestLibDeps.cmake" )
 
 # ---------- final checking ---------------------------------------------------
 INCLUDE( FindPackageHandleStandardArgs )
-# set KalTest_FOUND to TRUE if all listed variables are TRUE and not empty
+# set KALTEST_FOUND to TRUE if all listed variables are TRUE and not empty
 # KalTest_COMPONENT_VARIABLES will be set if FIND_PACKAGE is called with REQUIRED argument
 FIND_PACKAGE_HANDLE_STANDARD_ARGS( KalTest DEFAULT_MSG KalTest_ROOT KalTest_INCLUDE_DIRS KalTest_LIBRARIES ${KalTest_COMPONENT_VARIABLES} )
+
+SET( KalTest_FOUND ${KALTEST_FOUND} )
 
