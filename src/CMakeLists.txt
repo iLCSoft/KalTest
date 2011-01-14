@@ -31,7 +31,7 @@ INCLUDE_DIRECTORIES( ${ROOT_INCLUDE_DIRS} )
 #MESSAGE( STATUS "KalTest lib sources: ${lib_sources}" )
 
 ADD_SHARED_LIBRARY( KalTest ${lib_sources} )
-INSTALL_SHARED_LIBRARY( KalTest DESTINATION lib )
+INSTALL( TARGETS KalTest DESTINATION lib )
 TARGET_LINK_LIBRARIES( KalTest ${ROOT_LIBRARIES} )
 
 IF( APPLE ) #---- need special linker flags for ROOT dictionary on MacOS
