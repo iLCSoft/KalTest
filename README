@@ -78,6 +78,13 @@ see description below (2005/08/26).
 =====================================================================================
 	
  --------
+| v01-01 |  - fixed problem from MacroRootDict.cmake: LD_LIBRARY_PATH unset with rootcint
+ --------      
+            - improved cmake files
+
+
+
+ --------
 | v01-00 |  - first release as part of iLCSoft
  --------      
             - introduced new default units: mm, Tesla (was cm, kGauss)
