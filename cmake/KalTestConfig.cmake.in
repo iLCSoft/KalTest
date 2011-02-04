@@ -12,6 +12,7 @@
 #       if REQUIRED is NOT set components may or may not be available
 #
 #   KalTest_ROOT       : path to this KalTest installation
+#   KalTest_VERSION    : package version
 #   KalTest_LIBRARIES  : list of KalTest libraries (NOT including COMPONENTS)
 #   KalTest_INCLUDE_DIRS  : list of paths to be used with INCLUDE_DIRECTORIES
 #   KalTest_LIBRARY_DIRS  : list of paths to be used with LINK_DIRECTORIES
@@ -24,6 +25,7 @@
 ##############################################################################
 
 SET( KalTest_ROOT "@CMAKE_INSTALL_PREFIX@" )
+SET( KalTest_VERSION "@KalTest_VERSION@" )
 
 
 # ---------- include dirs -----------------------------------------------------
