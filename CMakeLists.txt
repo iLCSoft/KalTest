@@ -26,11 +26,6 @@ INCLUDE( ilcsoft_default_settings )
 #INCLUDE( build_32bit_compatible )
 
 
-# fix for backwards compatibility
-IF( NOT ROOT_DIR AND DEFINED ROOT_HOME )
-    SET( ROOT_DIR ${ROOT_HOME} )
-ENDIF()
-
 FIND_PACKAGE( ROOT REQUIRED )
 
 # macros for generating root dict sources with rootcint
