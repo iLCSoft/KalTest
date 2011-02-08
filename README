@@ -19,14 +19,14 @@ see description below (2005/08/26).
   . /afs/desy.de/project/ilcsoft/sw/i386_gcc34_sl4/root/5.27.06/bin/thisroot.sh
 
   # configure cmake
-  cmake -DROOT_DIR=$ROOTSYS ..
+  cmake -DILCUTIL_DIR=/path/to/ilcutil -DROOT_DIR=$ROOTSYS ..
 
   #build:
   make install
 
   # --- optionally the examples can be built with
 
-  cmake -DROOT_DIR=$ROOTSYS -DBUILD_EXAMPLES=1 ..
+  cmake -DBUILD_EXAMPLES=1 ..
   make
 
   # ---creates the example binaries simple and hybrid in build/bin 
@@ -81,6 +81,8 @@ see description below (2005/08/26).
 | v01-01 |  - fixed problem from MacroRootDict.cmake: LD_LIBRARY_PATH unset with rootcint
  --------      
             - improved cmake files
+
+            - requires new package ILCUTIL
 
 
 
