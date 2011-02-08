@@ -28,6 +28,7 @@ INCLUDE( ilcsoft_default_settings )
 
 FIND_PACKAGE( ROOT REQUIRED )
 
+
 # macros for generating root dict sources with rootcint
 SET( ROOT_DICT_CINT_DEFINITIONS "-DHANDLE_DICT_EXCEPTIONS=IGNORED_FOR_CINT" )
 INCLUDE( ${ROOT_DICT_MACROS_FILE} )
@@ -42,27 +43,23 @@ ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
 #----- need long long for int64 for now ------
 ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
 
-#-----------------------------------------------------
-
 
 # KalTest library
 ADD_SUBDIRECTORY( ./src )
 
+
+# --------- kaltest examples -------------------------------------------------
 # if this option is set to ON examples will be built with default target 'make'
 # if set to OFF examples will only be built with target 'make examples'
 OPTION( BUILD_EXAMPLES "Set to ON to build examples" OFF )
-
-# examples (build with 'make examples')
+MESSAGE( STATUS "BUILD_EXAMPLES = ${BUILD_EXAMPLES}" )
 ADD_SUBDIRECTORY( ./examples/kaltest )
+# ----------------------------------------------------------------------------
 
 
-#############################################################################
 
 # display some variables and write them to cache
 DISPLAY_STD_VARIABLES()
-
-MESSAGE( STATUS "BUILD_EXAMPLES = ${BUILD_EXAMPLES}" )
-MESSAGE( STATUS )
 
 # generate and install following configuration files
 GENERATE_PACKAGE_CONFIGURATION_FILES( KalTestConfig.cmake KalTestConfigVersion.cmake KalTestLibDeps.cmake )
