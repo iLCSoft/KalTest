@@ -77,6 +77,12 @@ see description below (2005/08/26).
 
 =====================================================================================
 	
+ -----------
+| v01-01-01 | 
+ -----------
+
+            - fixed problem in KalTest VERSION
+
  --------
 | v01-01 |  - fixed problem from MacroRootDict.cmake: LD_LIBRARY_PATH unset with rootcint
  --------      
