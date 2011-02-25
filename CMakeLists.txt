@@ -13,7 +13,7 @@ PROJECT( KalTest )
 # project version
 SET( KalTest_VERSION_MAJOR 1 )
 SET( KalTest_VERSION_MINOR 1 )
-SET( KalTest_VERSION_PATCH 0 )
+SET( KalTest_VERSION_PATCH 1 )
 
 
 
@@ -23,7 +23,6 @@ FIND_PACKAGE( ILCUTIL COMPONENTS ILCSOFT_CMAKE_MODULES REQUIRED )
 
 # load default settings from ILCSOFT_CMAKE_MODULES
 INCLUDE( ilcsoft_default_settings )
-#INCLUDE( build_32bit_compatible )
 
 
 FIND_PACKAGE( ROOT REQUIRED )
