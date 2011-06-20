@@ -117,7 +117,7 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    TVector3 dxdphiv(dxdphi(0,0),dxdphi(1,0),dxdphi(2,0));
    Double_t cpa = hel.GetKappa();
    
-   Bool_t isout = -cpa*dxdphiv.Dot(sfp->GetOutwardNormal(xto)) > 0 ? kTRUE : kFALSE;  // out-going or in-coming
+   Bool_t isout = -cpa*dxdphiv.Dot(sfp->GetOutwardNormal(xto)) < 0 ? kTRUE : kFALSE;  // out-going or in-coming
    //=====================
    // ENDFIXME
    //=====================
