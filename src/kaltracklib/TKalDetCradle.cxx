@@ -17,7 +17,7 @@
 //*                              GetPhiTable(), and GetDir() and added
 //*                              Transport() to do their functions.
 //*   2010/04/06  K.Fujii        Modified Transport() to allow a 1-dim hit,
-//*                              for which pivot is at the xpected hit.
+//*                              for which pivot is at the expected hit.
 //*
 //*************************************************************************
 
@@ -99,15 +99,32 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    Int_t  fridx = from.GetHit().GetMeasLayer().GetIndex(); // index of site from
    Int_t  toidx = to.GetHit().GetMeasLayer().GetIndex();   // index of site to
    Int_t  di    = fridx > toidx ? -1 : 1;                  // layer increment
-   Bool_t isout = di > 0 ? kTRUE : kFALSE;  // out-going or in-coming
-
+   
    std::auto_ptr<TVTrack> help(&static_cast<TKalTrackState &>
                               (from.GetCurState()).CreateTrack()); // tmp track
    TVTrack &hel = *help;
 	
+   //=====================
+   // FIXME
+   //=====================
+   TVector3 xfrom = from.GetPivot();
+   TVector3 xto;
+   Double_t fito = 0;
+   const TVMeasLayer &ml  = to.GetHit().GetMeasLayer();
+   const TVSurface *sfp = dynamic_cast<const TVSurface *>(&ml);
+   sfp->CalcXingPointWith(hel, xto, fito);
+   TMatrixD dxdphi = hel.CalcDxDphi(fito);
+   TVector3 dxdphiv(dxdphi(0,0),dxdphi(1,0),dxdphi(2,0));
+   Double_t cpa = hel.GetKappa();
+   
+   Bool_t isout = -cpa*dxdphiv.Dot(sfp->GetOutwardNormal(xto)) > 0 ? kTRUE : kFALSE;  // out-going or in-coming
+   //=====================
+   // ENDFIXME
+   //=====================
+
    TVector3 xx;                // expected hit position vector
    Double_t fid     = 0.;      // deflection angle from the last hit
-
+   
    Int_t sdim = sv.GetNrows();                // # track parameters
    F.UnitMatrix();
    Q.Zero();
@@ -120,8 +137,20 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    Int_t ifr = fridx;
 
    for (Int_t ito=fridx+di; (di>0 && ito<=toidx)||(di<0 && ito>=toidx); ito += di) {
-      if (dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid)) {
-         const TVMeasLayer   &ml  = *dynamic_cast<TVMeasLayer *>(At(ifr));
+     Double_t fids = fid;
+     if (dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid, di)) {
+       //=====================
+       // FIXME
+       //=====================
+       static const Double_t kMergin = 1.0;
+       if( (xx-xfrom).Mag() - kMergin > (xto-xfrom).Mag() ){       
+	 fid = fids;
+	 continue ;
+       }
+       //=====================
+       // ENDFIXME
+       //=====================
+       const TVMeasLayer   &ml  = *dynamic_cast<TVMeasLayer *>(At(ifr));
          TKalMatrix Qms(sdim, sdim);
          if (IsMSOn()) ml.CalcQms(isout, hel, fid, Qms); // Qms for this step
 

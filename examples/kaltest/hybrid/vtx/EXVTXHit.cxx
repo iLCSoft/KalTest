@@ -41,24 +41,7 @@ EXVTXHit::~EXVTXHit()
 
 TKalMatrix EXVTXHit::XvToMv(const TVector3 &xv, Double_t /*t0*/) const
 {
-   const EXVTXMeasLayer &ms
-                 = dynamic_cast<const EXVTXMeasLayer &>(GetMeasLayer());
-   TKalMatrix h  = ms.XvToMv(xv);
-   Double_t r    = ms.GetR();
-   Double_t phih = h(0,0) / r;
-   Double_t phim = (*this)(0,0) / r;
-   Double_t dphi = phih - phim;
-
-   static Double_t kPi    = TMath::Pi();
-   static Double_t kTwoPi = 2 * kPi;
-
-   while (dphi < -kPi) dphi += kTwoPi;
-   while (dphi >  kPi) dphi -= kTwoPi;
-
-   h(0,0)  = r * (phim + dphi);
-   h(1,0) += 0.;
-
-   return h;
+   return dynamic_cast<const EXVTXMeasLayer &>(GetMeasLayer()).XvToMv(xv);
 }
 
 void EXVTXHit::DebugPrint(Option_t *) const
