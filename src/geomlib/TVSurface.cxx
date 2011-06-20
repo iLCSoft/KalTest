@@ -45,14 +45,14 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
 Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
                                                     TVector3 &xx,
                                                     Double_t &phi,
-                                                    Int_t     /* mode */,
+                                                    Int_t     mode,
                                                     Double_t  eps) const
 {
    static const Int_t       maxcount   = 100;
    static const Double_t    initlambda = 1.e-10;
    static const Double_t    lambdaincr = 10.;
    static const Double_t    lambdadecr = 0.1;
-
+   
    xx = hel.CalcXAt(phi);
 
    Double_t  lastphi =  phi;
@@ -69,6 +69,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
          s       = lasts;
          phi     = lastphi;
          xx      = lastxx;
+#if 0
          cerr << "TVSurface::CalcXingPointWith:"
               << "   --- Loop count limit reached ---------- " << endl
               << "   phi    : " << phi    << endl
@@ -77,6 +78,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
                                 << xx.Z() << endl 
               << "   s      : " << s      << endl
               << "   lambda : " << lambda << endl;
+#endif
          return 0;
       }
       count++;
@@ -100,6 +102,14 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
       phi -= s / denom;
       xx   = hel.CalcXAt(phi);
    }
+
+   if( mode!=0 ){ // (+1,-1) = (fwd,bwd)
+     static const Int_t chg = (Int_t)TMath::Sign(1.1, hel.GetKappa());
+     if( chg*phi*mode > 0){
+       return 0;
+     }
+   }
+   
    return (IsOnSurface(xx) ? 1 : 0);
 }
 
