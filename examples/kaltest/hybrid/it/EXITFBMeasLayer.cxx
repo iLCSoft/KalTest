@@ -12,6 +12,7 @@
 //*   2003/09/30  Y.Nakashima       Original version.
 //*   2005/07/25  Kim, Youngim      Forward & Backward versoin.
 //*
+//*   2011/06/30  D.Kamai       Modified to handle turbine-blade-like FTD.
 //*************************************************************************
 //
 
@@ -21,9 +22,10 @@
 #include "TVTrack.h"
 #include "TRandom.h"
 #include <iostream>
+#include <iomanip>
 
 #include "TVirtualPad.h"
-#include "TTUBE.h"
+#include "TTRAP.h"
 #include "TNode.h"
 #include "TString.h"
 
@@ -32,19 +34,28 @@ ClassImp(EXITFBMeasLayer)
                                                                                 
 EXITFBMeasLayer::EXITFBMeasLayer(TMaterial &min,
                                  TMaterial &mout,
-                                 TVector3  &xc,
+                                 const TVector3  &xc,
+				 const TVector3  &normal,
+				 Double_t   SortingPolicy,
                                  Double_t   rin,
                                  Double_t   rout,
+				 Double_t   dxMax,
+				 Double_t   dxMin,
                                  Double_t   sigmax,
                                  Double_t   sigmay,
                                  Bool_t     type,
-                           const Char_t    *name)
+				 Int_t      mode,
+				 const Char_t    *name)
                : EXVMeasLayer(min, mout, type, name),
-                 TPlane(xc),
+                 TPlane(xc,normal),
+		 fSortingPolicy(SortingPolicy),
                  fRin(rin),
                  fRout(rout),
+		 fdxMax(dxMax),
+		 fdxMin(dxMin),
                  fSigmaX(sigmax),
-                 fSigmaY(sigmay)
+                 fSigmaY(sigmay),
+		 fMode(mode)
 {
 }
 
@@ -57,10 +68,10 @@ TKalMatrix EXITFBMeasLayer::XvToMv(const TVector3 &xv) const
    // Calculate hit coordinate information:
    //	mv(0,0) = x
    //     (1,0) = y
-
+  
    TKalMatrix mv(kMdim,1);
-   mv(0,0)  = xv.X();
-   mv(1,0)  = xv.Y();
+   mv(0,0)  = Cosalpha()*(Cosphi()*xv.X() - Sinphi()*xv.Y()) + Sinalpha()*(xv.Z() - GetXc().Z());
+   mv(1,0)  = Sinphi()*xv.X() + Cosphi()*xv.Y();
    return mv;
 }
 
@@ -73,10 +84,12 @@ TKalMatrix EXITFBMeasLayer::XvToMv(const TVTrackHit &,
 TVector3 EXITFBMeasLayer::HitToXv(const TVTrackHit &vht) const
 {
    const EXITFBHit &ht = dynamic_cast<const EXITFBHit &>(vht);
-
-   Double_t x = ht(0,0);
-   Double_t y = ht(1,0);
-   Double_t z = GetXc().Z();
+   
+   Double_t x = ht(0,0)*Cosphi()*Cosalpha() + ht(1,0)*Sinphi();
+   Double_t y = -ht(0,0)*Sinphi()*Cosalpha() + ht(1,0)*Cosphi();
+   
+   Double_t z = GetXc().Z() + ht(0,0)*Sinalpha();
+      
    return TVector3(x, y, z);
 }
 
@@ -98,69 +111,27 @@ void EXITFBMeasLayer::CalcDhDa(const TVTrackHit &vht,
    // Set H = (@h/@a) = (@phi/@a, @r/@a)^t
    
    for (Int_t i=0; i<hdim; i++) {
-      H(0,i) = dxphiada(0,i);
-      H(1,i) = dxphiada(1,i);
-   }
+     H(0,i) = Cosalpha()*(Cosphi()*dxphiada(0,i) - Sinphi()*dxphiada(1,i)) + Sinalpha()*dxphiada(2,i);
+     H(1,i) = Sinphi()*dxphiada(0,i) + Cosphi()*dxphiada(1,i);
+        }
    if (sdim == 6) {
       H(0,sdim-1) = 0.;
       H(1,sdim-1) = 0.;
    }
 }
 
-Int_t EXITFBMeasLayer::CalcXingPointWith(const TVTrack &hel,
-                                               TVector3 &xx,
-                                               Double_t &phi,
-                                               Int_t     mode,
-                                               Double_t  eps) const
+Bool_t EXITFBMeasLayer::IsOnSurface(const TVector3 &xx) const
 {
-   // This assumes nonzero B field.
-   //
-   // Copy helix parameters to local variables.
-   //
+  TKalMatrix mv = XvToMv(xx);
 
-   Double_t dr  = hel.GetDrho();        // drho
-   Double_t fi0 = hel.GetPhi0();        // fi0
-   Double_t dz  = hel.GetDz();          // dz 
-   Double_t tnl = hel.GetTanLambda();   // tan lamda
-   Double_t cpa = hel.GetKappa();       // kappa
-   TVector3 X0  = hel.GetPivot();       // vector (x0, y0, z0)
-
-   //
-   // Check if charge is nonzero.
-   //
-
-   Int_t    chg = (Int_t)TMath::Sign(1.1,cpa);
-   if (!chg) {
-      cerr << ">>>> Error >>>> EXITFBMeasLayer::CalcXingPointWith" << endl
-           << "      Kappa = 0 is invalid for a helix "            << endl;
-      return -1;
-   }
-
-   //
-   // Project everything to XY plane and calculate crossing points.
-   //
-
-   Double_t rho  = hel.GetRho();       // alpa/kappa
-   Double_t csf0 = TMath::Cos(fi0);    // cos phi0
-   Double_t snf0 = TMath::Sin(fi0);    // sin phi0
-   Double_t z    = GetXc().Z();
-  
-   Double_t fi   = (-z + X0.Z() + dz) / (rho * tnl);
-#if 1
-   if (fi * chg * mode > 0. || 
-       tnl * z < 0. ||
-       TMath::Abs(fi) >= TMath::Pi()) return 0;
-#endif
-   Double_t x = X0.X() + dr*csf0 + rho*(csf0 - TMath::Cos(fi0 + fi));   // calculate X
-   Double_t y = X0.Y() + dr*snf0 + rho*(snf0 - TMath::Sin(fi0 + fi));   // calculate Y
-   xx.SetXYZ(x, y, z);
-
-   if (IsOnSurface(xx)) {
-      phi = fi;
-      return 1;
-   } else {
-      return 0;
-   }
+  if( TMath::Abs((xx.X()-GetXc().X())*GetNormal().X() + (xx.Y()-GetXc().Y())*GetNormal().Y() + (xx.Z()-GetXc().Z())*GetNormal().Z()) < 1e-4){
+    if( mv(1,0) <= GetRout() && mv(1,0) >= GetRin() && mv(1,0) >= TMath::Abs(2*GetRout()*mv(0,0)/GetdxMax())){
+      if(GetMode()==0 || GetMode()*mv(0,0) >= 0) return kTRUE;
+    }
+    else{
+      return kFALSE;
+    }
+  }
 }
 
 void EXITFBMeasLayer::ProcessHit(const TVector3  &xx,
@@ -193,17 +164,38 @@ void EXITFBMeasLayer::ProcessHit(const TVector3  &xx,
 //
 void EXITFBMeasLayer::Draw(Int_t color, const Char_t *opt)
 {
-   if (!gPad) return;
-   if (!IsActive()) return;
-   if (!GetNodePtr()) {
-      const Char_t *name  = GetMLName().Data();
-      const Char_t *nname = (GetMLName() + "Node").Data();
-      Double_t z = GetXc().Z();
-      TTUBE *tubep = new TTUBE(name,name,"void",fRin,fRout,0.);
-      tubep->SetBit(kCanDelete);
-      TNode *nodep = new TNode(nname,nname,name,0.,0.,z);
-      nodep->SetLineColor(color);
-      nodep->SetLineWidth(0.01);
-      SetNodePtr(nodep);
-   }
+  Double_t upperbase = 0;
+  Double_t lowerbase = 0;
+  Double_t theta = 0;
+  Double_t dy = (GetRout()-GetRin())/2;
+  Double_t thick = 0.02; // [cm]
+  Double_t z = GetXc().Z();
+  {z >0 ? z += thick/2 : z -= thick/2; }
+  if (!gPad) return;
+  if (!IsActive()) return;
+  if (!GetNodePtr()) {
+    const Char_t *name  = GetMLName().Data();
+    const Char_t *nname = (GetMLName() + "Node").Data();
+
+    if(GetMode()==0){
+      upperbase = GetdxMax()/2;
+      lowerbase = GetdxMin()/2;
+    }else{
+      upperbase = GetdxMax()/4;
+      lowerbase = GetdxMin()/4;
+      theta = GetMode()*TMath::ATan((upperbase-lowerbase)/(2*dy))*180/TMath::Pi();
+    }
+    TTRAP *trap = new TTRAP(name,name,"Si",dy,theta, 0,
+			    thick/2, lowerbase, lowerbase, 0,
+			    thick/2, upperbase, upperbase, 0 );      
+    trap->SetBit(kCanDelete);
+    Double_t rmat[9]   = { Cosphi()*Cosalpha(), -Sinphi()*Cosalpha(), Sinalpha(),
+                	   -Cosphi()*Sinalpha(), Sinphi()*Sinalpha(),  Cosalpha(),
+			   Sinphi(),           Cosphi(),             0};
+    TRotMatrix *rmatp   = new TRotMatrix( "rmat", "rmat", rmat);
+    TNode *nodep = new TNode(nname,nname,trap,GetXc().X()+GetMode()*(GetdxMax()+GetdxMin())/8,GetXc().Y(),z+Sinalpha()*GetMode()*(GetdxMax()+GetdxMin())/8,rmatp,"");
+    nodep->SetLineColor(color);
+    nodep->SetLineWidth(0.01);
+    SetNodePtr(nodep);
+  }
 }
