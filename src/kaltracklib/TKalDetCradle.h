@@ -54,7 +54,7 @@ public:
    inline virtual Bool_t IsClosed     () const { return fIsClosed;   }
 
    void Transport(const TKalTrackSite  &from, // site from
-                        TKalTrackSite  &to,   // sit to
+                        TKalTrackSite  &to,   // site to
                         TKalMatrix     &sv,   // state vector
                         TKalMatrix     &F,    // propagator matrix
                         TKalMatrix     &Q);   // process noise matrix
