@@ -29,6 +29,7 @@ MFLAGS	=
 CURRDIR	= .
 
 SUBDIRS	 = kern gen tpc it vtx
+#SUBDIRS	 = kern gen tpc old_it old_vtx
 SUBDIRS2 = main
 
 all:
@@ -44,14 +45,14 @@ all:
 	xmkmf -a; \
 	$(MAKE) $(MFLAGS)); \
 	done
-	
+
 Makefiles:
 	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \
 	for i in $(SUBDIRS) $(SUBDIRS2); do \
 	(cd $$i; echo ``making'' Makefiles ``in $(CURRDIR)/$$i...''; \
 	xmkmf); \
 	done
-	
+
 clean: Makefiles
 	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \
 	for i in $(SUBDIRS) $(SUBDIRS2); do \
