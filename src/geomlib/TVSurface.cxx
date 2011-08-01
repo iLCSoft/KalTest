@@ -104,7 +104,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
    }
 
    if( mode!=0 ){ // (+1,-1) = (fwd,bwd)
-     static const Int_t chg = (Int_t)TMath::Sign(1.1, hel.GetKappa());
+     const Int_t chg = (Int_t)TMath::Sign(1.1, hel.GetKappa());
      if( chg*phi*mode > 0){
        return 0;
      }
