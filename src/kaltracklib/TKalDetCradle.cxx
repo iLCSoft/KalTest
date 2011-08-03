@@ -18,7 +18,7 @@
 //*                              Transport() to do their functions.
 //*   2010/04/06  K.Fujii        Modified Transport() to allow a 1-dim hit,
 //*                              for which pivot is at the expected hit.
-//*
+//*   
 //*************************************************************************
 
 #include "TKalDetCradle.h"   // from KalTrackLib
@@ -112,7 +112,7 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
    Double_t fito = 0;
    const TVMeasLayer &ml  = to.GetHit().GetMeasLayer();
    const TVSurface *sfp = dynamic_cast<const TVSurface *>(&ml);
-   sfp->CalcXingPointWith(hel, xto, fito);
+   sfp->CalcXingPointWith(hel, xto, fito, 0, ml.IsActive());
    TMatrixD dxdphi = hel.CalcDxDphi(fito);
    TVector3 dxdphiv(dxdphi(0,0),dxdphi(1,0),dxdphi(2,0));
    Double_t cpa = hel.GetKappa();
