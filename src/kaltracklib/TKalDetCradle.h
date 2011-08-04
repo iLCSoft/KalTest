@@ -29,6 +29,7 @@
 
 class TKalTrackSite;
 class TVKalDetector;
+class TVMeasLayer;
 
 //_____________________________________________________________________
 //  ------------------------------
@@ -58,6 +59,15 @@ public:
                         TKalMatrix     &sv,   // state vector
                         TKalMatrix     &F,    // propagator matrix
                         TKalMatrix     &Q);   // process noise matrix
+
+   int Transport(const TKalTrackSite  &from, // site from
+                 const TVMeasLayer    &to,   // layer to reach
+		       TVector3       &x0,   // intersection point 
+		       TKalMatrix     &sv,   // state vector
+		       TKalMatrix     &F,    // propagator matrix
+		       TKalMatrix     &Q);   // process noise matrix
+
+
 
 private:
    void Update();
