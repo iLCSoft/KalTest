@@ -132,6 +132,7 @@ Bool_t EXITFBMeasLayer::IsOnSurface(const TVector3 &xx) const
       return kFALSE;
     }
   }
+  return kFALSE;
 }
 
 void EXITFBMeasLayer::ProcessHit(const TVector3  &xx,

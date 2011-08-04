@@ -154,6 +154,7 @@ Bool_t EXVTXMeasLayer::IsOnSurface(const TVector3 &xx) const
       return kFALSE;
     }
   }
+  return kFALSE;
 }
 
 
