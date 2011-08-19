@@ -23,9 +23,13 @@
 class TKalTrackSite;
 
 class TKalFilterCond {
-public:
-   virtual Bool_t IsAccepted(const TKalTrackSite &site);
-
-   ClassDef(TKalFilterCond,1)  // Base class for detector system
-};
+ public:
+  
+  // need virtual destructor is we have virtual functions
+  virtual ~TKalFilterCond() {};
+  
+  virtual Bool_t IsAccepted(const TKalTrackSite &site);
+  
+  ClassDef(TKalFilterCond,1)  // Base class for detector system
+    };
 #endif
