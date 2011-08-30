@@ -152,7 +152,7 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
 
    const TVSurface *sfp = dynamic_cast<const TVSurface *>(&ml_to);// surface at destination
 
-   sfp->CalcXingPointWith(hel, xto, fito, 0, ml_to.IsActive());  // the default tolerance is used
+   sfp->CalcXingPointWith(hel, xto, fito, 0);                    // the default tolerance is used
                                                                  // as mode is 0 here the closest point crossing point is taken
                                                                  // this means that if we are at the top of a looping track 
                                                                  // and the point to which we want to move is on the other side of 

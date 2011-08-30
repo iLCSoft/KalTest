@@ -17,8 +17,6 @@
 //*                             GetSortingPolicy().
 //*
 //*   2011/06/17  D.Kamai       Added new method, GetOutwardNormal() 
-//*   2011/08/03  D.Kamai       Added new argument 'onSurface'
-//*                             to CalcXingPointWith();
 //*                             
 //*************************************************************************
 //
@@ -44,12 +42,6 @@ public:
                                             Double_t &phi,
                                             Int_t     mode,
    				            Double_t  eps = 1.e-8) const;
-   virtual Int_t    CalcXingPointWith(const TVTrack  &hel,
-                                            TVector3 &xx,
-                                            Double_t &phi,
-                                            Int_t     mode,
-				            Bool_t    onSurface,
-				            Double_t  eps = 1.e-8) const;
 
    virtual Double_t CalcS            (const TVector3 &xx) const = 0;
    virtual TMatrixD CalcDSDx         (const TVector3 &xx) const = 0;

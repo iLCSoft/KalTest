@@ -48,16 +48,6 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
 				         Int_t     mode,
 				         Double_t  eps) const
 {
-  return CalcXingPointWith(hel,xx,phi,mode,false,eps);
-}
-
-Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
-				         TVector3 &xx,
-				         Double_t &phi,
-				         Int_t     mode,
-				         Bool_t    onSurface,
-				         Double_t  eps) const
-{
 
    static const Int_t       maxcount   = 100;
    static const Double_t    initlambda = 1.e-10;
@@ -121,11 +111,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
      }
    }
    
-   if(onSurface){
-     return 1;
-   }else{
-     return (IsOnSurface(xx) ? 1 : 0);
-   }
+   return (IsOnSurface(xx) ? 1 : 0);
 }
 
 //_____________________________________________________________________
