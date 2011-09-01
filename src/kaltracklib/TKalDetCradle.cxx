@@ -238,7 +238,7 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
 //   hel.MoveTo(xx, fid, &DF); // move pivot to expected hit, DF will simply have its values overwritten so it could be explicitly set to unity here
 //   F = DF * F;                          // update F accordingly
 
-   x0 = xx;
+   x0 = hel.GetPivot() ;
    hel.PutInto(sv);                     // save updated hel to sv
 
    return 0;
