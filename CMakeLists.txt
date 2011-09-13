@@ -12,8 +12,8 @@ PROJECT( KalTest )
 
 # project version
 SET( KalTest_VERSION_MAJOR 1 )
-SET( KalTest_VERSION_MINOR 1 )
-SET( KalTest_VERSION_PATCH 1 )
+SET( KalTest_VERSION_MINOR 2 )
+SET( KalTest_VERSION_PATCH 0 )
 
 
 
