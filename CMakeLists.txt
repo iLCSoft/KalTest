@@ -15,7 +15,7 @@ SET( KalTest_VERSION_MAJOR 1 )
 SET( KalTest_VERSION_MINOR 2 )
 SET( KalTest_VERSION_PATCH 0 )
 
-
+cmake_policy(SET CMP0008 NEW)  
 
 ### DEPENDENCIES ############################################################
 
