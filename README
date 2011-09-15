@@ -76,7 +76,16 @@ see description below (2005/08/26).
   Release Notes:
 
 =====================================================================================
-	
+
+ --------
+| v01-02 | 
+ --------
+	    - modified to use bounded planes
+	    - examples provided in hybrid example to demonstrate use of bounded planes in VXD and FTD 
+	    - added extra Transport method to transport directly to a measurement layer and modified the 
+	      previous Transport to site method to use this method. No change in previous functionality, 
+              only additional functionality added
+            	
  -----------
 | v01-01-01 | 
  -----------
