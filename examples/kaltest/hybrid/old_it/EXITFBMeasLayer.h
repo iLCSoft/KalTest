@@ -73,7 +73,7 @@ private:
    Double_t fSigmaX;  // sigma_x
    Double_t fSigmaY;  // sigma_y
 
-   ClassDef(EXITFBMeasLayer,1) 	// Sample measurement layer class
+   ClassDef(EXITFBMeasLayer,1)  // Sample measurement layer class
 };
 
 Double_t EXITFBMeasLayer::GetSortingPolicy() const

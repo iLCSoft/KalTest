@@ -51,7 +51,7 @@ private:
    TString  fName;      // layer name
    TNode   *fNodePtr;   // node pointer
 
-   ClassDef(EXVMeasLayer,1) 	// Sample measurement layer class
+   ClassDef(EXVMeasLayer,1)     // Sample measurement layer class
 };
 
 #endif

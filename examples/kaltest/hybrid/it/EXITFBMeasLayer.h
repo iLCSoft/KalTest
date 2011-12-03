@@ -31,19 +31,19 @@ public:
    // Ctors and Dtor
 
    EXITFBMeasLayer(TMaterial &min,
-		   TMaterial &mout,
-		   const TVector3  &xc,
-		   const TVector3  &normal,
-		   Double_t   SortingPolicy,
-		   Double_t   rin,
-		   Double_t   rout,
-		   Double_t   dxMax,
-		   Double_t   dxMin,
-		   Double_t   sigmax,
-		   Double_t   sigmar,
-		   Bool_t     type = EXVMeasLayer::kActive,
-		   Int_t      mode = 0,
-		   const Char_t    *name = "FTDML");
+                   TMaterial &mout,
+                   const TVector3  &xc,
+                   const TVector3  &normal,
+                   Double_t   SortingPolicy,
+                   Double_t   rin,
+                   Double_t   rout,
+                   Double_t   dxMax,
+                   Double_t   dxMin,
+                   Double_t   sigmax,
+                   Double_t   sigmar,
+                   Bool_t     type = EXVMeasLayer::kActive,
+                   Int_t      mode = 0,
+                   const Char_t    *name = "FTDML");
 
    virtual ~EXITFBMeasLayer();
 
@@ -62,7 +62,7 @@ public:
    virtual Bool_t     IsOnSurface       (const TVector3 &xx) const;
 
    virtual void       ProcessHit        (const TVector3  &xx,
-					 TObjArray &hits);
+                                         TObjArray &hits);
 
    Double_t GetSortingPolicy() const {return fSortingPolicy;}
    Double_t GetRin() const {return fRin;}
@@ -91,7 +91,7 @@ private:
    Double_t fSigmaY;  // sigma_y
    Int_t    fMode;    // Right-side, Left-side, or Both
    
-   ClassDef(EXITFBMeasLayer,1) 	// Sample measurement layer class
+   ClassDef(EXITFBMeasLayer,1)  // Sample measurement layer class
 };
 
 #endif

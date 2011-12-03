@@ -31,13 +31,13 @@ public:
 
    EXVTXMeasLayer(TMaterial &min,
                   TMaterial &mout,
-		  const TVector3  &center,
-		  const TVector3  &normal,
-		  Double_t   SortingPolicy,
-		  Double_t   xiwidth,
-		  Double_t   zetawidth,
-		  Double_t   xioffset,
-		  Double_t   sigmaxi,
+                  const TVector3  &center,
+                  const TVector3  &normal,
+                  Double_t   SortingPolicy,
+                  Double_t   xiwidth,
+                  Double_t   zetawidth,
+                  Double_t   xioffset,
+                  Double_t   sigmaxi,
                   Double_t   sigmazeta,
                   Bool_t     type = EXVMeasLayer::kActive,
             const Char_t    *name = "FPCCDVTXML");
@@ -78,7 +78,7 @@ public:
    Double_t fSigmaXi;  // sigma_x
    Double_t fSigmaZeta;  // sigma_z
    
-   ClassDef(EXVTXMeasLayer,1) 	// Sample measurement layer class   
+   ClassDef(EXVTXMeasLayer,1)   // Sample measurement layer class   
    
 };
 

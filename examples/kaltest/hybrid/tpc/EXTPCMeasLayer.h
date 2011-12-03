@@ -60,7 +60,7 @@ private:
    Double_t fSigmaX1;   // xy resolution
    Double_t fSigmaZ;    // z  resolution
 
-   ClassDef(EXTPCMeasLayer,1) 	// Sample measurement layer class
+   ClassDef(EXTPCMeasLayer,1)   // Sample measurement layer class
 };
 
 #endif

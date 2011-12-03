@@ -24,8 +24,8 @@ public:
 
    virtual void       DebugPrint(Option_t *opt = "")           const;
 
-   inline		  Int_t    GetSide  () const { return fSide;   }
-   inline		  Double_t GetVdrift() const { return fVdrift; }
+   inline                 Int_t    GetSide  () const { return fSide;   }
+   inline                 Double_t GetVdrift() const { return fVdrift; }
    inline  const TVector3 GetExactX()          const { return fXX;     }
 
 private:

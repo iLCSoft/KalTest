@@ -59,7 +59,7 @@ private:
    Double_t fSigmaX;      // sigma_x
    Double_t fSigmaZ;      // sigma_z
 
-   ClassDef(EXITMeasLayer,1) 	// Sample measurement layer class
+   ClassDef(EXITMeasLayer,1)    // Sample measurement layer class
 };
 
 #endif
