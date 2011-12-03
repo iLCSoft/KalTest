@@ -21,6 +21,10 @@
 //*   2005/08/15  K.Fujii           Added fIsActive and IsActive().
 //*                                 Moved GetEnergyLoss() and CalcQms()
 //*                                 from TVKalDetector.
+//*   2011/12/03  S.Aplin           Added new member: name 
+//*                                 default value set to "TVMeasLayer"
+//*                                 and corresponding member function
+//*                                 TString GetName()
 //*
 //*************************************************************************
 
@@ -36,11 +40,13 @@ ClassImp(TVMeasLayer)
 // ----------------------------------
 TVMeasLayer::TVMeasLayer(TMaterial     &matIn,
                          TMaterial     &matOut,
-                         Bool_t         isactive)
+                         Bool_t         isactive,
+                         const Char_t    *name)
            : fMaterialInPtr(&matIn),
              fMaterialOutPtr(&matOut),
              fIndex(0),
-             fIsActive(isactive)
+             fIsActive(isactive),
+             fname(name)
 {
 }
 

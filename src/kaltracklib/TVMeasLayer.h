@@ -21,6 +21,10 @@
 //*                                 fMaterialOutPtr, fMaterialInPtr, and
 //*                                 their getters and setters.
 //*   2005/08/15  K.Fujii           Added fIsActive and IsActive().
+//*   2011/12/03  S.Aplin           Added new member: name 
+//*                                 default value set to "TVMeasLayer"
+//*                                 and corresponding member function
+//*                                 TString GetName()  
 //*
 //*************************************************************************
 
@@ -28,7 +32,7 @@
 #include "TMaterial.h"      // from ROOT
 #include "TAttElement.h"    // from Utils
 #include "TKalMatrix.h"     // from KalLib
-#include "KalTrackDim.h"	 // from KalTrackLib
+#include "KalTrackDim.h"    // from KalTrackLib
 
 class TVTrack;
 class TVTrackHit;
@@ -39,7 +43,8 @@ public:
 
    TVMeasLayer(TMaterial &matIn, 
                TMaterial &matOut,
-               Bool_t     isactive = kTRUE);
+               Bool_t     isactive = kTRUE,
+               const Char_t    *name = "TVMeasLayer");
    virtual ~TVMeasLayer() {}
 
    // Utiliy Methods
@@ -53,7 +58,7 @@ public:
                                       TKalMatrix &H)  const = 0;
 
    inline virtual TMaterial &GetMaterial(Bool_t isoutgoing) const
-	      { return isoutgoing ? *fMaterialOutPtr : *fMaterialInPtr; }
+              { return isoutgoing ? *fMaterialOutPtr : *fMaterialInPtr; }
      
    inline  Int_t      GetIndex() const  { return fIndex;    }
    inline  void       SetIndex(Int_t i) { fIndex = i;       }    
@@ -67,13 +72,15 @@ public:
                                            Double_t  df,
                                            TKalMatrix &Qms) const;
 
+  inline TString       GetName() const { return fname;    }
+  
 private:
    TMaterial     *fMaterialInPtr;   // pointer of inner Material
    TMaterial     *fMaterialOutPtr;  // pointer of outer Material
    Int_t          fIndex;           // index in TKalDetCradle
    Bool_t         fIsActive;        // flag to tell layer is active or not
-
-   ClassDef(TVMeasLayer,1) 	// Measurement layer interface class
+  const Char_t   *fname;
+   ClassDef(TVMeasLayer,1)      // Measurement layer interface class
 };
 
 #endif
