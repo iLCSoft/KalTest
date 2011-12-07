@@ -77,6 +77,14 @@ see description below (2005/08/26).
 
 =====================================================================================
 
+
+ --------
+| v01-03 | 
+ --------
+
+	    - added name member and corresponding getName memeber function to TVMeasLayer
+
+
  --------
 | v01-02 | 
  --------
