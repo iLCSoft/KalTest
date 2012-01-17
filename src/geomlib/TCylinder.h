@@ -21,6 +21,8 @@
 #include "TVector3.h"
 #include "TMatrixD.h"
 
+#include <cmath>
+
 class TVTrack;
 
 //_____________________________________________________________________
@@ -84,7 +86,7 @@ Double_t TCylinder::GetZmax() const
 
 Bool_t TCylinder::IsOnSurface(const TVector3 &xx) const
 {
-   return (xx.Z() >= GetZmin() && xx.Z() <= GetZmax());
+   return (xx.Z() >= GetZmin() && xx.Z() <= GetZmax()) && std::fabs( (xx-fXc).Perp() - fR ) < 1.e-6;
 } 
 
 Bool_t TCylinder::IsOutside(const TVector3 &xx) const
