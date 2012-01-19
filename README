@@ -79,6 +79,13 @@ see description below (2005/08/26).
 
 
  --------
+| v01-04 | 
+ --------
+
+	    - geomlib 
+	      - TCylinder IsOnSurface now checks if point is on the surface (r) not just between +/-z
+
+ --------
 | v01-03 | 
  --------
 
