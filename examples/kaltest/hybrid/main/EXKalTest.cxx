@@ -1,3 +1,4 @@
+//#define SAVE_RESIDUAL
 #include "TNtupleD.h"
 #include "TFile.h"
 #include "TKalDetCradle.h"
@@ -7,7 +8,9 @@
 #include "EXKalTest.h"
 #include "EXTPCKalDetector.h"
 #include "EXITKalDetector.h"
+#include "EXBPKalDetector.h"
 #include "EXVTXKalDetector.h"
+#include "EXBPHit.h"
 #include "EXVTXHit.h"
 #include "EXITHit.h"
 #include "EXITFBHit.h"
@@ -102,16 +105,19 @@ int main (Int_t argc, Char_t **argv)
    // ===================================================================
 
    TKalDetCradle    toygld; // toy GLD detector
+   EXBPKalDetector  bmpipe; // beam pipe (bp)
    EXVTXKalDetector vtxdet; // vertex detector (vtx)
    EXITKalDetector  itdet;  // intermediate tracker (it)
    EXTPCKalDetector tpcdet; // TPC (tpc)
 
+   toygld.Install(bmpipe);  // install bp into its toygld
    toygld.Install(vtxdet);  // install vtx into its toygld
    toygld.Install(itdet);   // install it into its toygld
    toygld.Install(tpcdet);  // install tpc into its toygld
    toygld.Close();          // close the cradle
    toygld.Sort();           // sort meas. layers from inside to outside
 
+   bmpipe.PowerOff();       // power off bp not to process hit
    //vtxdet.PowerOff();       // power off vtx not to process hit
    //itdet.PowerOff();        // power off it not to process hit
    //toygld.SwitchOffMS();    // switch off multiple scattering
@@ -383,6 +389,7 @@ int main (Int_t argc, Char_t **argv)
          Int_t ierr;
          vwp->SetView(10.,80.,80.,ierr);
 
+         bmpipe.Draw(40);
          vtxdet.Draw(40);
          itdet.Draw(40);
          tpcdet.Draw(40);

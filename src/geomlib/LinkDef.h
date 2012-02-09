@@ -5,6 +5,7 @@
 #pragma link off all functions;
 
 #pragma link C++ class TCircle+;
+#pragma link C++ class TCutCone+;
 #pragma link C++ class TCylinder+;
 #pragma link C++ class TPlane+;
 #pragma link C++ class THype+;

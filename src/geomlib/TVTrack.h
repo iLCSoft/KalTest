@@ -70,7 +70,7 @@ public:
    inline virtual void ScatterBy(Double_t dphi, Double_t dtnl)
    {
       fPhi0  += dphi;
-      fKappa += (fKappa*fTanL/TMath::Sqrt(1+fTanL*fTanL)) * dtnl;
+      fKappa += (fKappa*fTanL/(1+fTanL*fTanL)) * dtnl;
       fTanL  += dtnl;
    }
 

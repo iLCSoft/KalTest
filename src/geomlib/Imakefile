@@ -8,6 +8,7 @@ PACKAGENAME   = S4Geom
 
 SRCS          = THelicalTrack.$(SrcSuf)  \
 		TCircle.$(SrcSuf) \
+		TVCutCone.$(SrcSuf) \
 		TVCurve.$(SrcSuf) \
 		TCylinder.$(SrcSuf) \
                 TPlane.$(SrcSuf) \

@@ -1,6 +1,6 @@
 
 
-SET( hybrid_input_dirs gen it kern tpc vtx )
+SET( hybrid_input_dirs bp gen it kern tpc vtx )
 
 FOREACH( _input_dir ${hybrid_input_dirs} )
     LIST( APPEND ROOT_DICT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/${_input_dir} )

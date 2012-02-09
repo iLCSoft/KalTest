@@ -42,7 +42,7 @@ public:
 
    virtual TKalMatrix XvToMv  (const TVector3 &xv, Double_t t0)  const = 0;
 
-   virtual void       DebugPrint(Option_t *opt = "")        const = 0;
+  //   virtual void       DebugPrint(Option_t *opt = "")        const = 0;
 
 private:
    Int_t         fDim;            // dimension of coordinate space

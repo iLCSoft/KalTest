@@ -28,8 +28,8 @@
 MFLAGS	=
 CURRDIR	= .
 
-SUBDIRS	 = kern gen tpc it vtx
-#SUBDIRS	 = kern gen tpc old_it old_vtx
+SUBDIRS	 = kern gen bp tpc it vtx
+#SUBDIRS	 = kern gen bp tpc old_it old_vtx
 SUBDIRS2 = main
 
 all:
