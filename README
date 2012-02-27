@@ -77,7 +77,13 @@ see description below (2005/08/26).
 
 =====================================================================================
 
+ --------
+| v01-05 | 
+ --------
 
+
+	    - Added TCutCone surface with examples of use in hybrid example.
+            - ScatterBy function corrected in TVTrack class.
 
  --------
 | v01-04 | 
