@@ -77,6 +77,12 @@ see description below (2005/08/26).
 
 =====================================================================================
 
+ -----------
+| v01-05-01 | 
+ -----------
+
+	    - Fixed orientation for in/out transportation in TKalDetCradle, previously only inward transportation was correct.
+
  --------
 | v01-05 | 
  --------

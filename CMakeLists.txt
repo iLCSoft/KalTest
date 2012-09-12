@@ -13,7 +13,7 @@ PROJECT( KalTest )
 # project version
 SET( KalTest_VERSION_MAJOR 1 )
 SET( KalTest_VERSION_MINOR 5 )
-SET( KalTest_VERSION_PATCH 0 )
+SET( KalTest_VERSION_PATCH 1 )
 
 cmake_policy(SET CMP0008 NEW)  
 
