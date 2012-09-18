@@ -82,7 +82,7 @@ see description below (2005/08/26).
  -----------
 
 	    - Fixed orientation for in/out transportation in TKalDetCradle, previously only inward transportation was correct.
-
+	    - Ensure that material effects are treated correctly by only including material effects from present surface to destination surface.
  --------
 | v01-05 | 
  --------
