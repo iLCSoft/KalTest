@@ -163,8 +163,8 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
   
   TMatrixD dxdphi = hel.CalcDxDphi(fito);                       // tangent vector at destination surface                       
   TVector3 dxdphiv(dxdphi(0,0),dxdphi(1,0),dxdphi(2,0));        // convert matirix diagonal to vector
-//  Double_t cpa = hel.GetKappa();                                // get pt 
-  
+//  Double_t cpa = hel.GetKappa();                                // get pt
+
   Bool_t isout = -fito*dxdphiv.Dot(sfp->GetOutwardNormal(xto)) < 0 ? kTRUE : kFALSE;  // out-going or in-coming at the destination surface
   //=====================
   // ENDFIXME
@@ -184,13 +184,17 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
   // ---------------------------------------------------------------------
   Int_t ifr = fridx; // set index to the index of the intitial starting layer
   
-  // here the next layer ito starts as the next layer fridx+di, where di is either +1 or -1
+  // here we make first make sure that the helix is at the crossing point of the current surface.
+  // this is necessary to ensure that the material is only accounted for between fridx and toidx
+  // otherwise it is possible to have inconsistencies with material treatment.
   // loop until we reach the index toidx, which is the surface we need to reach
-  for (Int_t ito=fridx+di; (di>0 && ito<=toidx)||(di<0 && ito>=toidx); ito += di) {
+  for (Int_t ito=fridx; (di>0 && ito<=toidx)||(di<0 && ito>=toidx); ito += di) {
     
-    Double_t fids = fid; // deflection angle from the last layer crossing 
+    Double_t fid_temp = fid; // deflection angle from the last layer crossing
     
-    if (dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid, di)) { // if we have a crossing point at this surface, note di specifies if we are moving forwards or backwards
+    int mode = ito!=fridx ? di : 0; // need to move to the from site as the helix may not be on the crossing point yet, meaning that the eloss and ms will be incorrectely attributed ...
+
+    if (dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid, mode)) { // if we have a crossing point at this surface, note di specifies if we are moving forwards or backwards
       
       //=====================
       // FIXME
@@ -202,7 +206,7 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
       // reset the deflection angle and skip this layer
       // this would at stop layers being added which are too far away but I am not sure how this will work with the problem described above. 
       if( (xx-xfrom).Mag() - kMergin > (xto-xfrom).Mag() ){  
-        fid = fids;
+        fid = fid_temp;
         continue ;
       }
       //=====================
@@ -211,7 +215,10 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
       const TVMeasLayer   &ml  = *dynamic_cast<TVMeasLayer *>(At(ifr)); // get the last layer 
       
       TKalMatrix Qms(sdim, sdim);                                       
-       if (IsMSOn()) ml.CalcQms(isout, hel, fid, Qms);                   // Qms for this step, using the fact that the material was found to be outgoing or incomming above, and the distance from the last layer
+      if (IsMSOn()&& ito!=fridx ){
+        
+        ml.CalcQms(isout, hel, fid, Qms);                   // Qms for this step, using the fact that the material was found to be outgoing or incomming above, and the distance from the last layer 
+      }
       
       hel.MoveTo(xx, fid, &DF);         // move the helix to the present crossing point, DF will simply have its values overwritten so it could be explicitly set to unity here
       if (sdim == 6) DF(5, 5) = 1.;     // t0 stays the same
@@ -220,7 +227,7 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
       
       Q = DF * (Q + Qms) * DFt;         // transport Q to the present crossing point
       
-      if (IsDEDXOn()) {
+      if (IsDEDXOn() && ito!=fridx) {
         hel.PutInto(sv);                              // copy hel to sv
                                                       // whether the helix is moving forwards or backwards is calculated using the sign of the charge and the sign of the deflection angle  
                                                       // Bool_t isfwd = ((cpa > 0 && df < 0) || (cpa <= 0 && df > 0)) ? kForward : kBackward;  // taken from TVMeasurmentLayer::GetEnergyLoss  not df = fid
