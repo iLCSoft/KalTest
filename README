@@ -83,6 +83,7 @@ see description below (2005/08/26).
 
 	    - Fixed orientation for in/out transportation in TKalDetCradle, previously only inward transportation was correct.
 	    - Ensure that material effects are treated correctly by only including material effects from present surface to destination surface.
+	    - THelicalTrack:MoveTo modified to make sure the helix really moves to the new reference point and is not out by more than 2PI.
  --------
 | v01-05 | 
  --------
