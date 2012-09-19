@@ -134,6 +134,23 @@ void THelicalTrack::MoveTo(const TVector3 &xv0to, // new pivoit
 
    Double_t drp   = (xc-xv)*csf + (yc-yv)*snf - r;
    Double_t dzp   = z0 - zv + dz - r*tnl*fid;
+  
+  
+  // make sure that the helix really moves to the closest point to the reference point
+
+   double phi_to_ref =  dzp/(-r*tnl);
+    
+   while (phi_to_ref < -kPi) {
+     phi_to_ref += kTwoPi;
+   }
+   while (phi_to_ref >  kPi) {
+     phi_to_ref -= kTwoPi;
+   }
+
+   double phi_correction = dzp/(-r*tnl) - phi_to_ref;
+    
+   dzp += phi_correction*r*tnl;
+  
 
    TMatrixD av(5,1);
    av(0,0) = drp;
