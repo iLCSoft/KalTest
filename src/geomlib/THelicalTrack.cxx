@@ -137,14 +137,21 @@ void THelicalTrack::MoveTo(const TVector3 &xv0to, // new pivoit
   
   
   // make sure that the helix really moves to the closest point to the reference point
-
+  // use protective_counter to ensure we don't enter an infinate loop
+  
    double phi_to_ref =  dzp/(-r*tnl);
-    
-   while (phi_to_ref < -kPi) {
+   int protective_counter = 0;
+  
+   while ((phi_to_ref < -kPi) && protective_counter < 1000 ) {
      phi_to_ref += kTwoPi;
+     ++protective_counter;
    }
-   while (phi_to_ref >  kPi) {
+   
+   protective_counter = 0;
+
+   while ((phi_to_ref >  kPi) && protective_counter < 1000 ) {
      phi_to_ref -= kTwoPi;
+     ++protective_counter;
    }
 
    double phi_correction = dzp/(-r*tnl) - phi_to_ref;
