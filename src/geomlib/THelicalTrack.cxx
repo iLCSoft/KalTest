@@ -134,6 +134,34 @@ void THelicalTrack::MoveTo(const TVector3 &xv0to, // new pivoit
 
    Double_t drp   = (xc-xv)*csf + (yc-yv)*snf - r;
    Double_t dzp   = z0 - zv + dz - r*tnl*fid;
+  
+  
+  // make sure that the helix really moves to the closest point to the reference point
+  // use protective_counter to ensure we don't enter an infinate loop
+  
+  if (tnl > 1.0e-10) { // protect against unreasonably small values of tnl, as in the case special case of a circle this will lead to division by zero below 
+    
+    double phi_to_ref =  dzp/(-r*tnl);
+    int protective_counter = 0;
+    
+    while ((phi_to_ref < -kPi) && protective_counter < 1000 ) {
+      phi_to_ref += kTwoPi;
+      ++protective_counter;
+    }
+    
+    protective_counter = 0;
+    
+    while ((phi_to_ref >  kPi) && protective_counter < 1000 ) {
+      phi_to_ref -= kTwoPi;
+      ++protective_counter;
+    }
+    
+    double phi_correction = dzp/(-r*tnl) - phi_to_ref;
+    
+    dzp += phi_correction*r*tnl;
+
+  }
+  
 
    TMatrixD av(5,1);
    av(0,0) = drp;
