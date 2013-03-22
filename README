@@ -76,6 +76,14 @@ see description below (2005/08/26).
   Release Notes:
 
 =====================================================================================
+ -----------    
+| v01-05-03 | 
+ -----------
+
+   - apply bug fix provided by K.Fujii
+     that makes adjusting of the z0 for curlers in ThelicalTrack::MoveTo
+     unnecessary
+
 
  -----------
 | v01-05-01 | 
