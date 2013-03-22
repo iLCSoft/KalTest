@@ -136,6 +136,8 @@ void THelicalTrack::MoveTo(const TVector3 &xv0to, // new pivoit
    Double_t dzp   = z0 - zv + dz - r*tnl*fid;
   
   
+#if 0 //======== this code should not be necessary with a bug fix in TKalDetCradle =====================
+
   // make sure that the helix really moves to the closest point to the reference point
   // use protective_counter to ensure we don't enter an infinate loop
   
@@ -162,6 +164,8 @@ void THelicalTrack::MoveTo(const TVector3 &xv0to, // new pivoit
 
   }
   
+#endif // =============================================================================================
+
 
    TMatrixD av(5,1);
    av(0,0) = drp;

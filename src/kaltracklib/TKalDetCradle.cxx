@@ -235,7 +235,13 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
         hel.SetTo(sv, hel.GetPivot());                // save sv back to hel
       }
       ifr = ito; // for the next iteration set the "previous" layer to the current layer moved to 
+
+
+    } else {  // if there is no crossing point reset fid to its original value:
+
+      fid = fid_temp ;
     }
+
   } // end of loop over surfaces
   
   //   // ---------------------------------------------------------------------
