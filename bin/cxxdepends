@@ -1,0 +1,32 @@
+#!/bin/sh
+#######################
+#  create a list of depend files of g++
+#$Id: cxxdepends,v 1.9 2009-11-26 14:00:06 fujiik Exp $
+#######################
+
+
+UNAME=`uname`
+
+echocmd=`which echo`
+cxx=gcc
+iret=`which $cxx | grep -c /`
+if [ $iret != 0 ]; then
+  gccverno=`$cxx -dumpversion`
+  gccmajver=`$echocmd $gccverno | cut -d. -f1`
+  gccprefix=`which $cxx | sed -e "s;/bin/$cxx;;"`
+  cppdir=`find $gccprefix/libexec -name cc1 | sed -e 's;cc1;;'`
+  cppfile=$cppdir/cc1
+  if [ $UNAME == "CYGWIN_NT-5.0" ]; then
+    cppfile=$cppdir/cc1plus.exe
+  fi
+  strcmd=`which strings`
+  incdir=`$strcmd $cppfile  | grep include  | grep "/" | uniq `
+  usrinclude=/usr/include
+  for i  in `$echocmd ${incdir}`
+  do
+    if [ -d $i -a "$i" != "/usr/include" ]; then
+	$echocmd -n " -I$i" 
+    fi
+  done
+fi
+exit 0

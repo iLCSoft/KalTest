@@ -1,0 +1,52 @@
+#include "../../../conf/makejsf.tmpl"
+
+INSTALLDIR    = ../../..
+PROGRAMNAME   = EXKalTest
+
+SRCS          = EXKalTest.$(SrcSuf) \
+		EXHit.$(SrcSuf) \
+		EXMeasLayer.$(SrcSuf) \
+		EXKalDetector.$(SrcSuf) \
+		EXEventGen.$(SrcSuf)
+
+OBJS	      =	$(subst .$(SrcSuf),.$(ObjSuf),$(SRCS)) \
+		$(PROGRAMNAME)Dict.$(ObjSuf)
+
+HDRS	      = $(subst .$(SrcSuf),.h,$(SRCS))
+
+DICTNAME      = $(PROGRAMNAME)Dict
+
+PROGRAM    = prod/$(PROGRAMNAME)
+
+LIBINSTALLDIR = $(INSTALLDIR)/lib
+INCINSTALLDIR = $(INSTALLDIR)/include
+INCPATH	      = -I. -I$(INCINSTALLDIR)
+#if 0
+CXXFLAGS     += $(INCPATH) -O -g
+#endif
+CXX += -O -g $(INCPATH)
+
+all:: $(PROGRAM) 
+
+$(PROGRAM): $(OBJS)
+	$(LD) -o $(PROGRAM) $(OBJS) \
+	      -L$(LIBINSTALLDIR) -lS4KalTrack -lS4Kalman -lS4Geom -lS4Utils \
+	      $(LDFLAGS)
+
+clean:: 
+	@rm -f $(OBJS) prod/core
+
+depend:: $(SRCS) $(HDRS)
+	for i in $(SRCS); do \
+	rmkdepend -a -- $(CXXFLAGS) $(INCPATH) $(DEPENDFILES) -- $$i; done
+
+distclean:: clean
+	@rm -f $(PROGRAM) Makefile $(DICTNAME).*
+	@(cd prod; rm -f *.root *.out *~)
+
+$(DICTNAME).$(SrcSuf): $(HDRS) LinkDef.h
+	@echo "Generating dictionary ..."
+	rootcint -f $(DICTNAME).$(SrcSuf) \
+	         -c -I$(INCINSTALLDIR) $(HDRS) LinkDef.h
+                                                                               
+
