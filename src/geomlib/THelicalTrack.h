@@ -71,6 +71,8 @@ public:
                        Double_t drp,
                        TMatrixD &F)  const;
 
+   virtual Double_t   GetMomentum() const;
+
 private:
    void CalcStartHelix(const TVector3 &x1,
                        const TVector3 &x2,

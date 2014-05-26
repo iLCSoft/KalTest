@@ -102,6 +102,7 @@ public:
    inline virtual       Double_t   GetRho      () const { return fAlpha/fKappa; }
    inline virtual       Double_t   GetPtoR     () const { return fAlpha; }
 
+          virtual       Double_t   GetMomentum () const = 0;
    // Setters
 
    inline virtual void  SetTo(const TMatrixD &sv, const TVector3 &x0)

@@ -39,7 +39,7 @@ public:
 
    TStraightTrack(Double_t dr    = 0.,
                   Double_t phi0  = 0.,
-                  Double_t kappa = 1.e-5,
+                  Double_t m     = 5., //not used
                   Double_t dz    = 0.,
                   Double_t tanl  = 0.,
                   Double_t x0    = 0.,
@@ -66,7 +66,13 @@ public:
                        Double_t drp,
                        TMatrixD &F)  const;
 
+   inline virtual  Double_t   GetMomentum() const     { return fMomentum; }
+
 private:
+
+   //For straight track, we can not get the momentum from track fitting. 
+   //However, a fixed value of momentum is used to calculate the multiple scattering.
+   Double_t fMomentum;
 
    ClassDef(TStraightTrack,1)      // circle class
 };

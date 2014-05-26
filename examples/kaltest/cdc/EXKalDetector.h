@@ -23,7 +23,7 @@ public:
 
    ~EXKalDetector() {}
 
-   static Double_t GetBfield (const TVector3 &xx = TVector3(0.))
+   static Double_t GetBfield (const TVector3 &xx = TVector3(0., 0., 0.))
                            { return fgBfield; }
 
 private:

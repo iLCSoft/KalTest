@@ -70,6 +70,8 @@ Double_t TVMeasLayer::GetEnergyLoss(      Bool_t    isoutgoing,
    Double_t tnl21  = 1. + tnl2;
    Double_t cslinv = TMath::Sqrt(tnl21);
    Double_t mom2   = tnl21 / (cpa * cpa);
+   // For straight track, cpa is 0.
+   if(!hel.IsInB()) { mom2 = hel.GetMomentum(); mom2 *= mom2; }
 
    // -----------------------------------------
    // Bethe-Bloch eq. (Physical Review D P195.)
@@ -112,6 +114,7 @@ Double_t TVMeasLayer::GetEnergyLoss(      Bool_t    isoutgoing,
 
    Double_t edep = dedx * dnsty * path;
 
+   if(!hel.IsInB()) return edep;
 
    Double_t cpaa = TMath::Sqrt(tnl21 / (mom2 + edep
                  * (edep + 2. * TMath::Sqrt(mom2 + mass * mass))));
@@ -142,6 +145,7 @@ void TVMeasLayer::CalcQms(      Bool_t       isoutgoing,
    Double_t cpatnl = cpa * tnl;
    Double_t cslinv = TMath::Sqrt(tnl21);
    Double_t mom    = TMath::Abs(1. / cpa) * cslinv;
+   if(!hel.IsInB()) mom = hel.GetMomentum();
 
    static const Double_t kMpi = 0.13957018; // pion mass [GeV]
    TKalTrack *ktp  = static_cast<TKalTrack *>(TVKalSystem::GetCurInstancePtr());

@@ -15,6 +15,7 @@
 
 static const Bool_t gkDir = kIterBackward;
 //static const Bool_t gkDir = kIterForward;
+//#define __STRAIGHT_TRACK__
 
 using namespace std;
 
@@ -24,7 +25,11 @@ int main (Int_t argc, Char_t **argv)
    TApplication app("EXKalTest", &argc, argv, 0, 0);
 
    TFile hfile("h.root","RECREATE","KalTest");
+#ifdef __STRAIGHT_TRACK__
+   TNtupleD *hTrackMonitor = new TNtupleD("track", "", "ndf:chi2:cl:phi0:tanl:cpa");
+#else
    TNtupleD *hTrackMonitor = new TNtupleD("track", "", "ndf:chi2:cl:cpa");
+#endif
 
    Double_t pt      = 1.;
    Double_t t0in    = 0.;
@@ -86,7 +91,11 @@ int main (Int_t argc, Char_t **argv)
       //  Generate a partcle
       // ============================================================
 
+#ifdef __STRAIGHT_TRACK__
+	  TStraightTrack hel = gen.GenerateStraightTrack(pt);
+#else
       THelicalTrack hel = gen.GenerateHelix(pt);
+#endif
 
       // ============================================================
       //  Swim the particle in detector
@@ -144,6 +153,9 @@ int main (Int_t argc, Char_t **argv)
       svd(4,0) = helstart.GetTanLambda();
       if (kSdim == 6) svd(5,0) = 0.;
 
+#ifdef __STRAIGHT_TRACK__
+      svd(2,0) = 0.;
+#endif
       static TKalMatrix C(kSdim,kSdim);
       for (Int_t i=0; i<kSdim; i++) {
          C(i,i) = 1.e4;   // dummy error matrix
@@ -188,7 +200,13 @@ int main (Int_t argc, Char_t **argv)
       Double_t chi2 = kaltrack.GetChi2();
       Double_t cl   = TMath::Prob(chi2, ndf);
       Double_t cpa  = kaltrack.GetCurSite().GetCurState()(2, 0);
+#ifdef __STRAIGHT_TRACK__
+      Double_t tanl  = kaltrack.GetCurSite().GetCurState()(4, 0);
+      Double_t phi0  = kaltrack.GetCurSite().GetCurState()(1, 0);
+      hTrackMonitor->Fill(ndf, chi2, cl, phi0, tanl, cpa);
+#else
       hTrackMonitor->Fill(ndf, chi2, cl, cpa);
+#endif
    }
 
    hfile.Write();

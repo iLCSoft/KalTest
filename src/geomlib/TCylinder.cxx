@@ -69,6 +69,9 @@ Int_t TCylinder::CalcXingPointWith(const TVTrack  &hel,
                                          Int_t     mode,
                                          Double_t  eps) const
 {
+   // If B = 0,  use the Newtonian method to calculate the crossing point.
+   if(!hel.IsInB()) return TVSurface::CalcXingPointWith(hel, xx, phi, mode, eps);
+   
    // This assumes nonzero B field.
    //
    // Copy helix parameters to local variables.

@@ -95,11 +95,21 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,   // site from
     
     double fid = 0.;                            
     Int_t sdim = sv.GetNrows();              // number of track parameters
+	if(to.GetHit().GetBfield()!=0.) {
     TKalMatrix DF(sdim, sdim);               // propagator matrix segment
     
     hel.MoveTo(to.GetPivot(), fid, &DF);     // move pivot to actual hit (to)
     F = DF * F;                              // update F accordingly
     hel.PutInto(sv);                         // save updated hel to sv
+   }
+   else {
+	   TKalMatrix DF(sdim, sdim);
+
+  	   TStraightTrack strtrk(sv, x0);
+  	   strtrk.MoveTo(to.GetPivot(), fid, &DF);     // move pivot to actual hit (to)
+  	   F = DF * F;                                 // update F accordingly
+  	   strtrk.PutInto(sv);                         // save updated hel to sv
+   }
     
   } else {
     to.SetPivot(x0);                         // if it is a 1-dim hit
@@ -231,7 +241,12 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
         hel.PutInto(sv);                              // copy hel to sv
                                                       // whether the helix is moving forwards or backwards is calculated using the sign of the charge and the sign of the deflection angle  
                                                       // Bool_t isfwd = ((cpa > 0 && df < 0) || (cpa <= 0 && df > 0)) ? kForward : kBackward;  // taken from TVMeasurmentLayer::GetEnergyLoss  not df = fid
+        if(hel.IsInB()) {
         sv(2,0) += ml.GetEnergyLoss(isout, hel, fid); // correct for dE/dx, returns delta kappa i.e. the change in pt 
+        }
+
+        //NOTE: the momentum of straight track is set to 5 GeV, and the energy loss is ignored.
+
         hel.SetTo(sv, hel.GetPivot());                // save sv back to hel
       }
       ifr = ito; // for the next iteration set the "previous" layer to the current layer moved to 

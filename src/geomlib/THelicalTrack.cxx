@@ -365,6 +365,18 @@ void THelicalTrack::CalcStartHelix(const TVector3 &x1,
    SetTo(sv, x1);
 }
 
+Double_t THelicalTrack::GetMomentum() const
+{
+   Double_t cpa    = GetKappa();
+   Double_t tnl    = GetTanLambda(); 
+   Double_t tnl2   = tnl * tnl;
+   Double_t tnl21  = 1. + tnl2;
+   Double_t cslinv = TMath::Sqrt(tnl21);
+   Double_t mom    = TMath::Abs(1. / cpa) * cslinv;
+
+   return mom;
+}
+
 void THelicalTrack::CalcDapDa(Double_t  fid,
                               Double_t  dr,
                               Double_t  drp,
