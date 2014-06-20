@@ -112,8 +112,8 @@ void THelicalTrack::MoveTo(const TVector3 &xv0to, // new pivoit
    Double_t yc    = y0 + rdr*snf0;
    Double_t fi0p  = 0.;
 
-   if (cpa > 0.) fi0p = TMath::ATan2((yc-yv),(xc-xv));
-   if (cpa < 0.) fi0p = TMath::ATan2((yv-yc),(xv-xc));
+   if (cpa/GetPtoR() > 0.) fi0p = TMath::ATan2((yc-yv),(xc-xv));
+   if (cpa/GetPtoR() < 0.) fi0p = TMath::ATan2((yv-yc),(xv-xc));
    while (fi0p < 0.)      fi0p += kTwoPi;
    while (fi0p > kTwoPi)  fi0p -= kTwoPi;
 

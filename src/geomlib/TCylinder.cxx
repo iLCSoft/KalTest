@@ -88,7 +88,7 @@ Int_t TCylinder::CalcXingPointWith(const TVTrack  &hel,
    // Check if charge is nonzero.
    //
                                                                                 
-   Int_t    chg = (Int_t)TMath::Sign(1.1,cpa);
+   Int_t    chg = (Int_t)TMath::Sign(1.1,cpa/hel.GetPtoR());
    if (!chg) {
       cerr << ">>>> Error >>>> TCylinder::CalcXingPointWith" << endl
            << "      Kappa = 0 is invalid for a helix "          << endl;

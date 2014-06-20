@@ -106,7 +106,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
 
    if( mode!=0 && hel.IsInB()){ // (+1,-1) = (fwd,bwd)
      const Int_t chg = (Int_t)TMath::Sign(1.1, hel.GetKappa());
-     if( chg*phi*mode > 0){
+     if( chg*phi*mode/hel.GetPtoR() > 0){
        return 0;
      }
    }

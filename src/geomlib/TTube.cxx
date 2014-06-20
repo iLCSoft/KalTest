@@ -109,7 +109,7 @@ Int_t TTube::CalcXingPointWith(const TVTrack  &hel,
                Int_t sign = (mode > 0 ? +1 : -1); // (+1,-1) = (fwd,bwd)
                while (dfi <  0.)     dfi += kTwoPi;
                while (dfi >= kTwoPi) dfi -= kTwoPi;
-               if (sign*chg > 0) dfi -= kTwoPi;
+               if (sign*chg/hel.GetPtoR() > 0) dfi -= kTwoPi;
             }
             if (TMath::Abs(dfi) < TMath::Abs(phi)) {
                phi = dfi;
