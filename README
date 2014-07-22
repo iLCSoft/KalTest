@@ -76,6 +76,15 @@ see description below (2005/08/26).
   Release Notes:
 
 =====================================================================================
+
+ -----------    
+| v01-05-04 | 
+ -----------
+
+    - Fixed a field direction bug  (Bo Li)
+    - Slightly modified the track model class to make the straight track work; Straight track generation is the example ct was implemented.  (Bo Li)
+
+
  -----------    
 | v01-05-03 | 
  -----------
