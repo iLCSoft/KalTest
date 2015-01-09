@@ -1,5 +1,5 @@
-#ifndef EXVTXHIT_H
-#define EXVTXHIT_H
+#ifndef __EXVTXHIT__
+#define __EXVTXHIT__
 
 #include "KalTrackDim.h"
 #include "TVTrackHit.h"

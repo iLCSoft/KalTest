@@ -1,5 +1,5 @@
-#ifndef EXTPCDETECTOR_H
-#define EXTPCDETECTOR_H
+#ifndef __EXTPCDETECTOR__
+#define __EXTPCDETECTOR__
 
 #include "EXVKalDetector.h"
 

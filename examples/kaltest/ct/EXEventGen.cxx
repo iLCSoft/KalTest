@@ -1,13 +1,8 @@
 #include "EXEventGen.h"
 #include "EXMeasLayer.h"
 #include "EXKalDetector.h"
-#include "TTrackFrame.h"
-#include "TKalDetCradle.h"
-#include "TBField.h"
-#include "EXHit.h"
 #include "TRandom.h"
-#include "TBField.h"
-#include <iostream>
+#include "TStraightTrack.h"
 
 // -----------------------------------
 //  Track Parameters
@@ -24,7 +19,7 @@
 
 ClassImp(EXEventGen)
 
-Double_t EXEventGen::fgT0 = 0.; // [nsec]
+Double_t EXEventGen::fgT0 = 14.; // [nsec]
 
 THelicalTrack EXEventGen::GenerateHelix(Double_t pt)
 {
@@ -34,32 +29,98 @@ THelicalTrack EXEventGen::GenerateHelix(Double_t pt)
 
    Double_t dr  = __DR__;
    Double_t fi0 = __FI0__ + 2*TMath::Pi()*(gRandom->Uniform()-0.5);
-   fi0 = 3 + gRandom->Uniform(-0.2, 0.2);
    Double_t cpa = 1. / pt;
    Double_t dz  = __DZ__;
    Double_t cs  = gRandom->Uniform(__COSMN__, __COSMX__);
    Double_t tnl = cs / TMath::Sqrt((1-cs)*(1+cs)); 
-   tnl = 0.;
    Double_t x0  = __X0__;
    Double_t y0  = __Y0__;
    Double_t z0  = __Z0__;
 
-   //   
-   //make a tilted helix
-   //
+   Double_t b   = dynamic_cast<const EXKalDetector &>
+                 (dynamic_cast<EXMeasLayer *>
+                 (fCradlePtr->At(0))->GetParent(kFALSE)).GetBfield();
 
-   TVector3 bfield = TBField::GetGlobalBfield(TVector3());
-
-   TTrackFrame globalFrame;
-   TTrackFrame localFrame(globalFrame, TVector3(), bfield);
-
-   THelicalTrack tiltedHelix = THelicalTrack(dr,fi0,cpa,dz,tnl,x0,y0,z0,bfield.Mag());
-   tiltedHelix.SetFrame(localFrame);
-
-   return tiltedHelix;
+   return THelicalTrack(dr,fi0,cpa,dz,tnl,x0,y0,z0,b);
 }
 
-void EXEventGen::Swim(THelicalTrack &heltrk, Double_t mass)
+TStraightTrack EXEventGen::GenerateStraightTrack(Double_t p)
+{
+   // ---------------------------
+   //  Create a straight track
+   // ---------------------------
+
+   EXKalDetector::SetBfield(0.);
+
+   Double_t dr  = __DR__;
+   Double_t fi0 = __FI0__ + 2*TMath::Pi()*(gRandom->Uniform()-0.5);
+   fi0 = 0.5;
+   Double_t dz  = __DZ__;
+   Double_t cs  = gRandom->Uniform(__COSMN__, __COSMX__);
+   Double_t tnl = cs / TMath::Sqrt((1-cs)*(1+cs)); 
+   tnl = 1.;
+   Double_t x0  = __X0__;
+   Double_t y0  = __Y0__;
+   Double_t z0  = __Z0__;
+
+
+   return TStraightTrack(dr,fi0,p,dz,tnl,x0,y0,z0,0);
+}
+
+void EXEventGen::Swim(TStraightTrack &trk)
+{
+   // ---------------------------
+   //  Swim track and make hits
+   // ---------------------------
+
+   //Double_t dfi       = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))
+   //                      ->GetSortingPolicy()
+   //                      / heltrk.GetRho();
+   //Bool_t   is1stloop = kTRUE;
+   
+   Double_t dfi = 1;
+   Int_t    nlayers   = fCradlePtr->GetEntries();
+   Int_t    dlyr      = 1;
+
+   for (Int_t lyr = 0; lyr < nlayers && lyr >= 0; lyr += dlyr) {
+      EXMeasLayer &ms = *static_cast<EXMeasLayer *>(fCradlePtr->At(lyr));
+      TVSurface   &ml = *static_cast<TVSurface *>(fCradlePtr->At(lyr));
+      TVector3 xx;
+      Double_t dfis = dfi;
+      if (!ml.CalcXingPointWith(trk,xx,dfi,1)) {
+		  break;
+	  }
+      
+      // should use the material behind the surface since dfi is measured 
+      // from the last point to the current surface
+      Bool_t   dir    = dlyr < 0 ? kTRUE : kFALSE;
+
+      if (fCradlePtr->IsMSOn()) {
+         TKalMatrix Qms(5,5);
+         ms.CalcQms(dir, trk, dfi, Qms);
+         Double_t sgphi  = TMath::Sqrt(Qms(3,3));
+         Double_t sgtnl  = TMath::Sqrt(Qms(1,1));
+         Double_t delphi = gRandom->Gaus(0.,sgphi);
+         Double_t deltnl = gRandom->Gaus(0.,sgtnl);
+
+         trk.ScatterBy(delphi,deltnl);  // M.S. at start point
+         dfis = 0.;
+         
+		 if (!ms.CalcXingPointWith(trk,xx,dfi,1)) break;// recalc exact hit
+         dfis += dfi;
+      }
+
+      trk.MoveTo(xx,dfi);	// move pivot to current hit
+
+      //NOTE: energy loss is ignored for straight track
+
+      if (ms.IsActive()) {
+         ms.ProcessHit(xx, *fHitBufPtr);
+      }
+   }
+}
+
+void EXEventGen::Swim(THelicalTrack &heltrk)
 {
    // ---------------------------
    //  Swim track and make hits
@@ -68,98 +129,55 @@ void EXEventGen::Swim(THelicalTrack &heltrk, Double_t mass)
    Double_t dfi       = -dynamic_cast<TVSurface *>(fCradlePtr->At(0))
                          ->GetSortingPolicy()
                          / heltrk.GetRho();
-
-   const Double_t eps = 1.e-5;
-   
    Bool_t   is1stloop = kTRUE;
    Int_t    nlayers   = fCradlePtr->GetEntries();
    Int_t    dlyr      = 1;
-
-   for (Int_t lyr = 0; lyr < nlayers && lyr >= 0; lyr += dlyr) 
-   {
-	  std::cout << "layer: " << lyr << std::endl;
-	  EXMeasLayer &ms = *static_cast<EXMeasLayer *>(fCradlePtr->At(lyr));
-
-	  TVector3 crossingPoint;
+   for (Int_t lyr = 0; lyr < nlayers && lyr >= 0; lyr += dlyr) {
+      EXMeasLayer &ms = *static_cast<EXMeasLayer *>(fCradlePtr->At(lyr));
+      TVector3 xx;
       Double_t dfis = dfi;
-
-      if(!ms.CalcXingPointWith(heltrk, crossingPoint, dfi, 1, eps)) 
-	  {
-		 //no crossing point
-		 
+      if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) {
          if (is1stloop && fHitBufPtr->GetEntries() > 3) {
             is1stloop = kFALSE;
             dlyr      = -1;
             dfi       = dfis;
             continue;
-         } 
-		 else
-		 { 
-			 std::cout << "no crossing point, stop generating" << std::endl;
-			 break;
-		 }
+         } else break;
       }
-
       // should use the material behind the surface since dfi is measured 
       // from the last point to the current surface
       Bool_t   dir    = dlyr < 0 ? kTRUE : kFALSE;
 
-      const TMaterial &mat = ms.GetMaterial(dir);
-      if (fCradlePtr->IsMSOn()) 
-	  {
+      if (fCradlePtr->IsMSOn()) {
          TKalMatrix Qms(5,5);
-         fCradlePtr->CalcQms(mat, heltrk, dfi, Qms, mass);
+         ms.CalcQms(dir, heltrk, dfi, Qms);
          Double_t sgphi  = TMath::Sqrt(Qms(1,1));
          Double_t sgtnl  = TMath::Sqrt(Qms(4,4));
          Double_t delphi = gRandom->Gaus(0.,sgphi);
          Double_t deltnl = gRandom->Gaus(0.,sgtnl);
-
+#if 0
+         dfi *= 0.5;
+         TVector3 x0ms = heltrk.CalcXAt(dfi);
+         heltrk.MoveTo(x0ms,dfi);     // M.S. at mid point
+         heltrk.ScatterBy(delphi,deltnl);
+         dfis = dfi;
+#else
          heltrk.ScatterBy(delphi,deltnl);  // M.S. at start point
          dfis = 0.;
-
-         if (!ms.CalcXingPointWith(heltrk, crossingPoint, dfi, 1, eps)) break;// recalc exact hit
+#endif
+         if (!ms.CalcXingPointWith(heltrk,xx,dfi,1)) break;// recalc exact hit
          dfis += dfi;
       }
 
-	  //Move pivot to current hit. In fact we just use the following 
-	  //two matrix to ask for transforming in MoveTo.
-      heltrk.MoveTo(crossingPoint, dfi);
+      heltrk.MoveTo(xx,dfi);	// move pivot to current hit
 
+      TKalMatrix av(5,1);
+      heltrk.PutInto(av);
+      av(2,0) += ms.GetEnergyLoss(dir, heltrk, dfis); // energy loss
+      heltrk.SetTo(av, heltrk.GetPivot());
 
-	  //FIXME:: rotation first, or MS, dE/dx
-
-	  if(fCradlePtr->IsDEDXOn()) 
-	  {
-		  TKalMatrix av(5,1);
-          heltrk.PutInto(av); 
-		  av(2,0) += fCradlePtr->GetEnergyLoss(mat, heltrk, dfis, mass); // energy loss
-		  heltrk.SetTo(av, heltrk.GetPivot());
-	  }
-
-      if (ms.IsActive()) 
-	  {
-         ms.ProcessHit(crossingPoint, *fHitBufPtr);
+      if (ms.IsActive()) {
+         ms.ProcessHit(xx, *fHitBufPtr);
       }
    }
-}
-
-void EXEventGen::DumpHits()
-{
-	TObjArray& hitsArray = *fHitBufPtr; 
-
-	for(int i=0; i<hitsArray.GetEntries(); i++)
-	{
-		EXHit &hit = *dynamic_cast<EXHit *>(hitsArray.At(i));
-
-		TVector3 hitPos = hit.GetMeasLayer().HitToXv(hit);
-		TVector3 bfield = TBField::GetGlobalBfield(hitPos);
-
-		std::cout << "Hit " << i << ":" 
-			 << "x = "  << hitPos.X()
-			 << " y ="  << hitPos.Y()
-			 << " z ="  << hitPos.Z()
-			 << ", r = " << sqrt(hitPos.X()*hitPos.X()+hitPos.Y()*hitPos.Y())
-			 << ", B = (" << bfield.X() << "," << bfield.Y() << "," << bfield.Z() << ")" 
-			 << std::endl;
-	}
 }

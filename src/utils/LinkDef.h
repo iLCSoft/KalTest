@@ -7,6 +7,5 @@
 #pragma link C++ class TAttDrawable+;
 #pragma link C++ class TAttElement+;
 #pragma link C++ class TAttLockable+;
-#pragma link C++ class J4Timer+;
 
 #endif

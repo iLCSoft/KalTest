@@ -24,6 +24,7 @@ EXITKalDetector::EXITKalDetector(Int_t m)
   TMaterial &si = *new TMaterial("ITSi", "", A, Z, density, radlen, 0.);
   
   ////////// Barrel part of IT /////////////////////
+  
   static const Int_t    nlayers  = 2;
   static const Double_t lhalfmin = 36.8;      // layer min half length [cm]
   static const Double_t rmin     = 17.92;     // layer radius min
@@ -32,7 +33,7 @@ EXITKalDetector::EXITKalDetector(Int_t m)
   static const Double_t thick    = 0.05616;   // layer thick
   static const Double_t sigmax   = 1.e-3;
   static const Double_t sigmaz   = 1.e-3;
-
+  
   ///////// Forward & Backward Part of IT //////////
   
   static const Double_t rinfb    = 1.6;      // dummy layer inner radius 
@@ -160,10 +161,9 @@ EXITKalDetector::EXITKalDetector(Int_t m)
       std::stringstream ssdm;
       ss   << "IT" << layer << std::ends;
       ssdm << "ITdm" << layer << std::ends;
-
       Add(new EXITMeasLayer(air, si, r, len, sigmax, sigmaz, active, ss.str().data()));
       Add(new EXITMeasLayer(si, air, r + thick, len, sigmax, sigmaz, dummy, ssdm.str().data()));
-
+      
       len += lstep;
       r   += rstep;       
     }
@@ -176,46 +176,4 @@ EXITKalDetector::EXITKalDetector(Int_t m)
 
 EXITKalDetector::~EXITKalDetector()
 {
-}
-
-// ---------------
-//  Geometry Data
-// ---------------
-void EXITKalDetector::InitFTDGeometry(){  // geometry of FTD
-    // Save frequently used parameters.
-    _FTDgeo.resize(_nDiskHalf);
-    
-    const Int_t npetal = 16;
-    
-    const Double_t zCoordinate[_nDiskHalf] = { 22.0, 37.1, 64.4, 104.6, 144.7, 184.8, 225.0}; // [cm]
-    const Double_t       alpha[_nDiskHalf] = { 6, 6, 4, 4, 4, 4, 4}; //angle of petal to x-y plane  [degree]
-    const Double_t         rin[_nDiskHalf] = { 3.9, 4.9, 7.0, 10.0, 13.0, 16.0, 19.0};
-    const Double_t        rout[_nDiskHalf] = { 17.41, 17.34, 26.41, 30.25, 30.25, 30.24, 30.23};
-    const Double_t     spolicy[_nDiskHalf] = { 17.41, 18.00, 26.41, 30.25, 31.00, 32.00, 33.00};
-    const Double_t       dxMax[_nDiskHalf] = { 7.667, 7.667, 12.249, 12.249, 12.249, 12.249, 12.249};
-    const Double_t       dxMin[_nDiskHalf] = { 2.294, 2.718, 4.527, 4.192, 5.388, 6.585, 7.782};
-    
-    const Double_t LayerThickness = 0.02; // [cm]
-    
-    for(Int_t disk=0; disk<_nDiskHalf; disk++){
-        _FTDgeo[disk].nPetal   = npetal;
-        _FTDgeo[disk].zCoord   = zCoordinate[disk];
-        _FTDgeo[disk].alpha    = (Double_t)(alpha[disk]*TMath::Pi()/180);
-        _FTDgeo[disk].cosAlpha = TMath::Cos(_FTDgeo[disk].alpha);
-        _FTDgeo[disk].sinAlpha = TMath::Sin(_FTDgeo[disk].alpha);
-        _FTDgeo[disk].rin      = rin[disk];
-        _FTDgeo[disk].rout     = rout[disk];
-        _FTDgeo[disk].spolicy  = spolicy[disk];
-        _FTDgeo[disk].dxMax    = dxMax[disk];
-        _FTDgeo[disk].dxMin    = dxMin[disk];
-        _FTDgeo[disk].dphi     = (Double_t)(2*TMath::Pi()/_FTDgeo[disk].nPetal);
-        _FTDgeo[disk].lyrthick = LayerThickness;
-        _FTDgeo[disk].cosphi.resize( _FTDgeo[disk].nPetal );
-        _FTDgeo[disk].sinphi.resize( _FTDgeo[disk].nPetal );
-        for(Int_t petal=0; petal<_FTDgeo[disk].nPetal; petal++){
-            Double_t phi = (Double_t)(_FTDgeo[disk].dphi*petal);
-            _FTDgeo[disk].cosphi[petal] = cos(phi);
-            _FTDgeo[disk].sinphi[petal] = sin(phi);
-        }
-    }
 }

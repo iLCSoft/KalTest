@@ -67,7 +67,7 @@ Double_t TRKTrack::GetCharge() const
     return TEveTrackPropagator::fH.fCharge;
 }
 
-void TRKTrack::SetCharge(Double_t chg)
+void TRKTrack::SetCharge(Int_t chg)
 {
     TEveTrackPropagator::fH.fCharge = chg;
 }

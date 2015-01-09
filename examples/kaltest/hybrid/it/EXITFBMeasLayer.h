@@ -1,5 +1,5 @@
-#ifndef EXITFBMEASLAYER_H
-#define EXITFBMEASLAYER_H
+#ifndef __EXITFBMEASLAYER__
+#define __EXITFBMEASLAYER__
 //*************************************************************************
 //* ===================
 //*  EXITFBMeasLayer Class

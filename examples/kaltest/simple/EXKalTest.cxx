@@ -46,8 +46,6 @@ int main (Int_t argc, Char_t **argv)
 
    Int_t nhits = 50;
    TObjArray hits(nhits);
-
-   hits.SetOwner();
    
    for (Int_t ihit=0; ihit<nhits; ihit++) {
        Double_t t  = __TSTEP__*ihit;

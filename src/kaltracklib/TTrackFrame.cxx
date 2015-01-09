@@ -4,19 +4,7 @@
 
 #include "TTrackFrame.h"
 #include "TMath.h"
-#include "J4Timer.h"
 
-//#define __J4TIMER__
-
-#ifdef __FRAME_TIMER1__
-double TTrackFrame::fTimeCtor = 0.;
-#endif
-#ifdef __FRAME_TIMER2__
-double TTrackFrame::fTimeVec  = 0.;
-#endif
-#ifdef __FRAME_TIMER3__
-double TTrackFrame::fTimeSv   = 0.;
-#endif
 
 ClassImp(TTrackFrame)
 
@@ -38,22 +26,6 @@ TTrackFrame::TTrackFrame(const TTrackFrame& lastFrame,
                :fRotMat(lastFrame.fRotMat), fShift(lastFrame.fShift), fDeltaShift(v)
 
 {
-#ifdef __FRAME_TIMER1__   
-	clock_t t1, t2;
-	t1=clock();
-#endif
-
-#ifdef __J4TIMER__
-    static int timerid = -1;
-    J4Timer timer(timerid, "TTrackFrame", "TTrackFrame_Ctor");
-    timer.Start();
-#endif
-
-#ifdef __J4TIMER2__
-    static int timerid2 = -1;
-    J4Timer timer2(timerid2, "TTrackFrame2", "TTrackFrame_Ctor");
-    timer2.Start();
-#endif
 	//Calculate local B field
 	TVector3 localBField = fRotMat * b;
 
@@ -70,40 +42,11 @@ TTrackFrame::TTrackFrame(const TTrackFrame& lastFrame,
 	fShift  += invRotMat * fDeltaShift;
 	fRotMat = fDeltaRotMat * fRotMat;
 
-#ifdef __J4TIMER2__
-	timer2.Stop();
-#endif
-
-#ifdef __FRAME_TIMER1__   
-    t2 = clock();
-	fTimeCtor += Double_t(t2 - t1)/CLOCKS_PER_SEC;
-#endif
-
-#ifdef __J4TIMER__
-	timer.Stop();
-#endif
 }
 
 //transform vector
 TVector3 TTrackFrame::Transform(const TVector3 &v, TRType transformType) const
 {
-#ifdef __FRAME_TIMER2__   
-	clock_t t1, t2;
-	t1=clock();
-#endif
-
-#ifdef __J4TIMER__
-    static int timerid = -1;
-    J4Timer timer(timerid, "TTrackFrame", "TransformVector");
-    timer.Start();
-#endif
-
-#ifdef __J4TIMER2__
-    static int timerid2 = -1;
-    J4Timer timer2(timerid2, "TTrackFrame2", "TransformVector");
-    timer2.Start();
-#endif
-
     TRotation invRotMat = fRotMat.Inverse();
     TVector3  transVector;
 
@@ -126,36 +69,12 @@ TVector3 TTrackFrame::Transform(const TVector3 &v, TRType transformType) const
 			break;
 	}
 
-#ifdef __J4TIMER2__
-	timer2.Stop();
-#endif
-
-#ifdef __J4TIMER__
-	timer.Stop();
-#endif
-
-#ifdef __FRAME_TIMER2__   
-	t2 = clock();
-	fTimeVec += Double_t(t2 - t1)/CLOCKS_PER_SEC;
-#endif
-
 	return transVector;
 }
 
 //transform vector
 TVector3 TTrackFrame::TransformBfield(const TVector3 &b, TRType transformType)
 {
-#ifdef __J4TIMER__
-   static int timerid = -1;
-   J4Timer timer(timerid, "TTrackFrame", "TransformBfield");
-   timer.Start();
-#endif
-	
-#ifdef __J4TIMER2__
-   static int timerid2 = -1;
-   J4Timer timer2(timerid2, "TTrackFrame2", "TransformBfield");
-   timer2.Start();
-#endif
     TRotation invRotMat = fRotMat.Inverse();
     TVector3  transVector;
 
@@ -178,38 +97,12 @@ TVector3 TTrackFrame::TransformBfield(const TVector3 &b, TRType transformType)
 			break;
 	}
 
-
-#ifdef __J4TIMER2__
-	timer2.Stop();
-#endif
-
-#ifdef __J4TIMER__
-	timer.Stop();
-#endif
-
 	return transVector;
 }
 
 //transform matrix
 void TTrackFrame::Transform(TKalMatrix* sv, TKalMatrix* Fr)
 {
-#ifdef __FRAME_TIMER3__   
-	clock_t t1, t2;
-	t1=clock();
-#endif
-
-#ifdef __J4TIMER__
-   static int timerid = -1;
-   J4Timer timer(timerid, "TTrackFrame", "Transform_sv");
-   timer.Start();
-#endif
-
-#ifdef __J4TIMER2__
-   static int timerid2 = -1;
-   J4Timer timer2(timerid2, "TTrackFrame2", "Transform_sv");
-   timer2.Start();
-#endif
-
 //#define __DEBUG__
 #ifdef __DEBUG__
 	std::cout << "TTrackFrame::Transform:" << std::endl;
@@ -377,7 +270,7 @@ void TTrackFrame::Transform(TKalMatrix* sv, TKalMatrix* Fr)
 	//FIXME
 	if(drho<zeroDistLimit&&(*sv)(0,0)==0.&&fabs(dz0)>zeroDistLimit)
     { 
-#if 1
+#ifdef __DEBUG__
 		std::cout << "------Matrix rotation, UnitMatrix" << std::endl;
 #endif
 		F.UnitMatrix();
@@ -394,20 +287,6 @@ void TTrackFrame::Transform(TKalMatrix* sv, TKalMatrix* Fr)
 
 		*Fr = F;
 	}
-
-
-#ifdef __J4TIMER2__
-    timer2.Stop();
-#endif
-
-#ifdef __FRAME_TIMER3__   
-	t2 = clock();
-	fTimeSv += Double_t(t2 - t1)/CLOCKS_PER_SEC;
-#endif
-
-#ifdef __J4TIMER__
-    timer.Stop();
-#endif
 
 #ifdef __DEBUG__
 		std::cout << "Transformation completed" << std::endl;

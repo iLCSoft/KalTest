@@ -1,5 +1,5 @@
-#ifndef EXTPCMEASLAYER_H
-#define EXTPCMEASLAYER_H
+#ifndef __EXTPCMEASLAYER__
+#define __EXTPCMEASLAYER__
 //*************************************************************************
 //* ===================
 //*  EXTPCMeasLayer Class

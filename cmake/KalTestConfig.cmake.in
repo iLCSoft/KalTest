@@ -1,0 +1,73 @@
+##############################################################################
+# cmake configuration file for KalTest
+#
+# requires:
+#   MacroCheckPackageLibs.cmake for checking package libraries
+#
+# returns following variables:
+#
+#   KalTest_FOUND      : set to TRUE if KalTest found
+#       if FIND_PACKAGE called with REQUIRED and COMPONENTS arguments
+#       KalTest_FOUND is only set to TRUE if ALL components are also found
+#       if REQUIRED is NOT set components may or may not be available
+#
+#   KalTest_ROOT       : path to this KalTest installation
+#   KalTest_VERSION    : package version
+#   KalTest_LIBRARIES  : list of KalTest libraries (NOT including COMPONENTS)
+#   KalTest_INCLUDE_DIRS  : list of paths to be used with INCLUDE_DIRECTORIES
+#   KalTest_LIBRARY_DIRS  : list of paths to be used with LINK_DIRECTORIES
+#   KalTest_COMPONENT_LIBRARIES      : list of KalTest component libraries
+#   KalTest_${COMPONENT}_FOUND       : set to TRUE or FALSE for each library
+#   KalTest_${COMPONENT}_LIBRARY     : path to individual libraries
+#   KalTest_${COMPONENT}_LIB_DEPENDS : individual library dependencies
+#
+# @author Jan Engels, Desy
+##############################################################################
+
+SET( KalTest_ROOT "@CMAKE_INSTALL_PREFIX@" )
+SET( KalTest_VERSION "@KalTest_VERSION@" )
+
+
+# ---------- include dirs -----------------------------------------------------
+# do not store find results in cache
+SET( KalTest_INCLUDE_DIRS KalTest_INCLUDE_DIRS-NOTFOUND )
+MARK_AS_ADVANCED( KalTest_INCLUDE_DIRS )
+
+FIND_PATH( KalTest_INCLUDE_DIRS
+	NAMES kaltest/TVTrack.h
+	PATHS ${KalTest_ROOT}/include
+	NO_DEFAULT_PATH
+)
+
+# fix for backwards compatibility
+IF( KalTest_INCLUDE_DIRS )
+    LIST( APPEND KalTest_INCLUDE_DIRS ${KalTest_INCLUDE_DIRS}/kaltest )
+ENDIF( KalTest_INCLUDE_DIRS )
+
+
+# ---------- libraries --------------------------------------------------------
+INCLUDE( "@ILCSOFT_CMAKE_MODULES_ROOT@/MacroCheckPackageLibs.cmake" )
+
+# only standard libraries should be passed as arguments to CHECK_PACKAGE_LIBS
+# additional components are set by cmake in variable PKG_FIND_COMPONENTS
+# first argument should be the package name
+CHECK_PACKAGE_LIBS( KalTest KalTest )
+
+
+
+
+# ---------- libraries dependencies -------------------------------------------
+# this sets KalTest_${COMPONENT}_LIB_DEPENDS variables
+INCLUDE( "${KalTest_ROOT}/lib/cmake/KalTestLibDeps.cmake" )
+ 
+
+
+
+# ---------- final checking ---------------------------------------------------
+INCLUDE( FindPackageHandleStandardArgs )
+# set KALTEST_FOUND to TRUE if all listed variables are TRUE and not empty
+# KalTest_COMPONENT_VARIABLES will be set if FIND_PACKAGE is called with REQUIRED argument
+FIND_PACKAGE_HANDLE_STANDARD_ARGS( KalTest DEFAULT_MSG KalTest_ROOT KalTest_INCLUDE_DIRS KalTest_LIBRARIES ${KalTest_COMPONENT_VARIABLES} )
+
+SET( KalTest_FOUND ${KALTEST_FOUND} )
+

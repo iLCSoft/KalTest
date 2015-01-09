@@ -19,10 +19,6 @@
 #include <iostream>
 #include "TVSurface.h"
 #include "TVTrack.h"
-#include "J4Timer.h"
-
-//#define __DEBUG__
-//#define __J4TIMER__
 
 using namespace std;
 
@@ -33,9 +29,6 @@ using namespace std;
 
 ClassImp(TVSurface)
 
-#ifdef __SURFACE_TIMER__   
-Double_t TVSurface::fTime = 0.;
-#endif
 //_____________________________________________________________________
 //  -----------------------------------
 //  Calculate crossing point with track
@@ -55,20 +48,6 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
 				         Int_t     mode,
 				         Double_t  eps) const
 {
-#ifdef __SURFACE_TIMER__   
-	clock_t t1, t2;
-	t1 = clock();
-#endif
-
-#ifdef __DEBUG__
-	cerr << "TVSurface::CalcXingPointWith:" << endl;
-#endif
-
-#ifdef __J4TIMER__
-   static int timerid = -1;
-   J4Timer timer(timerid, "TVSurface", "CalcXingPointWith");
-   timer.Start();
-#endif
 
    static const Int_t       maxcount   = 100;
    static const Double_t    initlambda = 1.e-10;
@@ -78,7 +57,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
    xx = hel.CalcXAt(phi);
 
    Double_t  lastphi =  phi;
-   Double_t  lasts   =  999999999;
+   Double_t  lasts   =  1.e10;
    Double_t  lambda  =  initlambda;
 
    TVector3  lastxx  =  xx;
@@ -92,7 +71,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
          phi     = lastphi;
          xx      = lastxx;
 #if 1
-         cerr << "TVSurface::CalcXingPointWith:"
+         cout << "TVSurface::CalcXingPointWith:"
               << "   --- Loop count limit reached ---------- " << endl
               << "   phi    : " << phi    << endl
               << "   x      : " << xx.X() << " "
@@ -102,16 +81,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
 			  << "   eps    : " << eps    << endl
               << "   lambda : " << lambda << endl;
 #endif
-
-#ifdef __J4TIMER__
-		 timer.Stop();
-#endif
-
-#ifdef __SURFACE_TIMER__   
-		 t2 = clock();
-         fTime += Double_t(t2-t1)/CLOCKS_PER_SEC;
-#endif
-		 return 0;
+         return 0;
       }
       count++;
       s  = CalcS(xx);
@@ -134,28 +104,13 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
       phi -= s / denom;
       xx   = hel.CalcXAt(phi);
    }
-   if (mode!=0) { // (+1,-1) = (fwd,bwd)
-      Int_t chg = (Int_t)TMath::Sign(1.1, hel.GetKappa());
-      if( chg*phi*mode > 0){
-#ifdef __J4TIMER__
-		 timer.Stop();
-#endif
 
-#ifdef __SURFACE_TIMER__   
-		 t2 = clock();
-         fTime += Double_t(t2-t1)/CLOCKS_PER_SEC;
-#endif
-         return 0;
-      }
+   if( mode!=0 && hel.IsInB()){ // (+1,-1) = (fwd,bwd)
+     const Int_t chg = (Int_t)TMath::Sign(1.1, hel.GetKappa());
+     if( chg*phi*mode/hel.GetPtoR() > 0){
+       return 0;
+     }
    }
-
-#ifdef __J4TIMER__
-   timer.Stop();
-#endif
-#ifdef __SURFACE_TIMER__   
-   t2 = clock();
-   fTime += Double_t(t2-t1)/CLOCKS_PER_SEC;
-#endif
    
    return (IsOnSurface(xx) ? 1 : 0);
 }

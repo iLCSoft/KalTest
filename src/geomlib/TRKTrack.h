@@ -42,7 +42,7 @@ public:
  
    Double_t GetCharge() const;
  
-   void SetCharge(Double_t chg);
+   void SetCharge(Int_t chg);
 
    inline void SetCurPosition(TVector3 x) { fPosition = x; }
    inline void SetCurMomentum(TVector3 p) { fMomentum = p; }

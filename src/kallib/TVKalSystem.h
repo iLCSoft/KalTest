@@ -12,11 +12,9 @@
 //* (Provides)
 //* 	class TVKalSystem
 //* (Update Recored)
-//*   2003/09/30  K.Fujii      Original version.
-//*   2005/08/25  A.Yamaguchi  Added fgCurInstancePtr and its getter & setter.
-//*   2009/06/18  K.Fujii      Implement inverse Kalman filter.
-//*   2012/11/29  K.Fujii      Removed fgCurInstancePtr and its getter & setter.
-//*                            Set parent pointer in Add() instead.
+//*   2003/09/30  K.Fujii	Original version.
+//*   2005/08/25  A.Yamaguchi	Added fgCurInstancePtr and its getter & setter.
+//*   2009/06/18  K.Fujii       Implement inverse Kalman filter
 //*
 //*************************************************************************
 
@@ -55,11 +53,20 @@ public:
                                    { return fCurSitePtr->GetState(t); }
    inline virtual Double_t     GetChi2() { return fChi2; }
           virtual Int_t        GetNDF (Bool_t self = kTRUE);
-    
+   
+   static         TVKalSystem *GetCurInstancePtr() { return fgCurInstancePtr; }
+
+   // Setters
+
+private:
+   static void SetCurInstancePtr(TVKalSystem *ksp) { fgCurInstancePtr = ksp; }
+
 private:
    TVKalSite   *fCurSitePtr;  // pointer to current site
    Double_t     fChi2;        // current total chi2
 
+   static TVKalSystem *fgCurInstancePtr;  //! currently active instance
+   
    ClassDef(TVKalSystem,1)  // Base class for Kalman Filter
 };
 
@@ -71,6 +78,5 @@ void TVKalSystem::Add(TObject *obj)
 {
    TObjArray::Add(obj); 
    fCurSitePtr = static_cast<TVKalSite *>(obj);
-   fCurSitePtr->SetParentPtr(this);
 }
 #endif

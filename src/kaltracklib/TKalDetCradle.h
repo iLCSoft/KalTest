@@ -20,8 +20,6 @@
 //*                              Transport() to do their functions.
 //*   2010/04/06  K.Fujii        Modified Transport() to allow a 1-dim hit,
 //*                              for which pivot is at the xpected hit.
-//*   2012/11/29  K.Fujii        Moved GetEnergyLoss and CalcQms from
-//*                              TKalDetCradle.
 //*
 //*************************************************************************
 
@@ -29,6 +27,7 @@
 #include "TAttElement.h"   // from Utils
 #include "TKalMatrix.h"    // from KalTrackLib
 #include "TKalTrack.h"     // from KalTrackLib
+#include <memory>          // from STL
 
 class TKalTrackSite;
 class TVKalDetector;
@@ -81,16 +80,6 @@ public:
                         TKalMatrix     &Q,    // process noise matrix
 			    std::auto_ptr<TVTrack> &help);// pointer to updated track object
 
-   virtual Double_t GetEnergyLoss(const TMaterial  &mat,
-                                  const TVTrack    &hel,
-                                        Double_t    df,
-                                        Double_t    mass) const;
-
-   virtual void     CalcQms      (const TMaterial  &mat,
-                                  const TVTrack    &hel,
-                                        Double_t    df,
-                                        TKalMatrix &Qms,
-                                        Double_t    mass) const;
 
 private:
    void Update();

@@ -128,7 +128,7 @@ void EXBPMeasLayer::ProcessHit(const TVector3  &xx,
    dmeas[0] = dx;
    dmeas[1] = dz;
 
-   Double_t b = EXBPKalDetector::GetBfield(xx);
+   Double_t b = EXBPKalDetector::GetBfield();
    hits.Add(new EXBPHit(*this, meas, dmeas, xx, b));
 }
 

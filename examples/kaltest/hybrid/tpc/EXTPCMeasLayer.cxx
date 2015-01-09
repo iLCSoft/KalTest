@@ -137,7 +137,7 @@ void EXTPCMeasLayer::ProcessHit(const TVector3  &xx,
    dmeas[0] = dx;
    dmeas[1] = dz;
 
-   Double_t b = EXTPCKalDetector::GetBfield(xx);
+   Double_t b = EXTPCKalDetector::GetBfield();
    hits.Add(new EXTPCHit(*this, meas, dmeas, side, v, xx, b));
 }
 

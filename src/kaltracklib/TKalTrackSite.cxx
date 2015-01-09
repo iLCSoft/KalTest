@@ -22,8 +22,8 @@
 #include "TKalTrackState.h"   // from KalTrackLib
 #include "TVTrackHit.h"       // from KalTrackLib
 #include "TKalFilterCond.h"   // from KalTrackLib
-#include "TBField.h"
 #include "TVSurface.h"        // from GeomLib
+#include "TBField.h"          // from Bfield
 
 #include <iostream>           // from STL
 #include <memory>             // from STL
@@ -45,7 +45,9 @@ TKalTrackSite::TKalTrackSite(Int_t m, Int_t p)
               : TVKalSite(m,p), fHitPtr(0), fX0(), fIsHitOwner(kFALSE),
                 fCondPtr(0)
 {
-	fBfield = TBField::GetGlobalBfield(fX0).Mag(); // wrong for 1-dim hit.
+	if(!TBField::IsUsingUniformBfield()) {
+	   fBfield = TBField::GetGlobalBfield(fX0).Mag(); // wrong for 1-dim hit.
+	}
 }
 
 TKalTrackSite::TKalTrackSite(const TVTrackHit &ht,
@@ -65,7 +67,9 @@ TKalTrackSite::TKalTrackSite(const TVTrackHit &ht,
 
    // B field is unkonwn for a 1-dim hit untill prediction is made.
    // Temporarily set it to that at the origin.
-   fBfield = TBField::GetGlobalBfield(fX0).Mag();
+   if(!TBField::IsUsingUniformBfield()) { 
+	fBfield = TBField::GetGlobalBfield(fX0).Mag();
+   }
 }
 
 TKalTrackSite::~TKalTrackSite()
@@ -100,18 +104,20 @@ Int_t TKalTrackSite::CalcXexp(const TVKalState &a,
 
    const TVSurface &ms = dynamic_cast<const TVSurface &>(GetHit().GetMeasLayer());
 
-   const double eps = 1.e-5;
-   return ms.CalcXingPointWith(*hel,xx,phi,eps);
+   if(!TBField::IsUsingUniformBfield()) {
+	   const double eps = 1.e-5; 
+	   return ms.CalcXingPointWith(*hel,xx,phi,eps);
+   }
+   else {
+	   return ms.CalcXingPointWith(*hel,xx,phi);
+   }
+
 }
 
 
 
 Int_t TKalTrackSite::CalcExpectedMeasVec(const TVKalState &a, TKalMatrix &h)
 {
-#if 0
-   cout << "CalcExpectedMeasVec" << endl;
-#endif
-
    Double_t phi = 0.;
    TVector3 xxv;
    if (!CalcXexp(a,xxv,phi)) return 0;	// no hit
@@ -159,10 +165,16 @@ Int_t TKalTrackSite::CalcMeasVecDerivative(const TVKalState &a,
 
 TVector3 TKalTrackSite::GetLocalPivot() const
 {	
-	//get the local pviot
-	TVector3 localPivot = fFrame.Transform(fX0, TTrackFrame::kGlobalToLocal);
-
-	return localPivot;
+	if(!TBField::IsUsingUniformBfield()) {
+		//get the local pviot in a non-uniform magnetic field
+  		TVector3 localPivot = fFrame.Transform(fX0, TTrackFrame::kGlobalToLocal);
+  	
+  		return localPivot;
+	}
+	else {
+		//return global pivot if magetic field is uniform
+		return fX0;
+	}
 }
 
 Bool_t TKalTrackSite::IsAccepted()

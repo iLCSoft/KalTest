@@ -18,9 +18,6 @@
 #include <iostream>
 #include "THelicalTrack.h"
 #include "TBField.h"
-#include "J4Timer.h"
-
-//#define __J4TIMER__
 
 using namespace std;
 
@@ -89,13 +86,6 @@ void THelicalTrack::MoveTo(const TVector3 &globalPivot, // new global pivot
                                  TMatrixD *CPtr,        // covariance matrix
                                  Bool_t   transform)    // flag of transforming
 {
-#ifdef __J4TIMER__
-   static int timerid = -1;
-
-   J4Timer timer(timerid, "THelicalTrack", "MoveTo");
-
-   timer.Start();
-#endif
    // Change the helix to a new global pivot
    //
    // ---------------------------------------------------
@@ -107,8 +97,12 @@ void THelicalTrack::MoveTo(const TVector3 &globalPivot, // new global pivot
    static const Double_t kPi    = TMath::Pi();
    static const Double_t kTwoPi = 2.0*kPi;
 
-   //Get the local pivot
-   TVector3 xv0to = fFrame.Transform(globalPivot, TTrackFrame::kGlobalToLocal);
+   TVector3 xv0to = globalPivot;
+
+   if(!TBField::IsUsingUniformBfield()) {
+	   //Get the local pivot
+	   xv0to = fFrame.Transform(globalPivot, TTrackFrame::kGlobalToLocal);
+   }
 
    //   Copy helix parmeters to local variables
 
@@ -144,8 +138,8 @@ void THelicalTrack::MoveTo(const TVector3 &globalPivot, // new global pivot
    Double_t yc    = y0 + rdr*snf0;
    Double_t fi0p  = 0.;
 
-   if (cpa > 0.) fi0p = TMath::ATan2((yc-yv),(xc-xv));
-   if (cpa < 0.) fi0p = TMath::ATan2((yv-yc),(xv-xc));
+   if (cpa/GetPtoR() > 0.) fi0p = TMath::ATan2((yc-yv),(xc-xv));
+   if (cpa/GetPtoR() < 0.) fi0p = TMath::ATan2((yv-yc),(xv-xc));
    while (fi0p < 0.)      fi0p += kTwoPi;
    while (fi0p > kTwoPi)  fi0p -= kTwoPi;
 
@@ -176,14 +170,16 @@ void THelicalTrack::MoveTo(const TVector3 &globalPivot, // new global pivot
 
    THelicalTrack helto(av,xv0to);
    helto.fAlpha = fAlpha;
-   helto.SetFrame(fFrame);
-   helto.SetMagField(GetMagField());
+
+   if(!TBField::IsUsingUniformBfield()) {
+	   helto.SetFrame(fFrame);
+           helto.SetMagField(GetMagField());
+   }
+
+
    
    if (!FPtr && !CPtr && !transform) {
       *this = helto;
-#ifdef __J4TIMER__
-	  timer.Stop();
-#endif
       return;
    }
 
@@ -239,13 +235,12 @@ void THelicalTrack::MoveTo(const TVector3 &globalPivot, // new global pivot
    //update helix for the new frame
    //
 
-   Int_t sdim = F.GetNrows();
-   TKalMatrix Fr(sdim,sdim);
-
    //As a convention, if Fr is not 0, then do the transformation
-   if (transform)
+   if ( transform && (!TBField::IsUsingUniformBfield()) )
    { 
-	   TVector3 globalBfield = TBField::GetGlobalBfield(globalPivot);
+       Int_t sdim = F.GetNrows();
+       TKalMatrix Fr(sdim,sdim);
+       TVector3 globalBfield = TBField::GetGlobalBfield(globalPivot);
        TTrackFrame frameOfNewPivot(fFrame, xv0to, globalBfield);
 	
        helto.SetFrame(frameOfNewPivot);
@@ -253,17 +248,14 @@ void THelicalTrack::MoveTo(const TVector3 &globalPivot, // new global pivot
 
        TVector3 pivot = frameOfNewPivot.Transform(xv0to, TTrackFrame::kLocalToLocal); 
 
-	   frameOfNewPivot.Transform(&av, &Fr);
-	   helto.SetTo(av, pivot);
+       frameOfNewPivot.Transform(&av, &Fr);
+       helto.SetTo(av, pivot);
        
-	   F = Fr * F;
-   }
+       F = Fr * F;
+}
 
    if (!CPtr) {
       *this = helto;
-#ifdef __J4TIMER__
-	  timer.Stop();
-#endif
       return;
    }
 
@@ -277,10 +269,6 @@ void THelicalTrack::MoveTo(const TVector3 &globalPivot, // new global pivot
    C = Cp;
 
    *this = helto;
-
-#ifdef __J4TIMER__
-   timer.Stop();
-#endif
 }
 
 TVector3 THelicalTrack::CalcXAt(Double_t phi) const
@@ -296,24 +284,28 @@ TVector3 THelicalTrack::CalcXAt(Double_t phi) const
    Double_t z    = fX0.Z() + fDz          - rho * fTanL * phi;
 
 #if 0
-   std::cout << "THelicalTrack::CalcXAt:" << std::endl;
-   std::cout << " phi0 = " << fPhi0 << std::endl;
-   std::cout << " phi  = " << phi   << std::endl;
-   std::cout << " Drho = " << fDrho << std::endl;
-   std::cout << " rho  = " << rho   << std::endl;
-   std::cout << " x0   = " << fX0.X()     << std::endl;
-   std::cout << " y0   = " << fX0.Y()     << std::endl;
-   std::cout << " z0   = " << fX0.Z()     << std::endl;
-   std::cout << " x    = " << x     << std::endl;
-   std::cout << " y    = " << y     << std::endl;
-   std::cout << " z    = " << z     << std::endl;
+   std::cerr << "THelicalTrack::CalcXAt" << std::endl;
+   std::cerr << " phi0 = " << fPhi0 << std::endl;
+   std::cerr << " phi  = " << phi   << std::endl;
+   std::cerr << " Drho = " << fDrho << std::endl;
+   std::cerr << " rho  = " << rho   << std::endl;
+   std::cerr << " x0   = " << fX0.X()     << std::endl;
+   std::cerr << " y0   = " << fX0.Y()     << std::endl;
+   std::cerr << " z0   = " << fX0.Z()     << std::endl;
+   std::cerr << " x    = " << x     << std::endl;
+   std::cerr << " y    = " << y     << std::endl;
+   std::cerr << " z    = " << z     << std::endl;
 #endif
    
-   //A local point on helix
-   TVector3 localX(x,y,z);
+   TVector3 globalX(x,y,z);
 
-   //Transform local coodinate to global
-   TVector3 globalX = fFrame.Transform(localX, TTrackFrame::kLocalToGlobal);
+   if(!TBField::IsUsingUniformBfield()) { 
+	   //A local point on helix if B field is non-uniform
+	   TVector3 localX(x,y,z);
+	   
+		//Transform local coodinate to global
+	   globalX = fFrame.Transform(localX, TTrackFrame::kLocalToGlobal);
+   }
 
    return globalX;
 }
@@ -351,10 +343,12 @@ TMatrixD THelicalTrack::CalcDxDa(Double_t phi) const
    dxda(2,3) = 1;
    dxda(2,4) = - r * phi;
 
-   //Tramsform
-   const TRotation& rotMat = fFrame.GetRotation();
-   TKalMatrix invRotMat(rotMat.Inverse());
-   dxda = invRotMat * dxda;
+   if(!TBField::IsUsingUniformBfield()) {
+	   //Tramsform
+	   const TRotation& rotMat = fFrame.GetRotation();
+  	   TKalMatrix invRotMat(rotMat.Inverse());
+  	   dxda = invRotMat * dxda;
+   }
 
    return dxda;
 }
@@ -371,10 +365,12 @@ TMatrixD THelicalTrack::CalcDxDphi(Double_t phi) const
    dxdphi(1,0) = -r * csfd;
    dxdphi(2,0) = -r * fTanL;
 
-   //Transform
-   const TRotation& rotMat = fFrame.GetRotation();
-   TKalMatrix invRotMat(rotMat.Inverse());
-   dxdphi = invRotMat * dxdphi;
+   if(!TBField::IsUsingUniformBfield()) {
+	   //Transform
+	   const TRotation& rotMat = fFrame.GetRotation();
+  	   TKalMatrix invRotMat(rotMat.Inverse());
+  	   dxdphi = invRotMat * dxdphi;
+   }
 
    return dxdphi;
 }
@@ -384,10 +380,19 @@ void THelicalTrack::CalcStartHelix(const TVector3 &x1g,
                                    const TVector3 &x3g,
                                          Bool_t    dir)
 {
-   fFrame = TTrackFrame(TTrackFrame(),x1g,TBField::GetGlobalBfield(x1g));
-   TVector3 x1 = fFrame.Transform(x1g, TTrackFrame::kGlobalToLocal);
-   TVector3 x2 = fFrame.Transform(x2g, TTrackFrame::kGlobalToLocal);
-   TVector3 x3 = fFrame.Transform(x3g, TTrackFrame::kGlobalToLocal);
+   TVector3 x1, x2, x3;
+
+   if(!TBField::IsUsingUniformBfield()) {
+   	fFrame = TTrackFrame(TTrackFrame(),x1g,TBField::GetGlobalBfield(x1g));
+   	x1 = fFrame.Transform(x1g, TTrackFrame::kGlobalToLocal);
+   	x2 = fFrame.Transform(x2g, TTrackFrame::kGlobalToLocal);
+   	x3 = fFrame.Transform(x3g, TTrackFrame::kGlobalToLocal);
+   }
+   else {
+	x1 = x1g;
+	x2 = x2g;
+	x3 = x3g;
+   }
 
    static const TVector3 ez(0., 0., 1.);
    TVector3 x12 = x2 - x1;
@@ -420,6 +425,18 @@ void THelicalTrack::CalcStartHelix(const TVector3 &x1g,
    sv(4,0) = (x2.Z() - x3.Z()) / (r * 2 * halfPhi23);
 
    SetTo(sv, x1);
+}
+
+Double_t THelicalTrack::GetMomentum() const
+{
+   Double_t cpa    = GetKappa();
+   Double_t tnl    = GetTanLambda(); 
+   Double_t tnl2   = tnl * tnl;
+   Double_t tnl21  = 1. + tnl2;
+   Double_t cslinv = TMath::Sqrt(tnl21);
+   Double_t mom    = TMath::Abs(1. / cpa) * cslinv;
+
+   return mom;
 }
 
 void THelicalTrack::CalcDapDa(Double_t  fid,

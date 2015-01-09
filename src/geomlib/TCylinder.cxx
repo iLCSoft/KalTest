@@ -20,6 +20,7 @@
 #include "TCircle.h"
 #include "TCylinder.h"
 #include "TVTrack.h"
+#include "TBField.h"
 
 using namespace std;
 
@@ -63,26 +64,15 @@ TMatrixD TCylinder::CalcDSDx(const TVector3 &xx) const
 //  Calculate crossing point with track
 //  -----------------------------------
 //
-#define USENEWTONIAN 1
-
-#if USENEWTONIAN
 Int_t TCylinder::CalcXingPointWith(const TVTrack  &hel,
                                          TVector3 &xx,
                                          Double_t &phi,
                                          Int_t     mode,
                                          Double_t  eps) const
 {
-   return TVSurface::CalcXingPointWith(hel, xx, phi, mode, eps); 
-}
-
-#else
-
-Int_t TCylinder::CalcXingPointWith(const TVTrack  &hel,
-                                         TVector3 &xx,
-                                         Double_t &phi,
-                                         Int_t     mode,
-                                         Double_t  eps) const
-{
+   // If B = 0,  use the Newtonian method to calculate the crossing point.
+   if(!hel.IsInB() || !TBField::IsUsingUniformBfield()) return TVSurface::CalcXingPointWith(hel, xx, phi, mode, eps);
+   
    // This assumes nonzero B field.
    //
    // Copy helix parameters to local variables.
@@ -99,7 +89,7 @@ Int_t TCylinder::CalcXingPointWith(const TVTrack  &hel,
    // Check if charge is nonzero.
    //
                                                                                 
-   Int_t    chg = (Int_t)TMath::Sign(1.1,cpa);
+   Int_t    chg = (Int_t)TMath::Sign(1.1,cpa/hel.GetPtoR());
    if (!chg) {
       cerr << ">>>> Error >>>> TCylinder::CalcXingPointWith" << endl
            << "      Kappa = 0 is invalid for a helix "          << endl;
@@ -160,4 +150,3 @@ Int_t TCylinder::CalcXingPointWith(const TVTrack  &hel,
    }
    return (IsOnSurface(xx) ? 1 : 0);
 }
-#endif

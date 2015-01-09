@@ -20,11 +20,7 @@
 #include "TKalTrackSite.h"     // from KalTrackLib
 #include "TVirtualPad.h"       // from ROOT
 #include "TPolyMarker3D.h"     // from ROOT
-#define __DEBUG__
-#ifdef __DEBUG__
-#include <iostream>
-#include "TBField.h"
-#endif
+
 //_________________________________________________________________________
 //  ------------------------------
 //   EXHYBTrack: Kalman rack class
@@ -56,29 +52,8 @@ void EXHYBTrack::Draw(Int_t color, const Char_t *opt)
    TIter next(this);
    TKalTrackSite *sitep = 0;
    while ((sitep = static_cast<TKalTrackSite *>(next()))) { 
-      TVector3 pos = sitep->GetGlobalPivot();
+      TVector3 pos = sitep->GetPivot();
       pm3dp->SetPoint(nhits, pos.X(), pos.Y(), pos.Z());
-#ifdef __DEBUG__
-      TVector3 bv = TBField::GetGlobalBfield(pos);
-	  std::cerr << "hit " << nhits << ": r = " << pos.Perp()
-                << " B(" << pos.X()
-		        << ", " << pos.Y()
-		        << ", " << pos.Z()
-                << ") = (" << bv.X() << ", "
-                << bv.Y() << ", "
-                << bv.Z() << ")"
-                << std::endl;
-      std::cerr << "a=(" << sitep->GetCurState()[0][0] << ", "
-                << sitep->GetCurState()[1][0] << ", "
-                << sitep->GetCurState()[2][0] << ", "
-                << sitep->GetCurState()[3][0] << ", "
-                << sitep->GetCurState()[4][0] << ", "
-                << ")" << std::endl;
-      std::cerr << "(ndf,chi2)=("
-                << GetNDF()  << ", "
-                << GetChi2() << ")"
-                << std::endl << std::endl;
-#endif
       nhits++;
    }
    pm3dp->Draw();

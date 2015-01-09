@@ -1,5 +1,5 @@
-#ifndef EXTPCHIT_H
-#define EXTPCHIT_H
+#ifndef __EXTPCHIT__
+#define __EXTPCHIT__
 
 #include "KalTrackDim.h"
 #include "TVTrackHit.h"

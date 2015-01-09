@@ -7,13 +7,13 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 FATAL_ERROR )
 
 
 # project name
-PROJECT( KalTest2 )
+PROJECT( KalTest )
 
 
 # project version
-SET( KalTest2_VERSION_MAJOR 1 )
-SET( KalTest2_VERSION_MINOR 5 )
-SET( KalTest2_VERSION_PATCH 0 )
+SET( KalTest_VERSION_MAJOR 1 )
+SET( KalTest_VERSION_MINOR 5 )
+SET( KalTest_VERSION_PATCH 3 )
 
 cmake_policy(SET CMP0008 NEW)  
 
@@ -26,6 +26,14 @@ FIND_PACKAGE( ROOT REQUIRED COMPONENTS Eve)
 INCLUDE( ilcsoft_default_settings )
 
 LINK_LIBRARIES( ${ROOT_COMPONENT_LIBRARIES} )
+
+FIND_PACKAGE( CLHEP REQUIRED)
+INCLUDE_DIRECTORIES( ${CLHEP_INCLUDE_DIRS} )
+LINK_LIBRARIES( ${CLHEP_LIBRARIES} )
+
+FIND_PACKAGE( MokkaField REQUIRED)
+INCLUDE_DIRECTORIES( ${MokkaField_INCLUDE_DIRS} )
+LINK_LIBRARIES( ${MokkaField_LIBRARIES} )
 
 # macros for generating root dict sources with rootcint
 SET( ROOT_DICT_CINT_DEFINITIONS "-DHANDLE_DICT_EXCEPTIONS=IGNORED_FOR_CINT" )
@@ -42,7 +50,7 @@ ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
 ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
 
 
-# KalTest2 library
+# KalTest library
 ADD_SUBDIRECTORY( ./src )
 
 
@@ -60,5 +68,5 @@ ADD_SUBDIRECTORY( ./examples/kaltest )
 DISPLAY_STD_VARIABLES()
 
 # generate and install following configuration files
-GENERATE_PACKAGE_CONFIGURATION_FILES( KalTest2Config.cmake KalTest2ConfigVersion.cmake KalTest2LibDeps.cmake )
+GENERATE_PACKAGE_CONFIGURATION_FILES( KalTestConfig.cmake KalTestConfigVersion.cmake KalTestLibDeps.cmake )
 

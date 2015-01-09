@@ -17,9 +17,6 @@
 //*************************************************************************
 //
 #include "TKalMatrix.h"
-
-//#define __STATE_TIMER__
-
 class TVKalSite;
 //_____________________________________________________________________
 //  -----------------------------------
@@ -68,10 +65,6 @@ public:
    inline virtual const TKalMatrix & GetProcNoiseMat() const { return fQ; }
    inline virtual const TKalMatrix & GetPropMat     (const Char_t *t = "") const { return (t[0] == 'T' ? fFt : fF); } 
 
-#ifdef __STATE_TIMER__   
-   inline static Double_t GetTime() { return fTime; }
-#endif
-
    // Setters
 
    inline virtual void SetStateVec    (const TKalMatrix &c) { TMatrixD::operator=(c); }
@@ -89,10 +82,6 @@ private:
    TKalMatrix  fFt;      // transposed propagator matrix (F^T = (@f/@a)^T)
    TKalMatrix  fQ;       // process noise from this to the next sites
    TKalMatrix  fC;       // covariance matrix
-
-#ifdef __STATE_TIMER__   
-   static Double_t fTime;
-#endif
   
    ClassDef(TVKalState,1)      // Base class for state vector objects
 };

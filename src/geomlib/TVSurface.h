@@ -24,8 +24,6 @@
 #include "TMatrixD.h"
 #include "TVector3.h"
 
-//#define __SURFACE_TIMER__   
-
 class TVTrack;
 //_____________________________________________________________________
 //  -----------------------------------
@@ -55,16 +53,8 @@ public:
 
    virtual Int_t    Compare   (const TObject *obj) const;
    virtual Bool_t   IsSortable()                   const { return kTRUE; }
-
-#ifdef __SURFACE_TIMER__   
-   inline static Double_t GetTime() { return fTime; }
-#endif
    
 private:
-
-#ifdef __SURFACE_TIMER__   
-   static Double_t fTime;
-#endif
  
    ClassDef(TVSurface,1)      // Base class for any surface
 };

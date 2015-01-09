@@ -1,5 +1,5 @@
-#ifndef EXVTXMEASLAYER_H
-#define EXVTXMEASLAYER_H
+#ifndef __EXVTXMEASLAYER__
+#define __EXVTXMEASLAYER__
 //*************************************************************************
 //* ===================
 //*  EXVTXMeasLayer Class

@@ -23,10 +23,6 @@
 //
 ClassImp(TVKalState)
 
-#ifdef __STATE_TIMER__   
-Double_t TVKalState::fTime = 0.;
-#endif
-
 TVKalState::TVKalState(Int_t type, Int_t p)
                   : TKalMatrix(p,1),
                     fType(type),
@@ -102,11 +98,6 @@ TVKalState::TVKalState(const TKalMatrix &sv, const TKalMatrix &c,
 
 void TVKalState::Propagate(TVKalSite &to)
 {
-#ifdef __STATE_TIMER__   
-   clock_t t1, t2;
-   t1 = clock();
-#endif
-
    // Calculate 
    //    prea:	predicted state vector      : a^k-1_k = f_k-1(a_k-1)
    //    fF:    propagator derivative       : F_k-1   = (@f_k-1/@a_k-1)
@@ -126,9 +117,4 @@ void TVKalState::Propagate(TVKalSite &to)
    prea.SetCovMat(preC);
    to.Add(preaPtr);
    to.SetOwner();
-
-#ifdef __STATE_TIMER__   
-   t2 = clock();
-   fTime += Double_t(t2-t1)/CLOCKS_PER_SEC;
-#endif
 }

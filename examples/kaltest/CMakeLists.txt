@@ -25,7 +25,7 @@ MACRO( ADD_KALTEST_EXAMPLE _example )
 
     ADD_DEPENDENCIES( examples ${_example} )
 
-    TARGET_LINK_LIBRARIES( ${_example} KalTest2 )
+    TARGET_LINK_LIBRARIES( ${_example} KalTest )
 ENDMACRO( ADD_KALTEST_EXAMPLE )
 # ===========================================================================
 
@@ -50,6 +50,7 @@ ENDMACRO( ADD_KALTEST_ROOT_DICT_EXAMPLE )
 
 ADD_KALTEST_ROOT_DICT_EXAMPLE( cdc cdc )
 ADD_KALTEST_ROOT_DICT_EXAMPLE( ct ct )
+ADD_KALTEST_ROOT_DICT_EXAMPLE( ct_nonuniform ct_nonuniform )
 ADD_KALTEST_ROOT_DICT_EXAMPLE( simple simple )
 
 

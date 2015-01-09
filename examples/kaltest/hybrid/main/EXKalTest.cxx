@@ -1,4 +1,4 @@
-#define SAVE_RESIDUAL
+//#define SAVE_RESIDUAL
 #include "TNtupleD.h"
 #include "TFile.h"
 #include "TKalDetCradle.h"
@@ -24,7 +24,6 @@
 #include "TTUBE.h"
 #include "TNode.h"
 #include "TString.h"
-#include "TBField.h"
 
 #include <iostream>
 #include <iomanip>
@@ -37,11 +36,11 @@
  *                       d0err2,fi0err2,cpaerr2,dzerr2,tnlerr2 to ntuple
  **************************************************************************/
 
-#ifndef SAVE_RESIDUAL
+//FG: if this is active errors^2 for fi0, tnl and cpa are partly negative !?
+//#define SAVE_RESIDUAL
+
 static const Bool_t gkDir = kIterBackward;
-#else
-static const Bool_t gkDir = kIterForward;
-#endif
+//static const Bool_t gkDir = kIterForward;
 
 using namespace std;
 
@@ -57,12 +56,11 @@ int main (Int_t argc, Char_t **argv)
       gROOT->SetBatch();   // batch mode without event display
    }
 
-   Double_t pt      =  1;   // default Pt [GeV]
-   Double_t t0in    = 0.;   // default tp [nsec]
+   Double_t pt      =  1.;   // default Pt [GeV]
+   Double_t t0in    = 14.;   // default tp [nsec]
    Double_t cosmin  = -0.97; // default cos minimum [deg]
    Double_t cosmax  =  0.97; // default cos maximum [deg]
    Int_t    nevents = 1;     // default number of events to generate
-
    switch (argc-offset) {
       case 6: 
          nevents = atoi(argv[1+offset]);
@@ -107,7 +105,6 @@ int main (Int_t argc, Char_t **argv)
    // ===================================================================
 
    TKalDetCradle    toygld; // toy GLD detector
-
    EXBPKalDetector  bmpipe; // beam pipe (bp)
    EXVTXKalDetector vtxdet; // vertex detector (vtx)
    EXITKalDetector  itdet;  // intermediate tracker (it)
@@ -140,7 +137,7 @@ int main (Int_t argc, Char_t **argv)
    //   Int_t nitems  = 7;
    Int_t nitems0  = 15;
    Int_t nitems  = nitems0 ;
-    
+   
    Int_t itemID[2000][3];
    TIter nextlayer(&toygld);
    EXVMeasLayer *mlp;
@@ -149,11 +146,11 @@ int main (Int_t argc, Char_t **argv)
       if (ml.IsActive()) {
          Int_t index = ml.GetIndex();
          sout << ":dxin" << setw(3) << setfill('0') << index;
-         itemID[index][0] = nitems++;
+	 itemID[index][0] = nitems++;
          sout << ":dxot" << setw(3) << setfill('0') << index;
-         itemID[index][1] = nitems++;
+	 itemID[index][1] = nitems++;
          sout << ":z" << setw(3) << setfill('0') << index;
-         itemID[index][2] = nitems++;
+	 itemID[index][2] = nitems++;
 #if 1
          cerr << "index = " << setw(4) << setfill(' ') << index << " "
               << "name = "  << ml.GetMLName() << endl;
@@ -170,8 +167,6 @@ int main (Int_t argc, Char_t **argv)
    // ===================================================================
 
    TObjArray kalhits;                // array to store hits
-   kalhits.SetOwner();
-
    EXEventGen gen(toygld, kalhits);  // create event generator
    gen.SetT0(t0in);                  // set bunch crossing timing (t0)
 
@@ -179,9 +174,7 @@ int main (Int_t argc, Char_t **argv)
    //  Loop over events
    // ===================================================================
 
-   static const Double_t kMpi = 0.13957018; // pion mass [GeV]
-   Double_t mass = kMpi;
-   for (Int_t eventno = 0; eventno < nevents; eventno++) {
+   for (Int_t eventno = 0; eventno < nevents; eventno++) { 
       cerr << "------ Event " << eventno << " ------" << endl;
 
       kalhits.Delete(); // clear hit data
@@ -196,7 +189,7 @@ int main (Int_t argc, Char_t **argv)
       //  Swim the particle in detector
       // ============================================================
 
-      gen.Swim(hel, mass);
+      gen.Swim(hel);
 
       // ============================================================
       //  Do Kalman Filter
@@ -207,17 +200,12 @@ int main (Int_t argc, Char_t **argv)
               << kalhits.GetEntries() << " >>>>>>>" << endl;
          continue;
       }
-#ifdef __DEBUG__
-	  else {
-		  cerr << "<<<<<< nhits = " << kalhits.GetEntries() << endl;
-	  }
-#endif
 
       Int_t i1, i2, i3; // (i1,i2,i3) = (1st,mid,last) hit to filter
       if (gkDir == kIterBackward) {
          i3 = 0;
          i1 = kalhits.GetEntries() - 1;
-         i2 = (i1 + i3) / 2;
+         i2 = i1 / 2;
       } else {
          i1 = 0;
          i3 = kalhits.GetEntries() - 1;
@@ -230,20 +218,15 @@ int main (Int_t argc, Char_t **argv)
 
       TVTrackHit *ht1p = dynamic_cast<TVTrackHit *>(kalhits.At(i1));
       TVTrackHit *htdp = 0;
-
       if (dynamic_cast<EXVTXHit *>(ht1p)) {
          htdp = new EXVTXHit(*dynamic_cast<EXVTXHit *>(ht1p));
-      } 
-      else if (dynamic_cast<EXITHit *>(ht1p)) {
+      } else if (dynamic_cast<EXITHit *>(ht1p)) {
          htdp = new EXITHit(*dynamic_cast<EXITHit *>(ht1p));
-      } 
-      else if (dynamic_cast<EXITFBHit *>(ht1p)) {
+      } else if (dynamic_cast<EXITFBHit *>(ht1p)) {
          htdp = new EXITFBHit(*dynamic_cast<EXITFBHit *>(ht1p));
-      } 
-      else if (dynamic_cast<EXTPCHit *>(ht1p)) {
+      } else if (dynamic_cast<EXTPCHit *>(ht1p)) {
          htdp = new EXTPCHit(*dynamic_cast<EXTPCHit *>(ht1p));
       }
-
       TVTrackHit &hitd = *htdp;
 
       hitd(0,1) = 1.e6;   // give a huge error to d
@@ -263,9 +246,8 @@ int main (Int_t argc, Char_t **argv)
       TVector3    x1 = h1.GetMeasLayer().HitToXv(h1);
       TVector3    x2 = h2.GetMeasLayer().HitToXv(h2);
       TVector3    x3 = h3.GetMeasLayer().HitToXv(h3);
+      THelicalTrack helstart(x1, x2, x3, h1.GetBfield(), gkDir); // initial helix 
 
-      THelicalTrack helstart(x1, x2, x3, h1.GetBfield(), gkDir); // initial helix
-       
       // ---------------------------
       //  Set dummy state to sited
       // ---------------------------
@@ -299,42 +281,23 @@ int main (Int_t argc, Char_t **argv)
       // ---------------------------
 
       TIter next(&kalhits, gkDir); // come in to IP, if gkDir = kIterBackward
-       
+
       // ---------------------------
       //  Start Kalman Filter
       // ---------------------------
 
       TVTrackHit *hitp = 0;
-
       while ((hitp = dynamic_cast<TVTrackHit *>(next()))) {
-         
          TKalTrackSite  &site = *new TKalTrackSite(*hitp); // new site
-#if 1
          if (!kaltrack.AddAndFilter(site)) {               // filter it
             cerr << " site discarded!" << endl;
             delete &site;                        // delete it if failed
          }
-#else
-         Bool_t isOK = kaltrack.AddAndFilter(site);
-         if (!isOK) {               // filter it
-              cerr << " site discarded!" << endl;
-              delete &site;                        // delete it if failed
-         } else {
-             cerr << " site accepted: ";
-             TVector3 pos = site.GetGlobalPivot();
-             std::cerr << "index = " << site.GetHit().GetMeasLayer().GetIndex()
-             << " hit : r = " << pos.Perp()
-             << ": x = " << pos.X()
-             << ": y = " << pos.Y()
-             << ": z = " << pos.Z() << std::endl;
-         }
-#endif
       } // end of Kalman filter
 
       // ---------------------------
       //  Smooth the track
       // ---------------------------
-
 #ifndef SAVE_RESIDUAL
       TVKalSite &cursite = kaltrack.GetCurSite();
 #else
@@ -350,26 +313,28 @@ int main (Int_t argc, Char_t **argv)
       Int_t    ndf  = kaltrack.GetNDF();
       Double_t chi2 = kaltrack.GetChi2();
       Double_t cl   = TMath::Prob(chi2, ndf);
-      Double_t d0  =  cursite.GetCurState()(0, 0 );
-      Double_t fi0  = cursite.GetCurState()(1, 0 );
-      Double_t cpa  = cursite.GetCurState()(2, 0 );
-      Double_t dz   = cursite.GetCurState()(3, 0 );
-      Double_t tnl  = cursite.GetCurState()(4, 0 );
+      Double_t d0  =  cursite.GetCurState()(0, 0 ); 
+      Double_t fi0  = cursite.GetCurState()(1, 0 ); 
+      Double_t cpa  = cursite.GetCurState()(2, 0 ); 
+      Double_t dz   = cursite.GetCurState()(3, 0 ); 
+      Double_t tnl  = cursite.GetCurState()(4, 0 ); 
       Double_t cs   = tnl/TMath::Sqrt(1.+tnl*tnl );
-      Double_t t0   = cursite.GetCurState()(5, 0 );
+      Double_t t0   = cursite.GetCurState()(5, 0 ); 
 
-      const TKalMatrix& covK = cursite.GetCurState().GetCovMat() ;
-       
+      const TKalMatrix& covK = cursite.GetCurState().GetCovMat() ; 
+
       // errors^2 of track parameters
       double d0err2  = covK( 0 , 0 )   ;
       double fi0err2 = covK( 1 , 1 )   ;
       double cpaerr2 = covK( 2 , 2 )   ;
       double dzerr2  = covK( 3 , 3 )   ;
       double tnlerr2 = covK( 4 , 4 )   ;
-              
+
+
 #ifndef SAVE_RESIDUAL
-      hTrackMonitor->Fill(ndf, chi2, cl, d0, fi0, cpa, dz, tnl , cs, t0 ,
-                           d0err2, fi0err2, cpaerr2, dzerr2, tnlerr2 ) ;
+      hTrackMonitor->Fill(ndf, chi2, cl, d0, fi0, cpa, dz, tnl , cs, t0 , 
+			  d0err2, fi0err2, cpaerr2, dzerr2, tnlerr2 ) ;
+
 #else
       data[0] = ndf ;
       data[1] = chi2 ;
@@ -389,15 +354,15 @@ int main (Int_t argc, Char_t **argv)
 
       for (Int_t i=nitems0; i<nitems; i++) data[i] = 9999999.;
       TIter nextsite(&kaltrack);
-      nextsite(); // skip dummy site
+            nextsite(); // skip dummy site
       TKalTrackSite *sitep;
       while ((sitep = static_cast<TKalTrackSite *>(nextsite()))) {
          TKalTrackSite &site = *sitep;
          Int_t index = site.GetHit().GetMeasLayer().GetIndex();
-         data[itemID[index][0]] = site.GetResVec(TVKalSite::kSmoothed)(0,0);
+	 data[itemID[index][0]] = site.GetResVec(TVKalSite::kSmoothed)(0,0);
          site.InvFilter();
          data[itemID[index][1]] = site.GetResVec(TVKalSite::kInvFiltered)(0,0);
-         data[itemID[index][2]] = site.GetPivot().Z();
+	 data[itemID[index][2]] = site.GetPivot().Z();
       }
       hTrackMonitor->Fill(data);
 #endif
@@ -428,7 +393,7 @@ int main (Int_t argc, Char_t **argv)
          vtxdet.Draw(40);
          itdet.Draw(40);
          tpcdet.Draw(40);
-         kaltrack.Draw(2,"");
+         kaltrack.Draw(2,"");         
 
          cout << "Next? [yes/no/edit/quit] " << flush;
          static const Int_t kMaxLen = 1024;
@@ -436,7 +401,6 @@ int main (Int_t argc, Char_t **argv)
          cin.getline(temp,kMaxLen);
          TString opts(temp);
          opts.ToLower();
-         
          if (!opts.Length()) {
             continue;
          } else if (opts[0] == 'n' || opts[0] == 'q') {
@@ -446,7 +410,7 @@ int main (Int_t argc, Char_t **argv)
             cout << "\"CNTRL+C\" to really quit" << endl;
             app.Run(kTRUE);
          }
-      } // end of event display
+      } // endo fo event display
    } // end of event loop
 
    // ===================================================================

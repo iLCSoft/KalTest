@@ -25,13 +25,11 @@
 #include "TKalTrackState.h"     // from KalTrackLib
 #include "TKalTrackSite.h"      // from KalTrackLib
 #include "TKalTrack.h"          // from KalTrackLib
-#include "TTrackFrame.h"     // from KalTrackLib
-#include "J4Timer.h"
+#include "TTrackFrame.h"        // from KalTrackLib
+#include "TBField.h"            // from Bfield
 
 #include <iostream>             // from STL
 #include <memory>               // from STL
-
-//#define __J4TIMER__
 
 using namespace std;
 
@@ -83,12 +81,6 @@ TKalTrackState * TKalTrackState::MoveTo(TVKalSite  &to,
                                         TKalMatrix &F,
                                         TKalMatrix *QPtr) const
 {	
-#ifdef __J4TIMER__
-   static int timerid = -1;
-   J4Timer timer(timerid, "TKalTrackState", "MoveTo");
-   timer.Start();
-#endif
-
    if (QPtr) {
       const TKalTrackSite &from   = static_cast<const TKalTrackSite &>(GetSite());
             TKalTrackSite &siteto = static_cast<TKalTrackSite &>(to);
@@ -102,10 +94,6 @@ TKalTrackState * TKalTrackState::MoveTo(TVKalSite  &to,
          sv(5,0) = (*this)(5,0);
          F (5,5) = 1.;
       }
-
-#ifdef __J4TIMER__
-      timer.Stop();
-#endif
       return new TKalTrackState(sv, siteto, TVKalSite::kPredicted, sdim);
    } else {
       return 0;
@@ -165,21 +153,22 @@ TVTrack &TKalTrackState::CreateTrack() const
 
    TKalMatrix a(5,1);
    for (Int_t i=0; i<5; i++) a(i,0) = (*this)(i,0);
-   //FIXME
-   //TVector3 bfield;
    Double_t bfield = static_cast<const TKalTrackSite &>(GetSite()).GetBfield();
 
-   //get frame from track site 
-   const TKalTrackSite &site   = static_cast<const TKalTrackSite &>(GetSite());
-   TTrackFrame frame = site.GetFrame();
-
-   if (bfield == 0.) 
-   { 
+   if (bfield == 0.) { 
 	   tkp = new TStraightTrack(a,fX0);
    }
-   else
-   {	   
-	   tkp = new THelicalTrack(a,fX0, bfield, frame);
+   else {	   
+	   if(!TBField::IsUsingUniformBfield()) { 
+           //get frame from track site 
+           const TKalTrackSite &site   = static_cast<const TKalTrackSite &>(GetSite());
+           TTrackFrame frame = site.GetFrame();
+
+		   tkp = new THelicalTrack(a,fX0, bfield, frame);
+	   }
+	   else {
+		   tkp = new THelicalTrack(a,fX0, bfield);
+	   }
    }
 
    return *tkp;

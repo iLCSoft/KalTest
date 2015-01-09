@@ -32,13 +32,13 @@ ClassImp(EXVTXMeasLayer)
                                                                                 
 EXVTXMeasLayer::EXVTXMeasLayer(TMaterial &min,
                                TMaterial &mout,
-                         const TVector3  &center,
-                         const TVector3  &normal,
-                               Double_t   SortingPolicy,
-                               Double_t   xiwidth,
-                               Double_t   zetawidth,
-                               Double_t   xioffset,
-                               Double_t   sigmaxi,
+			       const TVector3  &center,
+			       const TVector3  &normal,
+			       Double_t SortingPolicy,
+			       Double_t   xiwidth,
+			       Double_t   zetawidth,
+			       Double_t   xioffset,
+			       Double_t   sigmaxi,
                                Double_t   sigmazeta,
                                Bool_t     type,
                          const Char_t    *name)
@@ -136,7 +136,7 @@ void EXVTXMeasLayer::ProcessHit(const TVector3  &xx,
    dmeas[0] = dxi;
    dmeas[1] = dzeta;
 
-   Double_t b = EXVTXKalDetector::GetBfield(xx);
+   Double_t b = EXVTXKalDetector::GetBfield();
    hits.Add(new EXVTXHit(*this, meas, dmeas, xx, b));
 }
 

@@ -12,8 +12,7 @@
 //* 	class TVKalSite
 //* (Update Recored)
 //*   2003/09/30  K.Fujii	Original version.
-//*   2009/06/18  K.Fujii   Implement inverse Kalman filter.
-//*   2012/11/29  K.Fujii   Initialize fParentPtr in c-tor.
+//*   2009/06/18  K.Fujii       Implement inverse Kalman filter
 //*
 //*************************************************************************
 //
@@ -22,19 +21,13 @@
 #include <cstdlib>
 #include "TVKalSite.h"
 #include "TVKalState.h"
-#include "J4Timer.h"
 
-//#define __J4TIMER__
 //_____________________________________________________________________
 //  ------------------------------
 //  Base Class for measurement vector used by Kalman filter
 //  ------------------------------
 //
 ClassImp(TVKalSite)
-
-#ifdef __SITE_TIMER__
-Double_t TVKalSite::fTime = 0.;
-#endif
 
 TVKalSite::TVKalSite(Int_t m, Int_t p)
                    :TObjArray(2),
@@ -46,8 +39,7 @@ TVKalSite::TVKalSite(Int_t m, Int_t p)
                     fHt(p,m),
                     fResVec(m,1),
                     fR(m,m),
-                    fDeltaChi2(0.),
-                    fParentPtr(0)
+                    fDeltaChi2(0.)
 {
    // Create fStateVector at constractor of concreate class:
    // SetStateVector(new TXXXKalmanStateVector(.....))
@@ -63,46 +55,16 @@ TVKalSite::~TVKalSite()
 
 Bool_t TVKalSite::Filter()
 {
-#ifdef __SITE_TIMER__   
-	clock_t t1, t2;
-	t1 = clock();
-#endif
-
-#ifdef __J4TIMER__
-   static int timerid = -1;
-   J4Timer timer(timerid, "TVKalSite", "Filter");
-   timer.Start();
-#endif
-
    // prea and preC should be preset by TVKalState::Propagate()
    TVKalState &prea = GetState(TVKalSite::kPredicted);
    TKalMatrix h = fM;
-   if (!CalcExpectedMeasVec(prea,h)) { 
-	   
-#ifdef __J4TIMER__ 
-	   timer.Stop(); 
-#endif
-#ifdef __SITE_TIMER__   
-	   t2 = clock();
-	   fTime += Double_t(t2-t1)/CLOCKS_PER_SEC;
-#endif
-	   return kFALSE;
-   }
+   if (!CalcExpectedMeasVec(prea,h)) return kFALSE;
    TKalMatrix pull  = fM - h;
    TKalMatrix preC  = GetState(TVKalSite::kPredicted).GetCovMat();
 
    // Calculate fH and fHt
 
-   if (!CalcMeasVecDerivative(prea,fH)) { 
-#ifdef __J4TIMER__ 
-	   timer.Stop(); 
-#endif
-#ifdef __SITE_TIMER__   
-	   t2 = clock();
-	   fTime += Double_t(t2-t1)/CLOCKS_PER_SEC;
-#endif
-	   return kFALSE;
-   }
+   if (!CalcMeasVecDerivative(prea,fH)) return kFALSE;
    fHt = TKalMatrix(TKalMatrix::kTransposed, fH);
 
    // Calculate covariance matrix of residual
@@ -133,29 +95,10 @@ Bool_t TVKalSite::Filter()
    // Calculate chi2 increment
 
    fR      = fV - fH * curC *fHt;
-   if (!CalcExpectedMeasVec(a,h)) { 
-#ifdef __J4TIMER__ 
-	   timer.Stop(); 
-#endif
-#ifdef __SITE_TIMER__   
-	   t2 = clock();
-	   fTime += Double_t(t2-t1)/CLOCKS_PER_SEC;
-#endif
-	   return kFALSE; 
-   }
-
+   if (!CalcExpectedMeasVec(a,h)) return kFALSE;
    fResVec = fM - h;
    TKalMatrix curResVect = TKalMatrix(TKalMatrix::kTransposed, fResVec);
    fDeltaChi2 = (curResVect * G * fResVec + Kpullt * preCinv * Kpull)(0,0);
-
-#ifdef __J4TIMER__ 
-   timer.Stop();
-#endif
-
-#ifdef __SITE_TIMER__   
-   t2 = clock();
-   fTime += Double_t(t2-t1)/CLOCKS_PER_SEC;
-#endif
 
    if (IsAccepted()) return kTRUE;
    else              return kFALSE;

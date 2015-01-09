@@ -1,5 +1,5 @@
-#ifndef EXHYBTRACK_H
-#define EXHYBTRACK_H
+#ifndef __EXHYBTRACK__
+#define __EXHYBTRACK__
 //*************************************************************************
 //* =================
 //*  EXHYBTrack Class

@@ -29,6 +29,8 @@
 #include "TVCurve.h"
 #include "TTrackFrame.h"
 
+#include <iostream>
+
 
 //_____________________________________________________________________
 //  -----------------------------------
@@ -116,6 +118,7 @@ public:
    inline virtual       Double_t    GetMagField () const { return fBfield;}
    inline virtual       TTrackFrame GetFrame    () const { return fFrame; }
 
+   virtual       Double_t   GetMomentum () const = 0;
    // Setters
 
    inline virtual void  SetTo(const TMatrixD &sv, const TVector3 &x0)

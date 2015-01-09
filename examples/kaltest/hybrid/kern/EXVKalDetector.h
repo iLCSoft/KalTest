@@ -1,12 +1,9 @@
-#ifndef EXVDETECTOR_H
-#define EXVDETECTOR_H
+#ifndef __EXVDETECTOR__
+#define __EXVDETECTOR__
 
 #include "TVector3.h"
 #include "TVKalDetector.h"
 #include "TAttDrawable.h"
-#if 1
-#include "TBField.h"
-#endif
 
 class TVMeasLayer;
 class TNode;
@@ -19,13 +16,10 @@ public:
    inline virtual Bool_t IsPowerOn() const { return fIsPowerOn;   }
    inline virtual void   PowerOn  ()       { fIsPowerOn = kTRUE;  }
    inline virtual void   PowerOff ()       { fIsPowerOn = kFALSE; }
-#if 0
-   static Double_t GetBfield (const TVector3 &xx = TVector3(0.))
+
+   static Double_t GetBfield (const TVector3 &xx = TVector3(0., 0., 0.))
                              { return fgBfield; }
-#else
-   static Double_t GetBfield (const TVector3 &xx = TVector3(0.))
-   { return TBField::GetGlobalBfield(xx).Mag(); }
-#endif
+
    using  TAttDrawable::Draw;
    virtual void Draw(Int_t color, const Char_t *opt = "");
 

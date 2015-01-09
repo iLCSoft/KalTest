@@ -33,21 +33,21 @@ using namespace std;
 
 TStraightTrack::TStraightTrack(Double_t dr,
                                Double_t phi0,
-                               Double_t kappa,
+                               Double_t m,
                                Double_t dz,
                                Double_t tanl,
                                Double_t x0,
                                Double_t y0,
                                Double_t z0,
                                Double_t b)
-             : TVTrack(dr,phi0,kappa,dz,tanl, x0,y0,z0, b)
+             : TVTrack(dr,phi0,0.,dz,tanl, x0,y0,z0, b), fMomentum(5.)
 {
 }
 
 TStraightTrack::TStraightTrack(const TMatrixD &a,
                                const TVector3 &x0,
                                      Double_t  b)
-             : TVTrack(a, x0, b)
+             : TVTrack(a, x0, b), fMomentum(5.)
 {
 }
 
@@ -60,7 +60,7 @@ void TStraightTrack::MoveTo(const TVector3 &xv0to,
                                   Double_t &t,
                                   TMatrixD *FPtr,
                                   TMatrixD *CPtr,
-								  Bool_t   transform)
+				  Bool_t   transform)
 {
    // ---------------------------------------------------
    // (0) Preparation

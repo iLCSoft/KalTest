@@ -1,5 +1,5 @@
-#ifndef EXITMEASLAYER_H
-#define EXITMEASLAYER_H
+#ifndef __EXITMEASLAYER__
+#define __EXITMEASLAYER__
 //*************************************************************************
 //* ===================
 //*  EXITMeasLayer Class

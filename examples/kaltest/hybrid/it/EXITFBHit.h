@@ -1,5 +1,5 @@
-#ifndef EXITFBHIT_H
-#define EXITHFBIT_H
+#ifndef __EXITFBHIT__
+#define __EXITHFBIT__
 
 #include "KalTrackDim.h"
 #include "TVTrackHit.h"

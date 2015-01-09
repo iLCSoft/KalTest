@@ -11,8 +11,7 @@
 //* 	class TVKalSystem
 //* (Update Recored)
 //*   2003/09/30  K.Fujii	Original version.
-//*   2009/06/18  K.Fujii   Implement inverse Kalman filter.
-//*   2012/11/29  K.Fujii   Removed fgCurInstancePtr and its setter/getter.
+//*   2009/06/18  K.Fujii       Implement inverse Kalman filter
 //*
 //*************************************************************************
 
@@ -28,15 +27,19 @@
 //
 ClassImp(TVKalSystem)
 
+TVKalSystem *TVKalSystem::fgCurInstancePtr = 0;
+
 TVKalSystem::TVKalSystem(Int_t n) 
             :TObjArray(n),
              fCurSitePtr(0),
              fChi2(0.)
 {
+   if (!fgCurInstancePtr) fgCurInstancePtr = this;
 }
 
 TVKalSystem::~TVKalSystem() 
 {
+   if (this == fgCurInstancePtr) fgCurInstancePtr = 0;
 }
 
 //-------------------------------------------------------
@@ -45,6 +48,8 @@ TVKalSystem::~TVKalSystem()
 
 Bool_t TVKalSystem::AddAndFilter(TVKalSite &next)
 {
+   SetCurInstancePtr(this);
+
    //
    // Propagate current state to the next site
    //

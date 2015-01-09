@@ -28,8 +28,6 @@ int main (Int_t argc, Char_t **argv)
 
    Double_t pt      = -100.;
    Double_t t0in    =   14.;
-   Double_t cosmin  = -0.9;
-   Double_t cosmax  = +0.9;
    Int_t    nevents = 1;
    switch (argc) {
       case 4: 
@@ -68,7 +66,6 @@ int main (Int_t argc, Char_t **argv)
    //  Prepare a Event Generator
    // ===================================================================
 
-   kalhits.SetOwner();
    EXEventGen gen(cradle, kalhits);
    gen.SetT0(t0in);
 
@@ -89,7 +86,7 @@ int main (Int_t argc, Char_t **argv)
       //  Generate a partcle
       // ============================================================
 
-      THelicalTrack hel = gen.GenerateHelix(pt,cosmin,cosmax);
+      THelicalTrack hel = gen.GenerateHelix(pt);
 
       // ============================================================
       //  Swim the particle in detector
@@ -133,7 +130,7 @@ int main (Int_t argc, Char_t **argv)
       TVector3 x1 = h1.GetMeasLayer().HitToXv(h1);
       TVector3 x2 = h2.GetMeasLayer().HitToXv(h2);
       TVector3 x3 = h3.GetMeasLayer().HitToXv(h3);
-      THelicalTrack helstart(x1, x2, x3, h1.GetBfield(),gkDir); // initial helix
+      THelicalTrack helstart(x1, x2, x3, h1.GetBfield(),gkDir); // initial helix 
 
       // ---------------------------
       //  Set dummy state to sited

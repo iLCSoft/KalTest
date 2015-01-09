@@ -235,6 +235,6 @@ void EXMeasLayer::ProcessHit(const TVector3 &xx, TObjArray &hits)
    dmeas[0] = fDx;
    dmeas[1] = fDz;
 
-   Double_t b = EXKalDetector::GetBfield(xx);
+   Double_t b = EXKalDetector::GetBfield();
    hits.Add(new EXHit(*this, meas, dmeas, lr, cellno, fVdrift, xx, b));
 }

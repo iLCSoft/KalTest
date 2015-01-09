@@ -154,7 +154,7 @@ void EXITMeasLayer::ProcessHit(const TVector3  &xx,
    dmeas[0] = dx;
 #endif
 
-   Double_t b = EXITKalDetector::GetBfield(xx);
+   Double_t b = EXITKalDetector::GetBfield();
    hits.Add(new EXITHit(*this, meas, dmeas, xx, b));
 }
 

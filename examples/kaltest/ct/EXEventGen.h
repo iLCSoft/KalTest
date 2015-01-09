@@ -3,17 +3,18 @@
 
 #include "TKalDetCradle.h"
 #include "THelicalTrack.h"
+#include "TStraightTrack.h"
 
 class EXEventGen {
 public:
    EXEventGen(TKalDetCradle &cradle, TObjArray &hitbuf) : fCradlePtr(&cradle), fHitBufPtr(&hitbuf) { }
    virtual ~EXEventGen() { }
 
-   THelicalTrack GenerateHelix(Double_t pt = 1.);
-   void          Swim(THelicalTrack &heltrk,
-                      Double_t       mass = 0.13957018);
+   THelicalTrack  GenerateHelix(Double_t pt = 1.);
+   TStraightTrack GenerateStraightTrack(Double_t p = 5.);
 
-   void          DumpHits();
+   void          Swim(THelicalTrack  &heltrk);
+   void          Swim(TStraightTrack &trk);
 
    static void     SetT0(Double_t t0) { fgT0 = t0;   }
    static Double_t GetT0()            { return fgT0; }

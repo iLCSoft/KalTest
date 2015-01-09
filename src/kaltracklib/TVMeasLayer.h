@@ -25,8 +25,6 @@
 //*                                 default value set to "TVMeasLayer"
 //*                                 and corresponding member function
 //*                                 TString GetName()  
-//*   2012/11/29  K.Fujii           Moved GetEnergyLoss and CalcQms to
-//*                                 TKalDetCradle.
 //*
 //*************************************************************************
 
@@ -66,7 +64,15 @@ public:
    inline  void       SetIndex(Int_t i) { fIndex = i;       }    
    inline  Bool_t     IsActive() const  { return fIsActive; }
 
-   inline TString     GetName () const  { return fname;     }
+   virtual Double_t   GetEnergyLoss (      Bool_t    isoutgoing,
+                                     const TVTrack  &hel,
+                                           Double_t  df) const;
+   virtual void       CalcQms       (      Bool_t    isoutgoing,
+                                     const TVTrack  &hel,
+                                           Double_t  df,
+                                           TKalMatrix &Qms) const;
+
+  inline TString       GetName() const { return fname;    }
   
 private:
    TMaterial     *fMaterialInPtr;   // pointer of inner Material

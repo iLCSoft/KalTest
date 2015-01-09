@@ -23,7 +23,8 @@
 #include "TVKalSite.h"   // from KalLib
 #include "TVTrackHit.h"  // from KalTrackLib
 
-#include "TTrackFrame.h" //from KalTrackLib
+#include "TTrackFrame.h" // from KalTrackLib
+#include "TBField.h"     // from Bfield
 
 class TVKalState;
 class TKalTrackState;
@@ -63,8 +64,17 @@ public:
                 TVector3     GetLocalPivot () const;
 
    inline       TVector3     GetGlobalPivot() const { return fX0;     }
-   inline       Double_t     GetBfield () const     { return fBfield; }
    inline       void         SetBfield (Double_t b) { fBfield = b;    }
+
+   Double_t     GetBfield () const 
+   { 
+	   if(!TBField::IsUsingUniformBfield()) {
+		   return fBfield;
+	   } 
+	   else {
+		   return fHitPtr->GetBfield();
+	   }
+   }
 
 private:
    TVKalState & CreateState(const TKalMatrix &sv, Int_t type = 0);
@@ -83,7 +93,6 @@ private:
 
          TTrackFrame  fFrame;         // site specific local frame
 
-         //FIXME::we just need 3d b field
          Double_t        fBfield;
 
    ClassDef(TKalTrackSite,1)  // sample measurement site class

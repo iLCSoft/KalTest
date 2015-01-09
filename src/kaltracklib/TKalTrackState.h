@@ -58,7 +58,6 @@ public:
    TKalTrackState & MoveTo(TVKalSite  &to, 
                            TKalMatrix &F, 
                            TKalMatrix &Q) const;
-    
    void         DebugPrint() const;
 
    // Derived class methods

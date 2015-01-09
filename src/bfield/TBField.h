@@ -19,7 +19,7 @@
 
 #include "TObject.h"     // from ROOT
 #include "TVector3.h"
-//#include "TEveTrackPropagator.h"     // from ROOT
+#include "TEveTrackPropagator.h"     // from ROOT
 
 
 //_____________________________________________________________________
@@ -35,15 +35,17 @@ public:
    // Utility methods
    static TVector3 GetGlobalBfield(const TVector3& globalPosition);
 
-   //static void SetBfieldPtr(TEveMagField* b){ fMagField = b; }
+   static void SetBfieldPtr(TEveMagField* b){ fField = b; }
    //static void SetBfield   (TVector3      b){ fBfield   = b; }
-   static void SetUseUniformBfield(Bool_t b) { fUseUniformBfield = b; }
-   static void SetBfieldCoeff(Double_t k)    { fFieldCoeff       = k; }
+   static void SetUseUniformBfield(Bool_t b) { fUseUniformBfield = b;    }
+   static void SetBfieldCoeff(Double_t k)    { fFieldCoeff       = k;    }
+
+   static bool IsUsingUniformBfield()        { return fUseUniformBfield; }
 
 private:
    //static    TVector3      fBfield;     //a constant b field
 
-   //static    TEveMagField* fMagField;   //a field map
+   static TEveMagField* fField;   //a field map
    static Bool_t   fUseUniformBfield;
    static Double_t fFieldCoeff;
 

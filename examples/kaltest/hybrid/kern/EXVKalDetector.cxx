@@ -6,7 +6,7 @@
 #include "TRotMatrix.h"
 #include "TVirtualPad.h"
 
-Double_t EXVKalDetector::fgBfield  = 10.;
+Double_t EXVKalDetector::fgBfield  = 30.;
 TNode   *EXVKalDetector::fgNodePtr = 0;
 
 ClassImp(EXVKalDetector)

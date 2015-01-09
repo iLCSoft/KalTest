@@ -12,14 +12,12 @@
 //* (Provides)
 //* 	class TVKalSite
 //* (Update Recored)
-//*   2003/09/30  K.Fujii	    Original version.
+//*   2003/09/30  K.Fujii	Original version.
 //*   2005/02/23  A.Yamaguchi	Added getter and setter for a new static
 //*                             data member, fgKalSysPtr.
 //*   2005/08/25  A.Yamaguchi	Removed getter and setter for a new static
 //*                             data member, fgKalSysPtr.
-//*   2009/06/18  K.Fujii       Implement inverse Kalman filter.
-//*   2012/11/29  K.Fujii       Added fParentPtr data member and its setter
-//*                             and getter.
+//*   2009/06/18  K.Fujii       Implement inverse Kalman filter
 //*
 //*************************************************************************
 //
@@ -28,8 +26,6 @@
 #include "TAttLockable.h"
 #include "TKalMatrix.h"
 #include "TVKalState.h"
-
-//#define __SITE_TIMER__
 
 class TVKalSystem;
 
@@ -69,7 +65,7 @@ public:
    virtual void    InvFilter();
 
    inline  void    Add(TObject *obj);
-
+   
    // Getters
 
    inline virtual Int_t        GetDimension() const { return fM.GetNrows(); }
@@ -82,16 +78,7 @@ public:
    inline virtual TKalMatrix & GetCovMat       ()   { return fR;            }
    inline virtual Double_t     GetDeltaChi2() const { return fDeltaChi2;    }
           virtual TKalMatrix   GetResVec (EStType t);
-   inline virtual TVKalSystem *GetParentPtr() const { return fParentPtr;    }
 
-#ifdef __SITE_TIMER__   
-   inline static Double_t GetTime() { return fTime; }   
-#endif
-
-   // Setter
-private:
-    inline virtual void SetParentPtr(TVKalSystem* p) { fParentPtr = p;       }
-    
 private:
    // Private utility methods
 
@@ -111,11 +98,6 @@ private:
    TKalMatrix     fResVec;      // m - h(a): M(m,1)
    TKalMatrix     fR;           // covariance matrix: M(m,m)
    Double_t       fDeltaChi2;   // chi2 increment
-   TVKalSystem   *fParentPtr;   // pointer to KalSystem this belongs to
-
-#ifdef __SITE_TIMER__   
-   static Double_t fTime;
-#endif
 
    ClassDef(TVKalSite,1)      // Base class for measurement vector objects
 };
@@ -139,5 +121,4 @@ TVKalState & TVKalSite::GetState(TVKalSite::EStType t)
    }
    return *ap;
 }
-
 #endif

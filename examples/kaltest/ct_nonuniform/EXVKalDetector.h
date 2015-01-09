@@ -18,7 +18,7 @@ public:
    inline virtual void   PowerOn  ()       { fIsPowerOn = kTRUE;  }
    inline virtual void   PowerOff ()       { fIsPowerOn = kFALSE; }
 
-   static Double_t GetBfield (const TVector3 &xx = TVector3(0.))
+   static Double_t GetBfield (const TVector3 &xx = TVector3(0., 0., 0.))
    { return TBField::GetGlobalBfield(xx).Mag(); }
    
    using  TAttDrawable::Draw;

@@ -20,7 +20,6 @@
 #include "TRotation.h"
 #include "TVector3.h"
 
-#define __FRAME_TIMER2__
 
 class TTrackFrame { 
 public:
@@ -59,16 +58,6 @@ public:
    inline void  SetRotation (const TRotation& r) { fRotMat = r; }
    inline void  SetShift    (const TVector3&  v) { fShift  = v; }
 
-#ifdef __FRAME_TIMER1__   
-   inline static Double_t GetTimeCtor()  { return fTimeCtor;  }
-#endif
-#ifdef __FRAME_TIMER2__   
-   inline static Double_t GetTimeVec ()  { return fTimeVec;   }
-#endif
-#ifdef __FRAME_TIMER3__   
-   inline static Double_t GetTimeSv  ()  { return fTimeSv;    }
-#endif
-
 private:
 
    TKalMatrix CalcRotationMatrix(const TKalMatrix& b);
@@ -86,16 +75,6 @@ private:
    //From last local frame to this frame
    TRotation  fDeltaRotMat;
    TVector3   fDeltaShift;
-
-#ifdef __FRAME_TIMER1__   
-   static     Double_t     fTimeCtor;
-#endif
-#ifdef __FRAME_TIMER2__   
-   static     Double_t     fTimeVec;
-#endif
-#ifdef __FRAME_TIMER3__   
-   static     Double_t     fTimeSv;
-#endif
 
    ClassDef(TTrackFrame,1)
 };

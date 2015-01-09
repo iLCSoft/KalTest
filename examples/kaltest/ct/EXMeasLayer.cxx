@@ -24,9 +24,8 @@ Bool_t   EXMeasLayer::kActive = kTRUE;
 Bool_t   EXMeasLayer::kDummy = kFALSE;
 //Double_t EXMeasLayer::fgSigmaX = 4.e-4;
 //Double_t EXMeasLayer::fgSigmaZ = 4.e-4;
-
-Double_t EXMeasLayer::fgSigmaX = 1.e-1;
-Double_t EXMeasLayer::fgSigmaZ = 1.e-1;
+Double_t EXMeasLayer::fgSigmaX = 1.e-2;
+Double_t EXMeasLayer::fgSigmaZ = 1.e-2;
 
 ClassImp(EXMeasLayer)
                                                                                 
@@ -116,10 +115,9 @@ void EXMeasLayer::ProcessHit(const TVector3    &xx,
 
    Double_t dx = GetSigmaX();
    Double_t dz = GetSigmaZ();
-#if 1
    rphi += gRandom->Gaus(0., dx);   // smearing rphi
    z    += gRandom->Gaus(0., dz);   // smearing z
-#endif
+
    Double_t meas [2];
    Double_t dmeas[2];
    meas [0] = rphi;
@@ -127,10 +125,7 @@ void EXMeasLayer::ProcessHit(const TVector3    &xx,
    dmeas[0] = dx;
    dmeas[1] = dz;
 
-   Double_t b = EXKalDetector::GetBfield(xx);
-
-   // For the b field, we are now using that from bfield class.
-   // The value here is not used any more.
+   Double_t b = EXKalDetector::GetBfield();
    hits.Add(new EXHit(*this, meas, dmeas, b));
 }
 

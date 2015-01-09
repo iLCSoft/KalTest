@@ -25,18 +25,23 @@
 #include <cmath>
 #include <iostream>          // from STL
 
+#include <Field/ILDMagField.h>
+
 ClassImp(TBField)
 
-//TEveMagField* TBField::fMagField = 0;
+TEveMagField* TBField::fField = 0;
 //TVector3      TBField::fBfield   = TVector3(0,0,3);
 
 Bool_t   TBField::fUseUniformBfield = kFALSE;
-Double_t TBField::fFieldCoeff       = 3.;
+//Bool_t   TBField::fUseUniformBfield = kTRUE;
+Double_t TBField::fFieldCoeff       = 2.;
 
 //_________________________________________________________________________
 //  ----------------------------------
 //   Ctors and Dtor
 //  ----------------------------------
+
+FieldX03 f;
 
 TBField::TBField()
 {
@@ -54,6 +59,13 @@ TBField::~TBField()
 
 TVector3 TBField::GetGlobalBfield(const TVector3& globalPosition)
 {
+	if(fField!=0) {
+		TEveVectorD vv = fField->GetFieldD(globalPosition.X(), 
+				                          globalPosition.Y(), 
+										  globalPosition.Z());
+
+		return TVector3(vv[0], vv[1], vv[2]);
+	}
 #if 0	   
 	 if(fUseUniformBfield)
 	 {
@@ -76,6 +88,8 @@ TVector3 TBField::GetGlobalBfield(const TVector3& globalPosition)
 	 bfield *= 10;
 #endif
 
+
+#if 0
 #if 0
 	 Double_t B0   = 3.5;
 
@@ -118,6 +132,7 @@ TVector3 TBField::GetGlobalBfield(const TVector3& globalPosition)
 
 	TVector3 bfield(bx, by, bz);
 #endif
+#endif
 
 #if 0
 	 std::cout << "b field at " << "(" 
@@ -133,6 +148,19 @@ TVector3 TBField::GetGlobalBfield(const TVector3& globalPosition)
 	 else
 		 return TVector3(0,0,1);
 #endif
+
+	 if(fUseUniformBfield)
+	 { 
+		 return TVector3(0,0,3.5);
+	 }
+	
+	 // mokka magnetic field : FieldX03
+	 const double tesla = 0.001;
+	 double pos[4] = {globalPosition.X(), globalPosition.Y(), globalPosition.Z(), 0};
+     double b_field[3];
+
+     f.GetFieldValue(pos, b_field);
+	 TVector3 bfield(b_field[0]/tesla, b_field[1]/tesla, b_field[2]/tesla);
 
 	 return bfield;
 }

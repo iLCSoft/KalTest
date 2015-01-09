@@ -1,4 +1,4 @@
-# build KalTest2 library
+# build KalTest library
 
 SET( lib_input_dirs geomlib kallib kaltracklib utils bfield )
 
@@ -28,14 +28,14 @@ ENDFOREACH()
 INCLUDE_DIRECTORIES( ${ROOT_DICT_INCLUDE_DIRS} )
 INCLUDE_DIRECTORIES( ${ROOT_INCLUDE_DIRS} )
 
-#MESSAGE( STATUS "KalTest2 lib sources: ${lib_sources}" )
+#MESSAGE( STATUS "KalTest lib sources: ${lib_sources}" )
 
-ADD_SHARED_LIBRARY( KalTest2 ${lib_sources} )
-INSTALL_SHARED_LIBRARY( KalTest2 DESTINATION lib )
-TARGET_LINK_LIBRARIES( KalTest2 ${ROOT_LIBRARIES} )
+ADD_SHARED_LIBRARY( KalTest ${lib_sources} )
+INSTALL_SHARED_LIBRARY( KalTest DESTINATION lib )
+TARGET_LINK_LIBRARIES( KalTest ${ROOT_LIBRARIES} )
 
 IF( APPLE ) #---- need special linker flags for ROOT dictionary on MacOS
-    SET_TARGET_PROPERTIES( KalTest2 PROPERTIES
+    SET_TARGET_PROPERTIES( KalTest PROPERTIES
         LINK_FLAGS "-single_module -undefined dynamic_lookup -bind_at_load"
     )
 ENDIF( APPLE )
