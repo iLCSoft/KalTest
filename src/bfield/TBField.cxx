@@ -20,28 +20,24 @@
 //*
 //*************************************************************************
 
-#include "TBField.h"   // from KalTrackLib
-#include <memory>            // from STL
+#include <memory>      // from STL
 #include <cmath>
-#include <iostream>          // from STL
+#include <iostream>    // from STL
 
-#include <Field/ILDMagField.h>
+#include "TBField.h"   // from KalTrackLib
 
 ClassImp(TBField)
 
 TEveMagField* TBField::fField = 0;
-//TVector3      TBField::fBfield   = TVector3(0,0,3);
 
-Bool_t   TBField::fUseUniformBfield = kFALSE;
-//Bool_t   TBField::fUseUniformBfield = kTRUE;
-Double_t TBField::fFieldCoeff       = 2.;
+//Bool_t   TBField::fUseUniformBfield = kFALSE;
+Bool_t   TBField::fUseUniformBfield = kTRUE;
+Double_t TBField::fFieldCoeff       = 1.;
 
 //_________________________________________________________________________
 //  ----------------------------------
 //   Ctors and Dtor
 //  ----------------------------------
-
-FieldX03 f;
 
 TBField::TBField()
 {
@@ -59,63 +55,27 @@ TBField::~TBField()
 
 TVector3 TBField::GetGlobalBfield(const TVector3& globalPosition)
 {
-	if(fField!=0) {
+	if(!fUseUniformBfield && fField!=0) {
 		TEveVectorD vv = fField->GetFieldD(globalPosition.X(), 
 				                          globalPosition.Y(), 
 										  globalPosition.Z());
 
 		return TVector3(vv[0], vv[1], vv[2]);
 	}
-#if 0	   
-	 if(fUseUniformBfield)
-	 {
-		 return 10*TVector3(0,0,3);
-	 }
 
-	 //const Double_t coeffxy = 0.0008;
-	 //const Double_t coeffxy = 0.00001;
-     const Double_t coeffxy = 0.01;
-     //const Double_t coeffxy = 0.001;
+	// ILD uniform magnetic field
+	Double_t B0   = 3.5; 
 
-	 Double_t bx = coeffxy * globalPosition.X();
-	 Double_t by = coeffxy * globalPosition.Y();
+	if(fUseUniformBfield)
+	{
+		return TVector3(0,0,B0);
+	}
 
-	 Double_t bt = sqrt(bx*bx+by*by);
-	 Double_t bz = sqrt(fabs((3 - bt)*(3+bt)));
-	 //bz = 0;
-
-	 TVector3 bfield(bx,by,bz);
-	 bfield *= 10;
-#endif
-
-
-#if 0
-#if 0
-	 Double_t B0   = 3.5;
-
-	 //return TVector3(0,0,B0);
-
-	 if(fUseUniformBfield)
-	 {
-		 return TVector3(0,0,B0);
-	 }
-
-	 Double_t R    = 1500.; //mm
-	 Double_t Br   = globalPosition.Perp2()/R/R;
-	 Double_t Bz   = B0 * sqrt(1 - Br*Br);
-	 Br *= B0;
-
-     Double_t phi = globalPosition.Phi();
-	 Double_t Bx  = Br * cos(phi);
-	 Double_t By  = Br * sin(phi);
-	 Bx = By = 0;
-
-	 TVector3 bfield(Bx, By, Bz);
-#else
+	// an artificial non-uniform magnetic field
     const Double_t zmax    = 3000.;
     const Double_t rmax    = 3000.;
     const Double_t coeffxy = fFieldCoeff / (zmax * rmax);
-    const Double_t bmax    = 3.; // B at the origin
+    const Double_t bmax    = 3.5; // B at the origin
 
     if(fUseUniformBfield)
     {
@@ -131,36 +91,6 @@ TVector3 TBField::GetGlobalBfield(const TVector3& globalPosition)
     Double_t bz = bmax * (1. - coeffxy * zg * zg);
 
 	TVector3 bfield(bx, by, bz);
-#endif
-#endif
 
-#if 0
-	 std::cout << "b field at " << "(" 
-		  << globalPosition.X() << ","
-		  << globalPosition.Y() << ","
-		  << globalPosition.Z() << "):   ("
-		  << bfield.X() << "," << bfield.Y() << "," << bfield.Z() << ")" << std::endl;
-#endif
-
-#if 0
-	 if(globalPosition.Perp()<650)
-		 return TVector3(0,0,3.5);
-	 else
-		 return TVector3(0,0,1);
-#endif
-
-	 if(fUseUniformBfield)
-	 { 
-		 return TVector3(0,0,3.5);
-	 }
-	
-	 // mokka magnetic field : FieldX03
-	 const double tesla = 0.001;
-	 double pos[4] = {globalPosition.X(), globalPosition.Y(), globalPosition.Z(), 0};
-     double b_field[3];
-
-     f.GetFieldValue(pos, b_field);
-	 TVector3 bfield(b_field[0]/tesla, b_field[1]/tesla, b_field[2]/tesla);
-
-	 return bfield;
+	return bfield;
 }
