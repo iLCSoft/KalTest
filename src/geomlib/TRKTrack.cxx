@@ -19,14 +19,14 @@ ClassImp(TRKTrack)
 TRKTrack::TRKTrack(Double_t chg, TVector3 x, TVector3 p)
 	     :fPosition(x),fMomentum(p)
 {
-	SetCharge(chg);
+	SetCharge(int(chg));
 	SetMagFieldObj(new TRKMagField());
 }
 
 TRKTrack::TRKTrack(const TRKTrack&  orig)
 	     :fPosition(orig.fPosition), fMomentum(orig.fMomentum)
 {
-	SetCharge(orig.GetCharge());
+	SetCharge(int(orig.GetCharge()));
 	SetMagFieldObj(new TRKMagField());
 }
 
