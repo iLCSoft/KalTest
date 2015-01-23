@@ -70,7 +70,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
          s       = lasts;
          phi     = lastphi;
          xx      = lastxx;
-#if 1
+#if 0
          cout << "TVSurface::CalcXingPointWith:"
               << "   --- Loop count limit reached ---------- " << endl
               << "   phi    : " << phi    << endl
