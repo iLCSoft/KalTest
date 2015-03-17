@@ -25,8 +25,9 @@
 #include "THelicalTrack.h"      // from GeomLib
 #include "TStraightTrack.h"     // from GeomLib
 #include "KalTrackDim.h"        // from KalTrackLib
+#include <iostream>
 
-class TKalTrackSite;
+class	TKalTrackSite;
 
 //_________________________________________________________________________
 //  -----------------------------------
@@ -42,26 +43,28 @@ public:
                                                                                 
    TKalTrackState(Int_t p = kSdim);
    TKalTrackState(const TKalMatrix &sv, Int_t type = 0, Int_t p = kSdim);
-   TKalTrackState(const TKalMatrix &sv, const TKalMatrix &c, 
-                        Int_t type = 0, Int_t p = kSdim);
-   TKalTrackState(const TKalMatrix &sv, const TVKalSite &site, 
-                        Int_t type = 0, Int_t p = kSdim);
-   TKalTrackState(const TKalMatrix &sv, const TKalMatrix &c,
-                  const TVKalSite &site, Int_t type = 0, Int_t p = kSdim);
+   TKalTrackState(const TKalMatrix	&sv, const TKalMatrix &c, 
+                        Int_t		 type		  = 0, Int_t p = kSdim);
+   TKalTrackState(const TKalMatrix	&sv, const TVKalSite &site, 
+                        Int_t		 type		  = 0, Int_t p = kSdim);
+   TKalTrackState(const TKalMatrix	&sv, const TKalMatrix &c,
+                  const TVKalSite	&site, Int_t type = 0, Int_t p = kSdim);
    virtual ~TKalTrackState() {}
                                                                                 
    // Implementation of paraent class pure virtuals
                                                                                 
-   TKalTrackState * MoveTo(TVKalSite  &to, 
-                           TKalMatrix &F, 
-                           TKalMatrix *QPtr = 0) const;
-   TKalTrackState & MoveTo(TVKalSite  &to, 
-                           TKalMatrix &F, 
+   TKalTrackState * MoveTo(TVKalSite	&to, 
+                           TKalMatrix	&F, 
+                           TKalMatrix	*QPtr = 0) const;
+   TKalTrackState & MoveTo(TVKalSite	&to, 
+                           TKalMatrix	&F, 
                            TKalMatrix &Q) const;
-   void         DebugPrint() const;
+
+  void         DebugPrint() const ;
+  void         DebugPrint( std::ostream& os ) const;
 
    // Derived class methods
-
+ 
    THelicalTrack   GetHelix() const;
    TStraightTrack  GetLine () const;
    TVTrack        &CreateTrack() const;

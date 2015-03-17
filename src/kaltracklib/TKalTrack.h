@@ -39,6 +39,9 @@ public:
 
    Double_t FitToHelix(TKalTrackState &a, TKalMatrix &C, Int_t &ndf);
 
+
+  std::string toString() ;
+
 private:
    Double_t     fMass;        // mass [GeV]
 

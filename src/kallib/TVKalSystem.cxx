@@ -16,6 +16,7 @@
 //*************************************************************************
 
 #include <iostream>
+#include <sstream>
 #include <cstdlib>
 #include "TVKalSystem.h"
 #include "TVKalState.h"
@@ -114,6 +115,7 @@ void TVKalSystem::SmoothBackTo(Int_t k)
       if (IndexOf(curPtr) == k) break;
    }
 }
+
 
 //-------------------------------------------------------
 // SmoothAll 

@@ -153,9 +153,9 @@ Bool_t TKalTrackSite::IsAccepted()
 
 void TKalTrackSite::DebugPrint() const
 {
-   cerr << " dchi2 = " << GetDeltaChi2()   << endl;
-   cerr << " res_d = " << (*(TKalTrackSite *)this).GetResVec()(0,0) << endl;
-   cerr << " res_z = " << (*(TKalTrackSite *)this).GetResVec()(1,0) << endl;
+   cout << " dchi2 = " << GetDeltaChi2()   << endl;
+   cout << " res_d = " << (*(TKalTrackSite *)this).GetResVec()(0,0) << endl;
+   cout << " res_z = " << (*(TKalTrackSite *)this).GetResVec()(1,0) << endl;
    fHitPtr->DebugPrint();
 }
 

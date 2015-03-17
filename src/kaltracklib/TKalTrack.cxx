@@ -21,6 +21,7 @@
 #include "TKalTrackSite.h"     // from KalTrackLib
 #include "TKalTrack.h"         // from KalTrackLib
 #include <iostream>            // from STL
+#include <sstream>            // from STL
 
 using namespace std;
 #if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
@@ -178,4 +179,48 @@ Double_t TKalTrack::FitToHelix(TKalTrackState &a, TKalMatrix &C, Int_t &ndf)
    C    = TKalMatrix(TKalMatrix::kInverted, d2chi2best);
 
    return chi2;
+}
+
+
+std::string TKalTrack::toString() {
+  
+  //  std::string s ;
+  std::stringstream str ;
+  
+  TIter iter( this, kIterBackward ) ;
+  TVKalSite  *curPtr ;
+  
+  str << " ------------- TVKalSystem ------------------- " << std::endl ;
+  
+  while( ( curPtr = static_cast<TVKalSite *>( iter()  ) ) ){
+    
+    str << "    site at index : " <<  IndexOf(curPtr) << std::endl ;
+    
+    
+    TVKalState *tsP  = &curPtr->GetState(TVKalSite::kPredicted);
+    TVKalState *tsF  = &curPtr->GetState(TVKalSite::kFiltered);
+    TVKalState *tsS  = &curPtr->GetState(TVKalSite::kSmoothed); 
+    
+
+    if(  tsP ) {
+      str << " predicted state: " << std::endl ;
+      TKalTrackState* ts = dynamic_cast<TKalTrackState* >( tsP )  ;
+      ts->DebugPrint( str ) ;
+    }
+    if(  tsF ) {
+      str << " fitered state: " << std::endl ;
+      TKalTrackState* ts =  dynamic_cast<TKalTrackState* >( tsF )  ;
+      ts->DebugPrint( str ) ;
+    }
+    if(  tsS ) {
+      str << " smoothed state: " << std::endl ;
+      TKalTrackState* ts =  dynamic_cast<TKalTrackState* >( tsS )  ;
+      ts->DebugPrint( str ) ;
+    }
+
+  }
+
+  str << " ----------------------------------------------------- " << std::endl ;
+
+  return str.str() ;
 }

@@ -20,7 +20,7 @@
 
 #include "TObjArray.h"
 #include "TVKalSite.h"
-
+#include <string>
 //_____________________________________________________________________
 //  ------------------------------
 //  Kalman Filtering class
