@@ -107,25 +107,30 @@ TKalTrackState & TKalTrackState::MoveTo(TVKalSite  &to,
    return *MoveTo(to, F, &Q);
 }
 
-void TKalTrackState::DebugPrint() const
+void TKalTrackState::DebugPrint() const {
+  DebugPrint( std::cerr ) ;
+}
+
+void TKalTrackState::DebugPrint(std::ostream& os) const
 {
-   cerr << "          +-     -+   " << "+-" <<  endl
-        << "          | drho  |   " << "| " << (*this)(0,0) << endl
-        << "          | phi0  |   " << "| " << (*this)(1,0) << endl
-        << " a      = | kappa | = " << "| " << (*this)(2,0) << endl
-        << "          | dz    |   " << "| " << (*this)(3,0) << endl
-        << "          | tanl  |   " << "| " << (*this)(4,0) << endl;
-   if (GetDimension() == 6) {
-      cerr 
-        << "          | t0    |   " << "| " << (*this)(5,0) << endl;
-   }
-   cerr << "          +-     -+   " << "+-" << endl;
-   cerr << "          +-" << endl 
-        << " X0     = | " << fX0.X() << endl
-        << "          | " << fX0.Y() << endl
-        << "          | " << fX0.Z() << endl
-        << "          +-" << endl;
-   GetCovMat().DebugPrint(" covMat = ", 6);
+  os << " type " << fType << endl ;
+  os << "          +-     -+   " << "+-" <<  endl
+     << "          | drho  |   " << "| " << (*this)(0,0) << endl
+     << "          | phi0  |   " << "| " << (*this)(1,0) << endl
+     << " a      = | kappa | = " << "| " << (*this)(2,0) << endl
+     << "          | dz    |   " << "| " << (*this)(3,0) << endl
+     << "          | tanl  |   " << "| " << (*this)(4,0) << endl;
+  if (GetDimension() == 6) {
+    os << "          | t0    |   " << "| " << (*this)(5,0) << endl;
+  }
+  os << "          +-     -+   " << "+-" << endl;
+  os << "          +-" << endl 
+     << " X0     = | " << fX0.X() << endl
+     << "          | " << fX0.Y() << endl
+     << "          | " << fX0.Z() << endl
+     << "          +-" << endl;
+
+  GetCovMat().DebugPrint( os , " covMat = ", 6 );
 }
 
 //_________________________________________________________________________

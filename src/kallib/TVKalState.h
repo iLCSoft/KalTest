@@ -72,7 +72,7 @@ public:
    inline virtual void SetProcNoiseMat(const TKalMatrix &q) { fQ       = q; }
    inline virtual void SetSitePtr     (TVKalSite  *s)       { fSitePtr = s; }
 
-private:
+protected:
    
    // private data members -------------------------------------------
 

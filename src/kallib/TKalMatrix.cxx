@@ -96,9 +96,9 @@ TKalMatrix::TKalMatrix(const TRotation &r)
 // Print
 //-------------------------------------------------------
 
-void TKalMatrix::DebugPrint(Option_t *opt, Int_t ncolsps) const
+void TKalMatrix::DebugPrint(std::ostream& os, Option_t *opt, Int_t ncolsps ) const
 {
-   using namespace std;
+  using namespace std ;
 
    Int_t ncols   = GetNcols();
    Int_t nrows   = GetNrows();
@@ -112,29 +112,29 @@ void TKalMatrix::DebugPrint(Option_t *opt, Int_t ncolsps) const
 
    for (Int_t sc = 1; sc <= ncols; sc += ncolsps) {
       ns++;
-      if (ns == 1) cerr << title << "+-";
+      if (ns == 1) os << title << "+-";
       if (ns == nsheets) {
-         for (Int_t ib = 1; ib <= 11*lastcw; ib++) cerr << " ";
-         cerr << "-+" << endl;
+         for (Int_t ib = 1; ib <= 11*lastcw; ib++) os << " ";
+         os << "-+" << endl;
       } else {
-         cerr << endl;
+         os << endl;
       }
       for (Int_t i = 1; i <= nrows; i++) {
-         if (ns == 1) cerr << off << "| ";
+         if (ns == 1) os << off << "| ";
          for (Int_t j = sc; j < sc+ncolsps && j <= ncols; j++) {
-            cerr // << setiosflags(ios::scientific) 
+            os // << setiosflags(ios::scientific) 
                  << setw(11) << setprecision(4)
                  << (*this)(i-1,j-1);
-            if (j == ncols) cerr << " |";
+            if (j == ncols) os << " |";
          }
-         cerr << endl;
+         os << endl;
       }
-      if (ns == 1) cerr << off << "+-";
+      if (ns == 1) os << off << "+-";
       if (ns == nsheets) {
-         for (Int_t ib = 1; ib <= 11*lastcw; ib++) cerr << " ";
-         cerr << "-+" << endl;
+         for (Int_t ib = 1; ib <= 11*lastcw; ib++) os << " ";
+         os << "-+" << endl;
       } else {
-         cerr << endl;
+         os << endl;
       }
    }
 }

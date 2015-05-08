@@ -19,6 +19,7 @@
 #include "TMatrixD.h"
 #include "TVector3.h"
 #include "TRotation.h"
+#include <iostream>
 //_____________________________________________________________________
 //  ------------------------------
 //  Base Class for matrix used by Kalman filter
@@ -49,7 +50,11 @@ public:
 
    virtual ~TKalMatrix() {}
 
-   virtual void      DebugPrint(Option_t *opt = "", Int_t nc = 5) const;
+  // virtual void  DebugPrint() const { DebugPrint( "", 5 , std::cerr ) ; }
+
+  virtual void  DebugPrint(Option_t *op="", Int_t nc=5 ) const { DebugPrint(  std::cerr , op , nc ) ; } ;
+
+  virtual void  DebugPrint(std::ostream& os, Option_t *opt="", Int_t nc=5  ) const;
 
    static TKalMatrix ToKalMat  (const TVector3 &vec);
    static TVector3   ToThreeVec(const TMatrixD &mat);
