@@ -3,6 +3,7 @@
 SET( ROOT_DICT_INCLUDE_DIRS 
     ${PROJECT_SOURCE_DIR}/src/utils
     ${PROJECT_SOURCE_DIR}/src/kallib
+    ${PROJECT_SOURCE_DIR}/src/bfield
     ${PROJECT_SOURCE_DIR}/src/geomlib
     ${PROJECT_SOURCE_DIR}/src/kaltracklib
 )
@@ -49,6 +50,7 @@ ENDMACRO( ADD_KALTEST_ROOT_DICT_EXAMPLE )
 
 ADD_KALTEST_ROOT_DICT_EXAMPLE( cdc cdc )
 ADD_KALTEST_ROOT_DICT_EXAMPLE( ct ct )
+ADD_KALTEST_ROOT_DICT_EXAMPLE( ct_nonuniform ct_nonuniform )
 ADD_KALTEST_ROOT_DICT_EXAMPLE( simple simple )
 
 

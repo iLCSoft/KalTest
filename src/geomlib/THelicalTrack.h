@@ -29,6 +29,7 @@
 //
 
 #include "TVTrack.h"
+#include "TKalMatrix.h"
 
 //_____________________________________________________________________
 //  -----------------------------------
@@ -40,19 +41,33 @@ public:
 
    // Ctors and Dtor
 
-   THelicalTrack(Double_t dr    = 0.,
-                 Double_t phi0  = 0.,
-                 Double_t kappa = 1.e-5,
-                 Double_t dz    = 0.,
-                 Double_t tanl  = 0.,
-                 Double_t x0    = 0.,
-                 Double_t y0    = 0.,
-                 Double_t z0    = 0.,
-                 Double_t b     = 30.);
+   THelicalTrack(Double_t     dr    = 0.,
+                 Double_t     phi0  = 0.,
+                 Double_t     kappa = 1.e-5,
+                 Double_t     dz    = 0.,
+                 Double_t     tanl  = 0.,
+                 Double_t     x0    = 0.,
+                 Double_t     y0    = 0.,
+                 Double_t     z0    = 0.,
+                 Double_t     b     = 30.,
+                 TTrackFrame *fp    = 0);  // pointer to coordinate frame
 
-   THelicalTrack(const TMatrixD &a, const TVector3 &x0, Double_t b = 30.);
-   THelicalTrack(const TVector3 &x1, const TVector3 &x2, const TVector3 &x3,
-                 Double_t b = 30., Bool_t dir = kIterForward);
+   THelicalTrack(const TMatrixD    &a,
+                 const TVector3    &x0,
+                       Double_t     b  = 30.,
+                       TTrackFrame *fp = 0);
+
+   THelicalTrack(const TVector3 &x1,
+                 const TVector3 &x2,
+                 const TVector3 &x3,
+                       Double_t b   = 30.,
+                       Bool_t   dir = kIterForward);
+
+   //x0 is a local pivot
+   THelicalTrack(const TMatrixD    &a,
+                 const TVector3    &x0,
+                       Double_t     b,
+                 const TTrackFrame &frame);
 
    virtual ~THelicalTrack() {}
 
@@ -60,8 +75,9 @@ public:
 
    virtual void MoveTo(const TVector3 &x0to,
                              Double_t &fid,
-                             TMatrixD *F = 0,
-                             TMatrixD *C = 0);
+                             TMatrixD *F        = 0,
+                             TMatrixD *C        = 0,
+                             Bool_t   transform = kTRUE);
 
    TVector3 CalcXAt   (Double_t phi) const;
    TMatrixD CalcDxDa  (Double_t phi) const;

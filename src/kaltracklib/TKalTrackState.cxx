@@ -25,6 +25,8 @@
 #include "TKalTrackState.h"     // from KalTrackLib
 #include "TKalTrackSite.h"      // from KalTrackLib
 #include "TKalTrack.h"          // from KalTrackLib
+#include "TTrackFrame.h"        // from KalTrackLib
+#include "TBField.h"            // from Bfield
 
 #include <iostream>             // from STL
 #include <memory>               // from STL
@@ -59,14 +61,14 @@ TKalTrackState::TKalTrackState(const TKalMatrix &sv, const TKalMatrix &c,
 TKalTrackState::TKalTrackState(const TKalMatrix &sv, const TVKalSite &site,
                                      Int_t type, Int_t p) 
            : TVKalState(sv,site,type,p), 
-             fX0(((TKalTrackSite *)&site)->GetPivot())
+             fX0(((TKalTrackSite *)&site)->GetLocalPivot())
 {
 }
 
 TKalTrackState::TKalTrackState(const TKalMatrix &sv, const TKalMatrix &c,
                                const TVKalSite &site, Int_t type, Int_t p) 
            : TVKalState(sv,c,site,type,p),
-             fX0(((TKalTrackSite *)&site)->GetPivot())
+             fX0(((TKalTrackSite *)&site)->GetLocalPivot())
 {
 }
 
@@ -158,8 +160,21 @@ TVTrack &TKalTrackState::CreateTrack() const
    for (Int_t i=0; i<5; i++) a(i,0) = (*this)(i,0);
    Double_t bfield = static_cast<const TKalTrackSite &>(GetSite()).GetBfield();
 
-   if (bfield == 0.) tkp = new TStraightTrack(a,fX0);
-   else              tkp = new THelicalTrack(a,fX0, bfield);
+   if (bfield == 0.) { 
+	   tkp = new TStraightTrack(a,fX0);
+   }
+   else {	   
+	   if(!TBField::IsUsingUniformBfield()) { 
+           //get frame from track site 
+           const TKalTrackSite &site   = static_cast<const TKalTrackSite &>(GetSite());
+           TTrackFrame frame = site.GetFrame();
+
+		   tkp = new THelicalTrack(a,fX0, bfield, frame);
+	   }
+	   else {
+		   tkp = new THelicalTrack(a,fX0, bfield);
+	   }
+   }
 
    return *tkp;
 }

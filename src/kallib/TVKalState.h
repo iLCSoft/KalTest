@@ -54,8 +54,6 @@ public:
                                TKalMatrix &F,
                                TKalMatrix &Q) const = 0;
 
-   virtual void         DebugPrint() const = 0;
-
    virtual void         Propagate(TVKalSite &to); // calculates f, F, and Q
  
    

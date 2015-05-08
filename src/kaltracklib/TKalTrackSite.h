@@ -23,6 +23,9 @@
 #include "TVKalSite.h"   // from KalLib
 #include "TVTrackHit.h"  // from KalTrackLib
 
+#include "TTrackFrame.h" // from KalTrackLib
+#include "TBField.h"     // from Bfield
+
 class TVKalState;
 class TKalTrackState;
 class TKalFilterCond;
@@ -45,15 +48,33 @@ public:
 
    void         DebugPrint() const;
 
+   inline       TTrackFrame GetFrame() const { return fFrame; }
+
+   inline  void SetFrame(TTrackFrame frame) { fFrame = frame; }
+
    inline const TVTrackHit & GetHit    () const { return *fHitPtr;             }
-   inline const TVector3   & GetPivot  () const { return fX0;                  }
-   inline       Double_t     GetBfield () const { return fHitPtr->GetBfield(); }
    inline       Bool_t       IsInB     () const { return GetBfield() != 0.;    }
    inline       Bool_t       IsHitOwner() const { return fIsHitOwner;          }
 
    inline       void   SetPivot     (const TVector3 &x0)  { fX0 = x0;          }
    inline       void   SetHitOwner  (Bool_t b=kTRUE)      { fIsHitOwner = b;   }
    inline       void   SetFilterCond(TKalFilterCond *cp)  { fCondPtr    = cp;  }
+
+   inline       TVector3     GetPivot      () const { return fX0;     }
+                TVector3     GetLocalPivot () const;
+
+   inline       TVector3     GetGlobalPivot() const { return fX0;     }
+   inline       void         SetBfield (Double_t b) { fBfield = b;    }
+
+   Double_t     GetBfield () const 
+   { 
+	   if(!TBField::IsUsingUniformBfield()) {
+		   return fBfield;
+	   } 
+	   else {
+		   return fHitPtr->GetBfield();
+	   }
+   }
 
 private:
    TVKalState & CreateState(const TKalMatrix &sv, Int_t type = 0);
@@ -66,9 +87,13 @@ private:
 
 private:
    const TVTrackHit     *fHitPtr;     // pointer to corresponding hit
-         TVector3        fX0;         // pivot
+         TVector3        fX0;         // global pivot
          Bool_t          fIsHitOwner; // true if site owns hit
          TKalFilterCond *fCondPtr;    // pointer to filter condition object
+
+         TTrackFrame  fFrame;         // site specific local frame
+
+         Double_t        fBfield;
 
    ClassDef(TKalTrackSite,1)  // sample measurement site class
 };

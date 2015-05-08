@@ -76,6 +76,22 @@ TKalMatrix::TKalMatrix(const TVector3 &v)
 {
 }
 
+TKalMatrix::TKalMatrix(const TRotation &r)
+	       :TMatrixD(3,3)
+{
+	(*this)(0,0) = r.XX();
+	(*this)(0,1) = r.XY();
+	(*this)(0,2) = r.XZ();
+
+	(*this)(1,0) = r.YX();
+	(*this)(1,1) = r.YY();
+	(*this)(1,2) = r.YZ();
+
+	(*this)(2,0) = r.ZX();
+	(*this)(2,1) = r.ZY();
+	(*this)(2,2) = r.ZZ();
+}
+
 //-------------------------------------------------------
 // Print
 //-------------------------------------------------------

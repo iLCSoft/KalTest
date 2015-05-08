@@ -59,7 +59,8 @@ TStraightTrack::TStraightTrack(const TMatrixD &a,
 void TStraightTrack::MoveTo(const TVector3 &xv0to,
                                   Double_t &t,
                                   TMatrixD *FPtr,
-                                  TMatrixD *CPtr)
+                                  TMatrixD *CPtr,
+				  Bool_t   transform)
 {
    // ---------------------------------------------------
    // (0) Preparation

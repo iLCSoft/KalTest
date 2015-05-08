@@ -12,5 +12,6 @@
 #pragma link C++ class TKalDetCradle+;
 #pragma link C++ class TVKalDetector+;
 #pragma link C++ class TKalFilterCond+;
+#pragma link C++ class TTrackFrame+;
 
 #endif

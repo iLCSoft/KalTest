@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include "TVTrack.h"
+#include "TTrackFrame.h"
 
 using namespace std;
 #if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
@@ -37,25 +38,55 @@ const Double_t TVTrack::kInfinity      = 1.e20;
 //  --------------
 //
 
-TVTrack::TVTrack(Double_t dr,
-                 Double_t phi0,
-                 Double_t kappa,
-                 Double_t dz,
-                 Double_t tanl,
-                 Double_t x0,
-                 Double_t y0,
-                 Double_t z0,
-                 Double_t b)
-             : fDrho(dr), fPhi0(phi0), fKappa(kappa), fDz(dz), fTanL(tanl),
-               fX0(x0,y0,z0)
+TVTrack::TVTrack(Double_t     dr,
+                 Double_t     phi0,
+                 Double_t     kappa,
+                 Double_t     dz,
+                 Double_t     tanl,
+                 Double_t     x0,
+                 Double_t     y0,
+                 Double_t     z0,
+                 Double_t     b,
+                 TTrackFrame *fp)
+       : fDrho(dr),
+         fPhi0(phi0),
+         fKappa(kappa),
+         fDz(dz),
+         fTanL(tanl),
+         fX0(x0,y0,z0)
+{
+   SetMagField(b);
+   if (fp) fFrame = *fp;
+}
+
+TVTrack::TVTrack(const TMatrixD    &a,
+                 const TVector3    &x0,
+                       Double_t     b,
+                       TTrackFrame *fp)
+       : fDrho(a(0,0)),
+         fPhi0(a(1,0)),
+         fKappa(a(2,0)),
+         fDz(a(3,0)),
+         fTanL(a(4,0)),
+         fX0(x0)
+{
+   SetMagField(b);
+   if (fp) fFrame = *fp;
+}
+
+
+TVTrack::TVTrack(const TMatrixD    &a,
+                 const TVector3    &x0,
+                       Double_t     b,
+                 const TTrackFrame &f)
+       : fDrho(a(0,0)),
+         fPhi0(a(1,0)),
+         fKappa(a(2,0)),
+         fDz(a(3,0)),
+         fTanL(a(4,0)),
+         fX0(x0),
+         fFrame(f)
 {
    SetMagField(b);
 }
 
-TVTrack::TVTrack(const TMatrixD &a, const TVector3 & x0, Double_t b)
-             : fDrho(a(0,0)), fPhi0(a(1,0)), fKappa(a(2,0)), 
-               fDz(a(3,0)), fTanL(a(4,0)),
-               fX0(x0)
-{
-   SetMagField(b);
-}

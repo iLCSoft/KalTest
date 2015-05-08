@@ -56,7 +56,8 @@ public:
    virtual void MoveTo(const TVector3 &x0to,
                              Double_t &t,
                              TMatrixD *F = 0,
-                             TMatrixD *C = 0);
+                             TMatrixD *C = 0,
+			     Bool_t   transform = kFALSE); //transform has no meaning for straight track
 
    TVector3 CalcXAt   (Double_t phi) const;
    TMatrixD CalcDxDa  (Double_t phi) const;

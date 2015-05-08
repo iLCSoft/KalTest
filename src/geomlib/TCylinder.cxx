@@ -20,6 +20,7 @@
 #include "TCircle.h"
 #include "TCylinder.h"
 #include "TVTrack.h"
+#include "TBField.h"
 
 using namespace std;
 
@@ -70,7 +71,7 @@ Int_t TCylinder::CalcXingPointWith(const TVTrack  &hel,
                                          Double_t  eps) const
 {
    // If B = 0,  use the Newtonian method to calculate the crossing point.
-   if(!hel.IsInB()) return TVSurface::CalcXingPointWith(hel, xx, phi, mode, eps);
+   if(!hel.IsInB() || !TBField::IsUsingUniformBfield()) return TVSurface::CalcXingPointWith(hel, xx, phi, mode, eps);
    
    // This assumes nonzero B field.
    //

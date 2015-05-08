@@ -16,5 +16,7 @@
 #pragma link C++ class TVSolid+;
 #pragma link C++ class TVSurface+;
 #pragma link C++ class TVTrack+;
+#pragma link C++ class TRKTrack+;
+#pragma link C++ class TRungeKuttaTrack+;
 
 #endif

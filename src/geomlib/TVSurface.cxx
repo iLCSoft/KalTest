@@ -57,7 +57,7 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
    xx = hel.CalcXAt(phi);
 
    Double_t  lastphi =  phi;
-   Double_t  lasts   =  99999;
+   Double_t  lasts   =  1.e10;
    Double_t  lambda  =  initlambda;
 
    TVector3  lastxx  =  xx;
@@ -71,13 +71,14 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
          phi     = lastphi;
          xx      = lastxx;
 #if 0
-         cerr << "TVSurface::CalcXingPointWith:"
+         cout << "TVSurface::CalcXingPointWith:"
               << "   --- Loop count limit reached ---------- " << endl
               << "   phi    : " << phi    << endl
               << "   x      : " << xx.X() << " "
                                 << xx.Y() << " "
                                 << xx.Z() << endl 
               << "   s      : " << s      << endl
+			  << "   eps    : " << eps    << endl
               << "   lambda : " << lambda << endl;
 #endif
          return 0;

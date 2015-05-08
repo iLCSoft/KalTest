@@ -27,6 +27,10 @@
 #endif
 
 #include "TVCurve.h"
+#include "TTrackFrame.h"
+
+#include <iostream>
+
 
 //_____________________________________________________________________
 //  -----------------------------------
@@ -37,17 +41,26 @@ class TVTrack : public TVCurve {
 public:
    // Ctors and Dtor
 
-   TVTrack(Double_t dr    = 0.,
-           Double_t phi0  = 0.,
-           Double_t kappa = 1.e-5,
-           Double_t dz    = 0.,
-           Double_t tanl  = 0.,
-           Double_t x0    = 0.,
-           Double_t y0    = 0.,
-           Double_t z0    = 0.,
-           Double_t b     = 30.);
+   TVTrack(Double_t     dr    = 0.,
+           Double_t     phi0  = 0.,
+           Double_t     kappa = 1.e-5,
+           Double_t     dz    = 0.,
+           Double_t     tanl  = 0.,
+           Double_t     x0    = 0.,
+           Double_t     y0    = 0.,
+           Double_t     z0    = 0.,
+           Double_t     b     = 30.,
+           TTrackFrame *fp    = 0);
 
-   TVTrack(const TMatrixD &a, const TVector3 & x0, Double_t b = 30.);
+   TVTrack(const TMatrixD    &a,
+           const TVector3    &x0,
+                 Double_t     b  = 30.,
+                 TTrackFrame *fp = 0);
+   
+   TVTrack(const TMatrixD    &a,
+           const TVector3    &x0,
+                 Double_t     b,
+           const TTrackFrame &f);
 
    virtual ~TVTrack() {}
 
@@ -55,8 +68,9 @@ public:
 
    virtual void MoveTo(const TVector3 &x0to,
                              Double_t &fid,
-                             TMatrixD *F = 0,
-                             TMatrixD *C = 0) = 0;
+                             TMatrixD *F        = 0,
+                             TMatrixD *C        = 0,
+                             Bool_t   transform = kTRUE) = 0;
 
    virtual void MoveTo(const TVector3 &x0to,
                              Double_t &fid,
@@ -93,16 +107,18 @@ public:
 
    // Getters
 
-   inline virtual       Double_t   GetDrho     () const { return fDrho;  }
-   inline virtual       Double_t   GetPhi0     () const { return fPhi0;  }
-   inline virtual       Double_t   GetKappa    () const { return fKappa; }
-   inline virtual       Double_t   GetDz       () const { return fDz;    }
-   inline virtual       Double_t   GetTanLambda() const { return fTanL;  }
-   inline virtual const TVector3 & GetPivot    () const { return fX0;    }
-   inline virtual       Double_t   GetRho      () const { return fAlpha/fKappa; }
-   inline virtual       Double_t   GetPtoR     () const { return fAlpha; }
+   inline virtual       Double_t    GetDrho     () const { return fDrho;  }
+   inline virtual       Double_t    GetPhi0     () const { return fPhi0;  }
+   inline virtual       Double_t    GetKappa    () const { return fKappa; }
+   inline virtual       Double_t    GetDz       () const { return fDz;    }
+   inline virtual       Double_t    GetTanLambda() const { return fTanL;  }
+   inline virtual const TVector3  & GetPivot    () const { return fX0;    }
+   inline virtual       Double_t    GetRho      () const { return fAlpha/fKappa; }
+   inline virtual       Double_t    GetPtoR     () const { return fAlpha; }
+   inline virtual       Double_t    GetMagField () const { return fBfield;}
+   inline virtual       TTrackFrame GetFrame    () const { return fFrame; }
 
-          virtual       Double_t   GetMomentum () const = 0;
+   virtual       Double_t   GetMomentum () const = 0;
    // Setters
 
    inline virtual void  SetTo(const TMatrixD &sv, const TVector3 &x0)
@@ -114,26 +130,40 @@ public:
       fTanL  = sv(4,0);
       fX0    = x0;
    }
+   
+   inline virtual void SetFrame(const TTrackFrame& f)
+   {
+      fFrame = f;
+   }
 
    inline virtual void SetMagField(Double_t b)
    {
-     // // units: mm, sec, Tesla
-     if (b != 0.) fAlpha = kGiga/kLightVelocity*1000./b;
-     // units: cm, sec, kGaus
-     //if (b != 0.) fAlpha = kGiga/kLightVelocity*100./(b/10);
-     else         fAlpha = kInfinity;
+      if (b != 0.) {
+         // // units: cm, sec, kGaus
+         //    fAlpha = kGiga/kLightVelocity*100./(b/10);
+         // ---------------------
+         // units: mm, sec, Tesla
+         // ---------------------
+         fAlpha = kGiga/kLightVelocity*1000./b;
+         fBfield = b;
+      } else {
+         fAlpha = kInfinity;
+         fBfield = 0.;
+      }
    }
 	
    inline virtual Bool_t IsInB() const { return fAlpha < kInfinity ? kTRUE : kFALSE; }
 
 protected:
-   Double_t fDrho;      // drho
-   Double_t fPhi0;      // phi0
-   Double_t fKappa;     // kappa
-   Double_t fDz;        // dz
-   Double_t fTanL;      // tanl
-   TVector3 fX0;        // pivot
-   Double_t fAlpha;     // alpha
+   Double_t    fDrho;      // drho
+   Double_t    fPhi0;      // phi0
+   Double_t    fKappa;     // kappa
+   Double_t    fDz;        // dz
+   Double_t    fTanL;      // tanl
+   TVector3    fX0;        // pivot
+   Double_t    fAlpha;     // alpha
+   Double_t    fBfield;    // b field
+   TTrackFrame fFrame;     // frame with z-axis in B-field direction.
 
 #if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
    static const Double_t kLightVelocity = 2.99792458e8; //! light velocity [m/sec]

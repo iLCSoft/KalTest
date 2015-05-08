@@ -20,12 +20,11 @@ cmake_policy(SET CMP0008 NEW)
 ### DEPENDENCIES ############################################################
 
 FIND_PACKAGE( ILCUTIL COMPONENTS ILCSOFT_CMAKE_MODULES REQUIRED )
+FIND_PACKAGE( ROOT REQUIRED COMPONENTS Eve)
+LINK_LIBRARIES( ${ROOT_COMPONENT_LIBRARIES} )
 
 # load default settings from ILCSOFT_CMAKE_MODULES
 INCLUDE( ilcsoft_default_settings )
-
-
-FIND_PACKAGE( ROOT REQUIRED )
 
 
 # macros for generating root dict sources with rootcint

@@ -23,6 +23,7 @@
 #include "TVTrackHit.h"       // from KalTrackLib
 #include "TKalFilterCond.h"   // from KalTrackLib
 #include "TVSurface.h"        // from GeomLib
+#include "TBField.h"          // from Bfield
 
 #include <iostream>           // from STL
 #include <memory>             // from STL
@@ -44,6 +45,9 @@ TKalTrackSite::TKalTrackSite(Int_t m, Int_t p)
               : TVKalSite(m,p), fHitPtr(0), fX0(), fIsHitOwner(kFALSE),
                 fCondPtr(0)
 {
+	if(!TBField::IsUsingUniformBfield()) {
+	   fBfield = TBField::GetGlobalBfield(fX0).Mag(); // wrong for 1-dim hit.
+	}
 }
 
 TKalTrackSite::TKalTrackSite(const TVTrackHit &ht,
@@ -60,6 +64,12 @@ TKalTrackSite::TKalTrackSite(const TVTrackHit &ht,
    }
    // Leave the pivot at the origin for a 1-dim hit
    if (ht.GetDimension() > 1) fX0 = ht.GetMeasLayer().HitToXv(ht);
+
+   // B field is unkonwn for a 1-dim hit untill prediction is made.
+   // Temporarily set it to that at the origin.
+   if(!TBField::IsUsingUniformBfield()) { 
+	fBfield = TBField::GetGlobalBfield(fX0).Mag();
+   }
 }
 
 TKalTrackSite::~TKalTrackSite()
@@ -93,7 +103,15 @@ Int_t TKalTrackSite::CalcXexp(const TVKalState &a,
    std::auto_ptr<TVTrack> hel(&static_cast<const TKalTrackState &>(a).CreateTrack());
 
    const TVSurface &ms = dynamic_cast<const TVSurface &>(GetHit().GetMeasLayer());
-   return ms.CalcXingPointWith(*hel,xx,phi);
+
+   if(!TBField::IsUsingUniformBfield()) {
+	   const double eps = 1.e-5; 
+	   return ms.CalcXingPointWith(*hel,xx,phi,eps);
+   }
+   else {
+	   return ms.CalcXingPointWith(*hel,xx,phi);
+   }
+
 }
 
 
@@ -143,6 +161,20 @@ Int_t TKalTrackSite::CalcMeasVecDerivative(const TVKalState &a,
    GetHit().GetMeasLayer().CalcDhDa(GetHit(), xxv, dxphiada, H); // H = (@h/@a)
 
    return 1;
+}
+
+TVector3 TKalTrackSite::GetLocalPivot() const
+{	
+	if(!TBField::IsUsingUniformBfield()) {
+		//get the local pviot in a non-uniform magnetic field
+  		TVector3 localPivot = fFrame.Transform(fX0, TTrackFrame::kGlobalToLocal);
+  	
+  		return localPivot;
+	}
+	else {
+		//return global pivot if magetic field is uniform
+		return fX0;
+	}
 }
 
 Bool_t TKalTrackSite::IsAccepted()

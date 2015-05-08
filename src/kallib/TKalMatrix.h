@@ -18,6 +18,7 @@
 
 #include "TMatrixD.h"
 #include "TVector3.h"
+#include "TRotation.h"
 #include <iostream>
 //_____________________________________________________________________
 //  ------------------------------
@@ -44,6 +45,8 @@ public:
               const TMatrixD &b) ;
 
    TKalMatrix(const TVector3 &v);
+
+   TKalMatrix(const TRotation &r);
 
    virtual ~TKalMatrix() {}
 

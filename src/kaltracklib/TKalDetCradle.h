@@ -26,10 +26,14 @@
 #include "TObjArray.h"     // from ROOT
 #include "TAttElement.h"   // from Utils
 #include "TKalMatrix.h"    // from KalTrackLib
+#include "TKalTrack.h"     // from KalTrackLib
+#include <memory>          // from STL
 
 class TKalTrackSite;
 class TVKalDetector;
 class TVMeasLayer;
+class TVTrack;
+class TMaterial;
 
 //_____________________________________________________________________
 //  ------------------------------
@@ -48,7 +52,8 @@ public:
    inline virtual void   SwitchOffMS  ()       { fIsMSON = kFALSE;   }
    inline virtual void   SwitchOnDEDX ()       { fIsDEDXON = kTRUE;  }
    inline virtual void   SwitchOffDEDX()       { fIsDEDXON = kFALSE; }
-   inline virtual void   Close        ()       { fIsClosed = kTRUE; Update(); }
+   inline virtual void   Close        ()       { fIsClosed = kTRUE;
+                                                 Update();           }
    inline virtual void   Reopen       ()       { fIsClosed = kFALSE; }
    inline virtual Bool_t IsMSOn       () const { return fIsMSON;     }
    inline virtual Bool_t IsDEDXOn     () const { return fIsDEDXON;   }
@@ -60,13 +65,20 @@ public:
                         TKalMatrix     &F,    // propagator matrix
                         TKalMatrix     &Q);   // process noise matrix
 
-   int Transport(const TKalTrackSite  &from, // site from
-                 const TVMeasLayer    &to,   // layer to reach
-		       TVector3       &x0,   // intersection point 
-		       TKalMatrix     &sv,   // state vector
-		       TKalMatrix     &F,    // propagator matrix
-		       TKalMatrix     &Q);   // process noise matrix
+   int  Transport(const TKalTrackSite  &from, // site from
+                  const TVMeasLayer    &to,   // layer to reach
+                        TVector3       &x0,   // intersection point
+                        TKalMatrix     &sv,   // state vector
+                        TKalMatrix     &F,    // propagator matrix
+                        TKalMatrix     &Q);   // process noise matrix
 
+   int  Transport(const TKalTrackSite  &from, // site from
+                  const TVMeasLayer    &to,   // layer to reach
+                        TVector3       &x0,   // intersection point
+                        TKalMatrix     &sv,   // state vector
+                        TKalMatrix     &F,    // propagator matrix
+                        TKalMatrix     &Q,    // process noise matrix
+			    std::auto_ptr<TVTrack> &help);// pointer to updated track object
 
 
 private:

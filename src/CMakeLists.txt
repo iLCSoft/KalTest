@@ -1,6 +1,6 @@
 # build KalTest library
 
-SET( lib_input_dirs geomlib kallib kaltracklib utils )
+SET( lib_input_dirs geomlib kallib kaltracklib utils bfield )
 
 FOREACH( lib_input_dir ${lib_input_dirs} )
     LIST( APPEND ROOT_DICT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/${lib_input_dir} )
