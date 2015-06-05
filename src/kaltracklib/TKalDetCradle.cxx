@@ -131,7 +131,7 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,   // site from
    }
     
   } else {
-	    TVector3 x0g;
+	    TVector3 x0g = x0;
 
         if(!TBField::IsUsingUniformBfield()) {
 		   	x0g = (hel.GetFrame()).Transform(x0, TTrackFrame::kLocalToGlobal);
