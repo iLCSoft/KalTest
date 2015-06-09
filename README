@@ -76,6 +76,14 @@ see description below (2005/08/26).
   Release Notes:
 
 =====================================================================================
+ --------    
+| v02-00 | 
+ --------
+   - implemented the optional use of a non-uniform B field ( Li Bo)
+     as described in 
+     Bo Li, Keisuke Fujii, Yuanning Gao, "Kalman-filter-based track fitting in non-uniform magnetic field with segment-wise helical track model"
+     [http://arxiv.org/abs/1305.7300]
+
 
  -----------    
 | v01-05-04 | 
