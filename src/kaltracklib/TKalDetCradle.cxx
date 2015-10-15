@@ -294,6 +294,12 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
                 hel.SetTo(sv, hel.GetPivot());                // save sv back to hel
             }
             ifr = ito; // for the next iteration set the "previous" layer to the current layer moved to
+
+            //fg: need to set the deflection angle to 0. as we moved the helix to a new position
+            //    as this fid is used in the next call to TVSurface::CalcXingPointWith(), i.e. to
+            //    compute the start position of the newtonian solver (which should be the reference point)
+            fid = 0. ; 
+
         } else {
             fid = fid_temp;
         }
