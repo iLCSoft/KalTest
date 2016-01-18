@@ -41,8 +41,12 @@ ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
 #----- need long long for int64 for now ------
 ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
 
+#---- use 5 dimensional track state:
+OPTION( BUILD_WITH_T0_FIT "Set to ON to build with t0 fit (kSdim=6)" OFF )
+IF( NOT BUILD_WITH_T0_FIT)
+ ADD_DEFINITIONS( -D __NOT0__ )
+ENDIF()
 
-# KalTest library
 ADD_SUBDIRECTORY( ./src )
 
 
