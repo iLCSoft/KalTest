@@ -76,6 +76,23 @@ see description below (2005/08/26).
   Release Notes:
 
 =====================================================================================
+
+ --------    
+| v02-01 | 
+ --------
+
+ F.Gaede
+
+   - default measurement dimension (kSdim) set to 5
+   - added flag BUILD_WITH_T0_FIT (default OFF)
+     setting the measurement dimension to 6 
+  
+   - TKalDetCradle.cxx
+     - bug fix for intersection calculation using the newtonian
+       solver such as cones for example
+       ( reseting the deflection angle to 0 in TKalDetCradle::Transport()) 
+
+
  --------    
 | v02-00 | 
  --------
