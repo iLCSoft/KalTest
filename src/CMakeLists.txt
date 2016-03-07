@@ -27,6 +27,8 @@ ENDFOREACH()
 
 INCLUDE_DIRECTORIES( ${ROOT_DICT_INCLUDE_DIRS} )
 INCLUDE_DIRECTORIES( ${ROOT_INCLUDE_DIRS} )
+#fg: for ROOT 6 we need the .src/cpp as include directory
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 #MESSAGE( STATUS "KalTest lib sources: ${lib_sources}" )
 

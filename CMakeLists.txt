@@ -37,9 +37,9 @@ INCLUDE( ${ROOT_DICT_MACROS_FILE} )
 
 
 # require proper c++
-ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
+#ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
 #----- need long long for int64 for now ------
-ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
+#ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
 
 #---- use 5 dimensional track state:
 OPTION( BUILD_WITH_T0_FIT "Set to ON to build with t0 fit (kSdim=6)" OFF )
