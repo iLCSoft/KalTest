@@ -78,6 +78,17 @@ see description below (2005/08/26).
 =====================================================================================
 
  --------    
+| v02-02 | 
+ --------
+
+ F.Gaede
+	-  made compatible with c++11 and ROOT6
+ 	- removed -ansi -pedantic -Wno-long-long
+ 	- added current source dir to include path for dictionary built
+
+
+
+ --------    
 | v02-01 | 
  --------
 
