@@ -19,8 +19,11 @@ FOREACH( lib_input_dir ${lib_input_dirs} )
         FILES_MATCHING PATTERN "*.h" PATTERN "LinkDef.h" EXCLUDE
     )
 
+
     GEN_ROOT_DICT_SOURCES( ${lib_input_dir}Dict.cxx )
     
+    install(FILES ${ROOT_DICT_OUTPUT_DIR}/${lib_input_dir}Dict_rdict.pcm DESTINATION lib)
+
     LIST( APPEND lib_sources ${ROOT_DICT_OUTPUT_SOURCES} )
 
 ENDFOREACH()
@@ -35,6 +38,8 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
 ADD_SHARED_LIBRARY( KalTest ${lib_sources} )
 INSTALL_SHARED_LIBRARY( KalTest DESTINATION lib )
 TARGET_LINK_LIBRARIES( KalTest ${ROOT_LIBRARIES} )
+
+
 
 IF( APPLE ) #---- need special linker flags for ROOT dictionary on MacOS
     SET_TARGET_PROPERTIES( KalTest PROPERTIES

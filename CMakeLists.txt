@@ -21,6 +21,7 @@ cmake_policy(SET CMP0008 NEW)
 
 FIND_PACKAGE( ILCUTIL COMPONENTS ILCSOFT_CMAKE_MODULES REQUIRED )
 FIND_PACKAGE( ROOT REQUIRED COMPONENTS Eve)
+
 LINK_LIBRARIES( ${ROOT_COMPONENT_LIBRARIES} )
 
 # load default settings from ILCSOFT_CMAKE_MODULES
@@ -29,17 +30,16 @@ INCLUDE( ilcsoft_default_settings )
 
 # macros for generating root dict sources with rootcint
 SET( ROOT_DICT_CINT_DEFINITIONS "-DHANDLE_DICT_EXCEPTIONS=IGNORED_FOR_CINT" )
-INCLUDE( ${ROOT_DICT_MACROS_FILE} )
+
+#  ROOTConfig.cmake uses a different name for rootcint than we used to in FINDROOT.cmake 
+SET( ROOT_CINT_EXECUTABLE ${ROOT_rootcint_CMD} )
+
+INCLUDE( MacroRootDict )
 
 
 
 ### LIBRARY AND TOOLS #######################################################
 
-
-# require proper c++
-#ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
-#----- need long long for int64 for now ------
-#ADD_DEFINITIONS( "-Wno-long-long -fno-strict-aliasing" )
 
 #---- use 5 dimensional track state:
 OPTION( BUILD_WITH_T0_FIT "Set to ON to build with t0 fit (kSdim=6)" OFF )
