@@ -1,264 +1,62 @@
+# v02-02
+F.Gaede
+-  made compatible with c++11 and ROOT6
+- removed -ansi -pedantic -Wno-long-long
+- added current source dir to include path for dictionary built
 
--------------------------------------------------------------------------------
-  KalTest Package now part of iLCSoft
-  
-  ( F.Gaede, 2010/10/08)
--------------------------------------------------------------------------------
+# v02-01
+F.Gaede
+- default measurement dimension (kSdim) set to 5
+- added flag BUILD_WITH_T0_FIT (default OFF) setting the measurement dimension to 6 
+- TKalDetCradle.cxx
+- bug fix for intersection calculation using the newtonian solver such as cones for example (reseting the deflection angle to 0 in TKalDetCradle::Transport()) 
 
-The KalTest package has been included in the iLCSoft framework and can be 
-installed with ilcinstall and built with cmake. The old Makefiles still work,
-see description below (2005/08/26).
-
-
----- Building the KalTest library with cmake : 
-
-  mkdir build
-  cd build
-
-  # initialize ROOT, e.g.
-  . /afs/desy.de/project/ilcsoft/sw/i386_gcc34_sl4/root/5.27.06/bin/thisroot.sh
-
-  # configure cmake
-  cmake -DILCUTIL_DIR=/path/to/ilcutil -DROOT_DIR=$ROOTSYS ..
-
-  #build:
-  make install
-
-  # --- optionally the examples can be built with
-
-  cmake -DBUILD_EXAMPLES=1 ..
-  make
-
-  # ---creates the example binaries simple and hybrid in build/bin 
- 
-
----- Building against the KalTest Library with cmake:
+# v02-00
+- implemented the optional use of a non-uniform B field ( Li Bo) as described in  Bo Li, Keisuke Fujii, Yuanning Gao, ("Kalman-filter-based track fitting in non-uniform magnetic field with segment-wise helical track model")[http://arxiv.org/abs/1305.7300]
 
 
-    # configure your project with option -DKalTest_DIR as follows:
-    cmake -DKalTest_DIR=/path/to/KalTest ..
+# v01-05-04
+- Fixed a field direction bug  (Bo Li)
+- Slightly modified the track model class to make the straight track work; Straight track generation is the example ct was implemented.  (Bo Li)
 
+# v01-05-03
+- apply bug fix provided by K.Fujii that makes adjusting of the z0 for curlers in ThelicalTrack::MoveTo unnecessary
 
-    # add the usual cmake mechanism to the CMakeLists.txt of your project, e.g.:
+# v01-05-01
+- Fixed orientation for in/out transportation in TKalDetCradle, previously only inward transportation was correct.
+- Ensure that material effects are treated correctly by only including material effects from present surface to destination surface.
+- THelicalTrack:MoveTo modified to make sure the helix really moves to the new reference point and is not out by more than 2PI.
 
-      FIND_PACKAGE( KalTest ) # if KalTest is optional
+# v01-05
+- Added TCutCone surface with examples of use in hybrid example.
+- ScatterBy function corrected in TVTrack class.
 
-      IF( KalTest_FOUND )
-        INCLUDE_DIRECTORIES( ${KalTest_INCLUDE_DIRS} )
-        TARGET_LINK_LIBRARIES( ${LIBNAME} ${KalTest_LIBRARIES})
-        #ADD_DEFINITIONS( "-DMYPKG_USE_KALTEST" ) # just an example to activate source code
-      ENDIF( KalTest_FOUND )
+# v01-04
+- geomlib 
+- TCylinder IsOnSurface now checks if point is on the surface (r) not just between +/-z
 
+# v01-03
+- added name member and corresponding getName memeber function to TVMeasLayer
 
-      # if your package doesn't make sense without KalTest, use the REQUIRED option:
-      FIND_PACKAGE( KalTest REQUIRED ) # gives an error if KalTest is not found
-
-      INCLUDE_DIRECTORIES( ${KalTest_INCLUDE_DIRS} )
-      TARGET_LINK_LIBRARIES( ${LIBNAME} ${KalTest_LIBRARIES})
-
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-  Note: with a cmake install the KalTest header files will be installed in 
-        ./include/kaltest  so make sure you use this in your C++ files, eg:
-
-      #include "kaltest/TKalTrackState.h"
-      #include "kaltest/TKalTrackSite.h"
-      #include "kaltest/TVKalState.h"
-
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-=====================================================================================
-
-  Release Notes:
-
-=====================================================================================
-
- --------    
-| v02-02 | 
- --------
-
- F.Gaede
-	-  made compatible with c++11 and ROOT6
- 	- removed -ansi -pedantic -Wno-long-long
- 	- added current source dir to include path for dictionary built
-
-
-
- --------    
-| v02-01 | 
- --------
-
- F.Gaede
-
-   - default measurement dimension (kSdim) set to 5
-   - added flag BUILD_WITH_T0_FIT (default OFF)
-     setting the measurement dimension to 6 
-  
-   - TKalDetCradle.cxx
-     - bug fix for intersection calculation using the newtonian
-       solver such as cones for example
-       ( reseting the deflection angle to 0 in TKalDetCradle::Transport()) 
-
-
- --------    
-| v02-00 | 
- --------
-   - implemented the optional use of a non-uniform B field ( Li Bo)
-     as described in 
-     Bo Li, Keisuke Fujii, Yuanning Gao, "Kalman-filter-based track fitting in non-uniform magnetic field with segment-wise helical track model"
-     [http://arxiv.org/abs/1305.7300]
-
-
- -----------    
-| v01-05-04 | 
- -----------
-
-    - Fixed a field direction bug  (Bo Li)
-    - Slightly modified the track model class to make the straight track work; Straight track generation is the example ct was implemented.  (Bo Li)
-
-
- -----------    
-| v01-05-03 | 
- -----------
-
-   - apply bug fix provided by K.Fujii
-     that makes adjusting of the z0 for curlers in ThelicalTrack::MoveTo
-     unnecessary
-
-
- -----------
-| v01-05-01 | 
- -----------
-
-	    - Fixed orientation for in/out transportation in TKalDetCradle, previously only inward transportation was correct.
-	    - Ensure that material effects are treated correctly by only including material effects from present surface to destination surface.
-	    - THelicalTrack:MoveTo modified to make sure the helix really moves to the new reference point and is not out by more than 2PI.
- --------
-| v01-05 | 
- --------
-
-
-	    - Added TCutCone surface with examples of use in hybrid example.
-            - ScatterBy function corrected in TVTrack class.
-
- --------
-| v01-04 | 
- --------
-
-	    - geomlib 
-	      - TCylinder IsOnSurface now checks if point is on the surface (r) not just between +/-z
-
- --------
-| v01-03 | 
- --------
-
-	    - added name member and corresponding getName memeber function to TVMeasLayer
-
-
- --------
-| v01-02 | 
- --------
-
-	    - modified to use bounded planes
-	    - examples provided in hybrid example to demonstrate use of bounded planes in VXD and FTD 
-	    - added extra Transport method to transport directly to a measurement layer and modified the 
-	      previous Transport to site method to use this method. No change in previous functionality, 
-              only additional functionality added
+# v01-02
+- modified to use bounded planes
+- examples provided in hybrid example to demonstrate use of bounded planes in VXD and FTD 
+- added extra Transport method to transport directly to a measurement layer and modified the  previous Transport to site method to use this method. No change in previous functionality, only additional functionality added
             	
- -----------
-| v01-01-01 | 
- -----------
-
-            - fixed problem in KalTest VERSION
-
- --------
-| v01-01 |  - fixed problem from MacroRootDict.cmake: LD_LIBRARY_PATH unset with rootcint
- --------      
-            - improved cmake files
-
-            - requires new package ILCUTIL
+# v01-01-01
+- fixed problem in KalTest VERSION
 
 
-
- --------
-| v01-00 |  - first release as part of iLCSoft
- --------      
-            - introduced new default units: mm, Tesla (was cm, kGauss)
-                 
-            - introduced cmake build files
-
-            - updated 
-              examples/kaltest/hybrid/main/EXKalTest.cxx
-              to write track parameters d0 and tnl and errors^2 to ntuple
-
-              [ Note: default units are not yet changed in example, thus the 
-               detector is scaled to 1/10 of its size with the BField 10 times larger ...]
+# v01-01
+- fixed problem from MacroRootDict.cmake: LD_LIBRARY_PATH unset with rootcint
+- improved cmake files
+- requires new package ILCUTIL
 
 
--------------------------------------------------------------------------------
-2005/08/26    KalTest Package
--------------------------------------------------------------------------------
+# v01-00
+- first release as part of iLCSoft
+- introduced new default units: mm, Tesla (was cm, kGauss)
+- introduced cmake build files
+- updated examples/kaltest/hybrid/main/EXKalTest.cxx to write track parameters d0 and tnl and errors^2 to ntuple
+- Note: default units are not yet changed in example, thus the detector is scaled to 1/10 of its size with the BField 10 times larger ...
 
-0) Organization of the KalTest package
-bin:             contains shell scripts to configure your system
-conf:            contains an Imake template
-doc:             documments
-examples/kaltest: sample programs to illustrate usage of the libraries
-src/geomlib:     geometry liabrary containing classes to describe track models and
-                 measurement layers
-   /kallib:      general purpose abstract base classes to implement Kalman filter 
-                 algorithm (TVKalSystem, TVKalSite, TVKalState)
-   /kaltracklib: derived classes that implement pure virtuals of kallib for track
-                 fitting purpose and abstract base classes to describe
-                 a) individual measurement layers (TVMeasLayer)
-                 b) detector system as a collection of measurement layers carrying
-                    information on the material budget (TVKalDetector)
-                 c) hit point on each measurement layer (TVTrackHit)
-   /utils:       a set of utility classes extracted from LEDA
-Makefile:        makefile to build the libraries
-README:          this file
-setup:           script to setup environmental variables to run the sample programs
-
-- See documments in the doc subdirectory for more information
-
-1) How to Build the Kalman Filter Libraries
-- Install ROOT if you haven't.
-- Set ROOTSYS environmental variable accordingly.
-- Source "setup" in the top directory of the KalTest source tree
-  and make the libraries in it as follows:
-  $ source ./setup
-  $ make
-
-2) How to Run Test Programs
-- Cd to the examples/kaltest subdirectory.
-- Choose one of the subsubdirectories in it:
-    cdc: track fitting example for a jet-chamber-like central tracker
-    ct:  track fitting example for a simple cylindrical tracker
-    hybrid: hybrid track fitting example for VTX+IT(Barell/Fwd/Bwd)+TPC
-    simple: a simple line fit example using the base kallib libraries only
-- Cd into the subsubdirectory you chose, build the test program, and run
-  as follows:
-
-  For hybrid:
-  $ make
-  $ cd main/prod
-  $ ./EXKalTest [-b] [# events] [pt in GeV] [t0 in ns]
-  Notice that without -b, you will get into event display mode.
-
-  For others:
-  $ xmkmf -a
-  $ make
-  $ cd prod
-  $ ./EXKalTest [# events] [pt in GeV]
-
-Note:
-  KalTest package has been built and tested on
-	MacOSX 10.3
-	RedHat 9.0
-  with ROOT4.04.02b and the gcc3.x compiler.
--
--
