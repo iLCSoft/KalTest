@@ -1,5 +1,6 @@
 # KalTest
 [![Build Status](https://travis-ci.org/iLCSoft/KalTest.svg?branch=master)](https://travis-ci.org/iLCSoft/KalTest)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/12354/badge.svg)](https://scan.coverity.com/projects/ilcsoft-kaltest)
 
 KalTest is distributed under the [GPLv3 License](http://www.gnu.org/licenses/gpl-3.0.en.html)
 
