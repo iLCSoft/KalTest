@@ -1,5 +1,23 @@
 # v02-03
 
+Frank Gaede 2017-04-12 
+  - Updating version to v02-03
+  - Release Notes for v02-03
+
+Marko Petric 2017-04-08 
+  - Coverity integration
+
+Marko Petric 2017-03-23 
+  - Add install statement to CI
+  - Add CONTRIBUTING.md and PULL_REQUEST_TEMPLATE and fix test script
+
+Frank Gaede 2017-03-21 
+  - add AUTHORS file
+
+Marko Petric 2017-03-21 
+  - Update release notes
+  - Enable CI and add LICENCE
+
 # v02-02
 F.Gaede
 -  made compatible with c++11 and ROOT6
