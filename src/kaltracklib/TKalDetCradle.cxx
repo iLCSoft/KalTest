@@ -251,7 +251,7 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
         
         int mode = ito!=fridx ? di : 0; // need to move to the from site as the helix may not be on the crossing point yet, meaning that the eloss and ms will be incorrectely attributed ...
         
-        if (dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid, mode, eps)) { // if we have a crossing point at this surface, note di specifies if we are moving forwards or backwards
+        if (static_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid, mode, eps)) { // if we have a crossing point at this surface, note di specifies if we are moving forwards or backwards
 
             //=====================
             // FIXME
