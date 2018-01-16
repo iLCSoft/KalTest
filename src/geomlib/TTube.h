@@ -51,10 +51,10 @@ public:
    inline virtual       Double_t   GetZmax   () const;
 
 private:
-   Double_t fRin;         // inner radius
-   Double_t fRout;        // outer radius
-   Double_t fHalfLen;     // half length
-   TVector3 fXc;          // center
+   Double_t fRin{};         // inner radius
+   Double_t fRout{};        // outer radius
+   Double_t fHalfLen{};     // half length
+   TVector3 fXc{};          // center
  
    ClassDef(TTube,1)      // TTube class
 };

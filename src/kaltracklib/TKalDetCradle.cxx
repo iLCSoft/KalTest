@@ -95,7 +95,7 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,   // site from
     //  Move to site "to"
     // ---------------------------------------------------------------------
 
-    std::auto_ptr<TVTrack> help(&static_cast<TKalTrackState &>
+    std::unique_ptr<TVTrack> help(&static_cast<TKalTrackState &>
                                 (from.GetCurState()).CreateTrack()); // tmp track
     
     const TVMeasLayer& ml_to = to.GetHit().GetMeasLayer() ;
@@ -155,7 +155,7 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
 {
     if (!fDone) Update();
     
-    std::auto_ptr<TVTrack> help(&static_cast<TKalTrackState &>
+    std::unique_ptr<TVTrack> help(&static_cast<TKalTrackState &>
                                 (from.GetCurState()).CreateTrack()); // tmp track
     return Transport(from, ml_to, x0, sv, F, Q, help);
 }
@@ -178,7 +178,7 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
                                    TKalMatrix     &sv,    // state vector
                                    TKalMatrix     &F,     // propagator matrix
                                    TKalMatrix     &Q,     // process noise matrix
-                           std::auto_ptr<TVTrack> &help)  // pointer to update track object
+                           std::unique_ptr<TVTrack> &help)  // pointer to update track object
 {
   // ---------------------------------------------------------------------
   //  Sort measurement layers in this cradle if not

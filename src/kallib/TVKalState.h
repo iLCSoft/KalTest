@@ -27,7 +27,8 @@ class TVKalState : public TKalMatrix {
 public:
 
    // Ctors and Dtor
-
+  TVKalState(const TVKalState&) = default ;
+  TVKalState& operator=(const TVKalState&) = default ;
    TVKalState(Int_t type = 0, Int_t p = 6);
    TVKalState(const TKalMatrix &sv, Int_t type = 0, Int_t p = 6);
    TVKalState(const TKalMatrix &sv, const TKalMatrix &c, 
@@ -76,12 +77,12 @@ protected:
    
    // private data members -------------------------------------------
 
-   Int_t       fType;    // (0,1,2,3) = (uninited,predicted,filtered,smoothed)
-   TVKalSite  *fSitePtr; // pointer to corresponding KalSite
-   TKalMatrix  fF;       // propagator matrix to next site (F = @f/@a)
-   TKalMatrix  fFt;      // transposed propagator matrix (F^T = (@f/@a)^T)
-   TKalMatrix  fQ;       // process noise from this to the next sites
-   TKalMatrix  fC;       // covariance matrix
+   Int_t       fType{};    // (0,1,2,3) = (uninited,predicted,filtered,smoothed)
+   TVKalSite  *fSitePtr{}; // pointer to corresponding KalSite
+   TKalMatrix  fF{};       // propagator matrix to next site (F = @f/@a)
+   TKalMatrix  fFt{};      // transposed propagator matrix (F^T = (@f/@a)^T)
+   TKalMatrix  fQ{};       // process noise from this to the next sites
+   TKalMatrix  fC{};       // covariance matrix
   
    ClassDef(TVKalState,1)      // Base class for state vector objects
 };

@@ -24,11 +24,14 @@
 
 class TVTrackHit : public TKalMatrix {
 public:
+
    TVTrackHit(Int_t m = kMdim);
 
    TVTrackHit(const TVMeasLayer &ms, Double_t *x, Double_t *dx, 
               Double_t b = 30., Int_t m = kMdim);
    TVTrackHit(const TVTrackHit &hit);
+
+   TVTrackHit& operator=(const TVTrackHit&) = default ;
 
    virtual ~TVTrackHit();
 
@@ -45,9 +48,9 @@ public:
   //   virtual void       DebugPrint(Option_t *opt = "")        const = 0;
 
 private:
-   Int_t         fDim;            // dimension of coordinate space
-   Double_t      fBfield;         // B field
-   TVMeasLayer  *fMeasLayerPtr;   // pointer to measurement layer
+   Int_t         fDim{};            // dimension of coordinate space
+   Double_t      fBfield{};         // B field
+   TVMeasLayer  *fMeasLayerPtr{};   // pointer to measurement layer
 
    ClassDef(TVTrackHit,1)      // Sample hit class
 };

@@ -32,7 +32,7 @@ INCLUDE( ilcsoft_default_settings )
 SET( ROOT_DICT_CINT_DEFINITIONS "-DHANDLE_DICT_EXCEPTIONS=IGNORED_FOR_CINT" )
 
 #  ROOTConfig.cmake uses a different name for rootcint than we used to in FINDROOT.cmake 
-SET( ROOT_CINT_EXECUTABLE ${ROOT_rootcint_CMD} )
+#SET( ROOT_CINT_EXECUTABLE ${ROOT_rootcint_CMD} )
 
 INCLUDE( MacroRootDict )
 

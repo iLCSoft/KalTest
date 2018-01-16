@@ -33,7 +33,7 @@ using namespace std;
 
 TStraightTrack::TStraightTrack(Double_t dr,
                                Double_t phi0,
-                               Double_t m,
+                               Double_t /*m*/,
                                Double_t dz,
                                Double_t tanl,
                                Double_t x0,
@@ -60,7 +60,7 @@ void TStraightTrack::MoveTo(const TVector3 &xv0to,
                                   Double_t &t,
                                   TMatrixD *FPtr,
                                   TMatrixD *CPtr,
-				  Bool_t   transform)
+				  Bool_t   /*transform*/)
 {
    // ---------------------------------------------------
    // (0) Preparation
@@ -226,7 +226,7 @@ TMatrixD TStraightTrack::CalcDxDa(Double_t t) const
    return dxda;
 }
 
-TMatrixD TStraightTrack::CalcDxDphi(Double_t t) const
+TMatrixD TStraightTrack::CalcDxDphi(Double_t /*t*/) const
 {
    Double_t snf0 = TMath::Sin(fPhi0);
    Double_t csf0 = TMath::Cos(fPhi0);

@@ -40,7 +40,8 @@ class TVTrackHit;
 class TVMeasLayer : public TAttElement {
 public:
    // Ctors and Dtor
-
+   TVMeasLayer(const TVMeasLayer&) = default ;
+   TVMeasLayer& operator=(const TVMeasLayer&) = default ;
    TVMeasLayer(TMaterial &matIn, 
                TMaterial &matOut,
                Bool_t     isactive = kTRUE,
@@ -75,11 +76,11 @@ public:
   inline TString       GetName() const { return fname;    }
   
 private:
-   TMaterial     *fMaterialInPtr;   // pointer of inner Material
-   TMaterial     *fMaterialOutPtr;  // pointer of outer Material
-   Int_t          fIndex;           // index in TKalDetCradle
-   Bool_t         fIsActive;        // flag to tell layer is active or not
-  const Char_t   *fname;
+   TMaterial     *fMaterialInPtr{};   // pointer of inner Material
+   TMaterial     *fMaterialOutPtr{};  // pointer of outer Material
+   Int_t          fIndex{};           // index in TKalDetCradle
+   Bool_t         fIsActive{};        // flag to tell layer is active or not
+  const Char_t   *fname{};
    ClassDef(TVMeasLayer,1)      // Measurement layer interface class
 };
 

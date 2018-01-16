@@ -25,6 +25,8 @@
 //
 class TAttElement {
 public:
+   TAttElement(const TAttElement&) = default ;
+   TAttElement& operator=(const TAttElement&) = default ;
    TAttElement() : fParentPtr(0) {}
    virtual ~TAttElement() {}
 

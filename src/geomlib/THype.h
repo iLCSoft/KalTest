@@ -52,10 +52,10 @@ public:
    inline virtual       Double_t   GetZmax   () const;
 
 private:
-   Double_t fR0;          // radius at z = 0.
-   Double_t fHalfLen;     // half length
-   TVector3 fXc;          // center
-   Double_t fTanA;        // tan(stereo angle)
+   Double_t fR0{};          // radius at z = 0.
+   Double_t fHalfLen{};     // half length
+   TVector3 fXc{};          // center
+   Double_t fTanA{};        // tan(stereo angle)
 #if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
    static const Double_t kTol = 1.e-5; // tolerance
 #else

@@ -69,12 +69,12 @@ private:
 
 private:
    //From the global frame to this frame
-   TRotation  fRotMat;
-   TVector3   fShift;
+   TRotation  fRotMat{};
+   TVector3   fShift{};
 
    //From last local frame to this frame
-   TRotation  fDeltaRotMat;
-   TVector3   fDeltaShift;
+   TRotation  fDeltaRotMat{};
+   TVector3   fDeltaShift{};
 
    ClassDef(TTrackFrame,1)
 };

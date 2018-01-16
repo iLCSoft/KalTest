@@ -43,7 +43,7 @@ public:
   std::string toString() ;
 
 private:
-   Double_t     fMass;        // mass [GeV]
+  Double_t     fMass{};        // mass [GeV]
 
 #if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
    static const Double_t kMpi = 0.13957018; //! pion mass [GeV]

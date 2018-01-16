@@ -24,7 +24,7 @@
 
 ClassImp(TKalFilterCond)
 
-Bool_t TKalFilterCond::IsAccepted(const TKalTrackSite &site)
+Bool_t TKalFilterCond::IsAccepted(const TKalTrackSite &/*site*/)
 {
 #if 0
    // return kTRUE if this site is acceptable
