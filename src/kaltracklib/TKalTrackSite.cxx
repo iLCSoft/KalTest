@@ -100,7 +100,7 @@ Int_t TKalTrackSite::CalcXexp(const TVKalState &a,
                                     TVector3   &xx, 
                                     Double_t   &phi) const
 {
-   std::auto_ptr<TVTrack> hel(&static_cast<const TKalTrackState &>(a).CreateTrack());
+   std::unique_ptr<TVTrack> hel(&static_cast<const TKalTrackState &>(a).CreateTrack());
 
    const TVSurface &ms = dynamic_cast<const TVSurface &>(GetHit().GetMeasLayer());
 
@@ -146,7 +146,7 @@ Int_t TKalTrackSite::CalcMeasVecDerivative(const TVKalState &a,
    const TVSurface &ms = dynamic_cast<const TVSurface &>(GetHit().GetMeasLayer());
    TKalMatrix    dsdx(ms.CalcDSDx(xxv));   // (@S(x)/@x)
 
-   std::auto_ptr<TVTrack> hel(&static_cast<const TKalTrackState &>(a).CreateTrack());
+   std::unique_ptr<TVTrack> hel(&static_cast<const TKalTrackState &>(a).CreateTrack());
 
    TKalMatrix    dxda   = hel->CalcDxDa(phi);  	     // (@x(phi,a)/@a)
    TKalMatrix    dxdphi = hel->CalcDxDphi(phi);	     // (@x(phi,a)/@phi)

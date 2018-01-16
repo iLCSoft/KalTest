@@ -155,15 +155,15 @@ public:
    inline virtual Bool_t IsInB() const { return fAlpha < kInfinity ? kTRUE : kFALSE; }
 
 protected:
-   Double_t    fDrho;      // drho
-   Double_t    fPhi0;      // phi0
-   Double_t    fKappa;     // kappa
-   Double_t    fDz;        // dz
-   Double_t    fTanL;      // tanl
-   TVector3    fX0;        // pivot
-   Double_t    fAlpha;     // alpha
-   Double_t    fBfield;    // b field
-   TTrackFrame fFrame;     // frame with z-axis in B-field direction.
+   Double_t    fDrho{};      // drho
+   Double_t    fPhi0{};      // phi0
+   Double_t    fKappa{};     // kappa
+   Double_t    fDz{};        // dz
+   Double_t    fTanL{};      // tanl
+   TVector3    fX0{};        // pivot
+   Double_t    fAlpha{};     // alpha
+   Double_t    fBfield{};    // b field
+   TTrackFrame fFrame{};     // frame with z-axis in B-field direction.
 
 #if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
    static const Double_t kLightVelocity = 2.99792458e8; //! light velocity [m/sec]

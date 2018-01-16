@@ -50,9 +50,9 @@ public:
    inline  Double_t GetCharge()      const { return fCharge;   }
 
 private:
-   TVector3 fPosition;
-   TVector3 fMomentum;
-   Double_t fCharge;
+   TVector3 fPosition{};
+   TVector3 fMomentum{};
+   Double_t fCharge{};
 
    ClassDef(TRungeKuttaTrack,1)   
 };

@@ -92,7 +92,7 @@ Double_t TKalTrack::FitToHelix(TKalTrackState &a, TKalMatrix &C, Int_t &ndf)
    TKalMatrix    d2chi2best (sdim, sdim);
    TKalMatrix    curh       (mdim, 1   );
    TKalMatrix    curH       (mdim, sdim);
-   TKalMatrix    curHt      (sdim, mdim);
+   //   TKalMatrix    curHt      (sdim, mdim);
    TKalMatrix    curVinv    (mdim, mdim);
    TKalMatrix    curResVec  (mdim, 1   );
 
@@ -137,8 +137,8 @@ Double_t TKalTrack::FitToHelix(TKalTrackState &a, TKalMatrix &C, Int_t &ndf)
            chi2 += delchi2;
 
            // inverse covariance matrix
-           TKalMatrix curHt(TKalMatrix::kTransposed, curH);
-           d2chi2dada += (curHt * curVinv * curH);
+           TKalMatrix curHtr(TKalMatrix::kTransposed, curH);
+           d2chi2dada += (curHtr * curVinv * curH);
        }
 
        //

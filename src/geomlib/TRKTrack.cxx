@@ -24,7 +24,7 @@ TRKTrack::TRKTrack(Double_t chg, TVector3 x, TVector3 p)
 }
 
 TRKTrack::TRKTrack(const TRKTrack&  orig)
-	     :fPosition(orig.fPosition), fMomentum(orig.fMomentum)
+  :TEveTrackPropagator(),fPosition(orig.fPosition), fMomentum(orig.fMomentum)
 {
 	SetCharge(int(orig.GetCharge()));
 	SetMagFieldObj(new TRKMagField());

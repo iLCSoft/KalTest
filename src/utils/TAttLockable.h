@@ -31,7 +31,7 @@ public:
    inline virtual void   Lock()           { fStatus = kTRUE;  }
    inline virtual void   Unlock()         { fStatus = kFALSE; }
 private:
-   Bool_t fStatus;	 // lock byte
+   Bool_t fStatus{};	 // lock byte
 
    ClassDef(TAttLockable,1)  // Base class for lockable objects
 };

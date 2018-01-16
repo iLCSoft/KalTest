@@ -71,7 +71,7 @@ public:
 
 private:
 
-   TVector3 fX0;		// local pivot
+   TVector3 fX0{};		// local pivot
 
    ClassDef(TKalTrackState,1)      // sample state vector class
 };

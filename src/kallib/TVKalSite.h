@@ -44,7 +44,8 @@ public:
                   kInvFiltered };
 public:
    // Ctors and Dtor
-
+   TVKalSite(const TVKalSite&) = default ;
+   TVKalSite& operator=(const TVKalSite&) = default ;
    TVKalSite(Int_t m = 2, Int_t p = 6);
    virtual ~TVKalSite();
              
@@ -90,14 +91,14 @@ private:
    
    // private data member -------------------------------------------
 
-   TVKalState    *fCurStatePtr; // pointer to current best state
-   TKalMatrix     fM;           // measurement vector: M(m,1)
-   TKalMatrix     fV;           // noise matrix: M(m,m)
-   TKalMatrix     fH;           // H = (@h/@a): M(m,p)
-   TKalMatrix     fHt;          // H^t = (@h/@a)^t: M(p,m)
-   TKalMatrix     fResVec;      // m - h(a): M(m,1)
-   TKalMatrix     fR;           // covariance matrix: M(m,m)
-   Double_t       fDeltaChi2;   // chi2 increment
+   TVKalState    *fCurStatePtr{}; // pointer to current best state
+   TKalMatrix     fM{};           // measurement vector: M(m,1)
+   TKalMatrix     fV{};           // noise matrix: M(m,m)
+   TKalMatrix     fH{};           // H = (@h/@a): M(m,p)
+   TKalMatrix     fHt{};          // H^t = (@h/@a)^t: M(p,m)
+   TKalMatrix     fResVec{};      // m - h(a): M(m,1)
+   TKalMatrix     fR{};           // covariance matrix: M(m,m)
+   Double_t       fDeltaChi2{};   // chi2 increment
 
    ClassDef(TVKalSite,1)      // Base class for measurement vector objects
 };

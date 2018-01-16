@@ -34,6 +34,7 @@ public:
    // Ctors and Dtor
    TRKTrack(Double_t chg, TVector3 x, TVector3 p);
    TRKTrack(const TRKTrack&);
+   TRKTrack& operator=(const TRKTrack&) = default ;
 
    virtual ~TRKTrack() {}
 
@@ -51,10 +52,10 @@ public:
    inline TVector3 GetCurMomentum() { return fMomentum; }
 
 private:
-   TVector3 fPosition;
-   TVector3 fMomentum;
+   TVector3 fPosition{};
+   TVector3 fMomentum{};
 
-   TEveMagField* fMagField;
+   TEveMagField* fMagField{};
 
    ClassDef(TRKTrack,1)   
 };

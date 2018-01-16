@@ -37,7 +37,7 @@ Int_t TTube::CalcXingPointWith(const TVTrack  &hel,
                                      Double_t &phi,
                                      TVector3 &xx,
                                      Int_t     mode,
-                                     Double_t  eps) const
+			             Double_t  /*eps*/) const
 {
    // This assumes nonzero B field.
    //

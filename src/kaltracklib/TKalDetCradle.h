@@ -78,17 +78,17 @@ public:
                         TKalMatrix     &sv,   // state vector
                         TKalMatrix     &F,    // propagator matrix
                         TKalMatrix     &Q,    // process noise matrix
-			    std::auto_ptr<TVTrack> &help);// pointer to updated track object
+			std::unique_ptr<TVTrack> &help);// pointer to updated track object
 
 
 private:
    void Update();
 
 private:
-   Bool_t    fIsMSON;         //! switch for multiple scattering
-   Bool_t    fIsDEDXON;       //! switch for energy loss
-   Bool_t    fDone;           //! flag to tell if sorting done
-   Bool_t    fIsClosed;       //! flag to tell if cradle closed
+   Bool_t    fIsMSON{};         //! switch for multiple scattering
+   Bool_t    fIsDEDXON{};       //! switch for energy loss
+   Bool_t    fDone{};           //! flag to tell if sorting done
+   Bool_t    fIsClosed{};       //! flag to tell if cradle closed
 
    ClassDef(TKalDetCradle,1)  // Base class for detector system
 };

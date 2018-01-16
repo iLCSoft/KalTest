@@ -55,7 +55,7 @@ Double_t TPlane::CalcS(const TVector3 &xx) const
 //  Calculate (@S/@x)
 //  -----------------------------------
 //
-TMatrixD TPlane::CalcDSDx(const TVector3 &xx) const
+TMatrixD TPlane::CalcDSDx(const TVector3 &/*xx*/) const
 {
    TMatrixD dsdx(1,3);
    dsdx(0,0) = fNormal.X(); 

@@ -33,7 +33,9 @@ friend class TVKalSite;
 public:
 
    // Ctors and Dtor
-
+   TVKalSystem( const TVKalSystem&) = default ;
+   TVKalSystem& operator=( const TVKalSystem&) = default ;
+ 
    TVKalSystem(Int_t n = 1);
    virtual ~TVKalSystem();
 
@@ -62,8 +64,8 @@ private:
    static void SetCurInstancePtr(TVKalSystem *ksp) { fgCurInstancePtr = ksp; }
 
 private:
-   TVKalSite   *fCurSitePtr;  // pointer to current site
-   Double_t     fChi2;        // current total chi2
+   TVKalSite   *fCurSitePtr{};  // pointer to current site
+   Double_t     fChi2{};        // current total chi2
 
    static TVKalSystem *fgCurInstancePtr;  //! currently active instance
    

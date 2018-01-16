@@ -48,8 +48,8 @@ public:
 
 
 private:
-   TVector3 fXc;          // center
-   TVector3 fNormal;      // normal
+   TVector3 fXc{};          // center
+   TVector3 fNormal{};      // normal
  
    ClassDef(TPlane,1)      // plane class
 };
@@ -58,7 +58,7 @@ private:
 //=======================================================
 
 
-Bool_t TPlane::IsOnSurface(const TVector3 &xx) const
+Bool_t TPlane::IsOnSurface(const TVector3 &/*xx*/) const
 {
 #if 0
    return (xx - fXc) * fNormal == 0. ? kTRUE : kFALSE; 
