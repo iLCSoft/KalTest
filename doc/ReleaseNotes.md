@@ -1,3 +1,11 @@
+# v02-04
+
+* 2018-01-31 Frank Gaede ([PR#2](https://github.com/iLCSoft/KalTest/pull/2))
+  - fix all compiler warnings (gcc54-ub1604)
+
+* 2017-11-30 Andre Sailer ([PR#1](https://github.com/iLCSoft/KalTest/pull/1))
+  - Running profiling, replace dynamic_cast with static_cast as dynamic_cast return value is never checked, see also AIDAsoft/aidaTT#19
+
 # v02-03
 
 # v02-03
