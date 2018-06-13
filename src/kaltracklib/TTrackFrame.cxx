@@ -73,7 +73,7 @@ TVector3 TTrackFrame::Transform(const TVector3 &v, TRType transformType) const
 }
 
 //transform vector
-TVector3 TTrackFrame::TransformBfield(const TVector3 &b, TRType transformType)
+TVector3 TTrackFrame::TransformBfield(const TVector3 &b, TRType transformType) const
 {
     TRotation invRotMat = fRotMat.Inverse();
     TVector3  transVector;

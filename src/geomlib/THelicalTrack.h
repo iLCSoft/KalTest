@@ -49,18 +49,18 @@ public:
                  Double_t     x0    = 0.,
                  Double_t     y0    = 0.,
                  Double_t     z0    = 0.,
-                 Double_t     b     = 30.,
+                 Double_t     b     = 3.,
                  TTrackFrame *fp    = 0);  // pointer to coordinate frame
 
    THelicalTrack(const TMatrixD    &a,
                  const TVector3    &x0,
-                       Double_t     b  = 30.,
+                       Double_t     b  = 3.,
                        TTrackFrame *fp = 0);
 
    THelicalTrack(const TVector3 &x1,
                  const TVector3 &x2,
                  const TVector3 &x3,
-                       Double_t b   = 30.,
+                       Double_t b   = 3.,
                        Bool_t   dir = kIterForward);
 
    //x0 is a local pivot
@@ -89,7 +89,7 @@ public:
 
    virtual Double_t   GetMomentum() const;
 
-private:
+protected:
    void CalcStartHelix(const TVector3 &x1,
                        const TVector3 &x2,
                        const TVector3 &x3,

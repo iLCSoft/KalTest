@@ -23,10 +23,7 @@
 
 #include <iostream>
 
-//#define __DEBUG__
-//#define __J4TIMER__
 //#define __CLOCK__
-//static const Bool_t gkDir = kIterBackward;
 
 static const Bool_t gkDir = kIterForward;
 
@@ -34,12 +31,15 @@ using namespace std;
 
 int main (Int_t argc, Char_t **argv)
 {
-   //Input: 
-   //-b: batch mode
-   //nevent: event number
-   //tp: total momentum
-   //theta: theta angle
-   //coeff: the coefficient for magnetic field
+   /////////////////////////////////////////////
+   // input parameters
+   // -b: batch mode
+   // nevent: event number
+   // tp: total momentum
+   // theta: theta angle
+   // coeff: the coefficient for magnetic field
+   // useRK: use Runge-Kutta track
+   /////////////////////////////////////////////
 
    Int_t offset = 0;
 
@@ -60,46 +60,50 @@ int main (Int_t argc, Char_t **argv)
    clock_t t1, t2, total=0;
 #endif
 
-
-#ifdef __J4TIMER__
-   static int timerid = -1;
-   J4Timer timer(timerid, "main", "kaltest");
-#endif
-
-
-#if 1
+   Int_t    nevents = 1;
    Double_t tp      = 10.;
    Double_t theta   = 0.3;
    Double_t coeff   = 3.0;
-   Int_t    nevents = 1;
+   Bool_t   useRK   = kFALSE;
 
    switch (argc-offset) {
+      case 6: 
+         nevents = atoi(argv[1+offset]);
+         tp      = atof(argv[2+offset]);
+         theta   = atof(argv[3+offset]);
+         coeff   = atof(argv[4+offset]);
+		 useRK   = atof(argv[5+offset]) == 1 ? kTRUE : kFALSE;
+         break;
+
       case 5: 
          nevents = atoi(argv[1+offset]);
          tp      = atof(argv[2+offset]);
-         theta  = atof(argv[3+offset]);
-         coeff  = atof(argv[4+offset]);
+         theta   = atof(argv[3+offset]);
+         coeff   = atof(argv[4+offset]);
          break;
+
       case 4: 
          nevents = atoi(argv[1+offset]);
          tp      = atof(argv[2+offset]);
-         theta  = atof(argv[3+offset]);
+         theta   = atof(argv[3+offset]);
          break;
-      case 3: 
+
+      case 3:
          nevents = atoi(argv[1+offset]);
          tp      = atof(argv[2+offset]);
          break;
+
       case 2:
          nevents = atoi(argv[1+offset]);
          break;
+
       case 1:
-         break;
+		 break;
+
       default:
-         cerr << "Too many command line arguments!" << 
-			  argc << " " << offset << endl;
+         cerr << "Too many command line arguments!" << argc << " " << offset << endl;
          abort();
    }
-#endif
 
    // ===================================================================
    //  Create TApplication
@@ -116,8 +120,9 @@ int main (Int_t argc, Char_t **argv)
 
    cradle.Install(detector); // install detector into its cradle
 
-   cradle.SwitchOffMS();     // switch off multiple scattering
-   cradle.SwitchOffDEDX();     // switch off energy loss
+   cradle.SwitchOnMS();       // switch on multiple scattering
+   cradle.SwitchOnDEDX();     // switch on energy loss
+
    // ===================================================================
    //  Prepare a Event Generator
    // ===================================================================
@@ -152,17 +157,13 @@ int main (Int_t argc, Char_t **argv)
 
       phi  = gRandom->Uniform(0, 2*TMath::Pi());
       theta = gRandom->Uniform(0, 0.5);
-	  //phi = 1.2;
-	  //theta = 0.5;
 	  Double_t costh = cos(theta);
 
-	  //cout << "phi: " << phi << ", theta: " << theta << ", chg: " << chg << endl;
 	  TVector3 xstart;
 
 	  Double_t pt = tp * costh;
 	  TVector3 p(pt*cos(phi), pt*sin(phi), tp*sqrt(1-costh*costh));
 	  
-      //TRKTrack hel = gen.GenerateRKTrack(chg, xstart, p);
       TRungeKuttaTrack hel = gen.GenerateRKTrack(chg, xstart, p);
 
       // ============================================================
@@ -170,34 +171,19 @@ int main (Int_t argc, Char_t **argv)
       // ============================================================
       
 	  TBField::SetBfieldCoeff(coeff);
-
       TBField::SetUseUniformBfield(kFALSE);
-      //TBField::SetUseUniformBfield(kTRUE);
+	  TKalDetCradle::SetUseRungeKuttaTrack(useRK);
       
 	  gen.Swim(hel);
-#if 0
-	  gen.DumpHits();
-#endif
 
       // ============================================================
       //  Do Kalman Filter
       // ============================================================
-#if 1
 
 #ifdef __CLOCK__   
       t1=clock();
 #endif
 
-#ifdef __J4TIMER__
-	  timer.Start();
-#endif
-
-#ifdef __DEBUG__
-	  cout << endl << "Filtering..." << endl;
-	  cout << "hit number: " << kalhits.GetEntries() << endl;
-#endif
-
-	  //TBField::SetUseUniformBfield(kFALSE);
 	  //TBField::SetUseUniformBfield(kTRUE);
 
 	  if(kalhits.GetEntries()<3)
@@ -282,21 +268,14 @@ int main (Int_t argc, Char_t **argv)
       //  Start Kalman Filter
       // ---------------------------
       EXHit *hitp = 0;
-	  //Int_t nhit = 0;
+
       while ((hitp = dynamic_cast<EXHit *>(next()))) {     // loop over hits
-#if 0
-		 cout << "hit: " << nhit++ << endl;
-#endif
           TKalTrackSite  &site = *new TKalTrackSite(*hitp); // create a site for this hit
          if (!kaltrack.AddAndFilter(site)) {               // add and filter this site
             cerr << " site discarded!" << endl;           
             delete &site;                                  // delete this site, if failed
          }
-#if 0
-	     site.GetFrame().GetRotation().Dump();
-#endif
       }
-      //kaltrack.SmoothBackTo(4);                          // smooth back.
 
       // ============================================================
       //  Monitor Fit Result
@@ -312,10 +291,6 @@ int main (Int_t argc, Char_t **argv)
 
 #ifdef __CLOCK__
       t2=clock();
-#endif
-
-#ifdef __J4TIMER__
-	  timer.Stop();
 #endif
 
 #ifdef __CLOCK__
@@ -347,12 +322,6 @@ int main (Int_t argc, Char_t **argv)
          detector.Draw(40);
          kaltrack.Draw(kRed,"");
 
-#if 0
-		 gROOT->Macro("track.C");
-		 cvp->Modified();
-		 cvp->cd();
-		 cvp->SetSelected(cvp);
-#endif
          cout << "Next? [yes/no/edit/quit] " << flush;
          static const Int_t kMaxLen = 1024;
          Char_t temp[kMaxLen];
@@ -375,12 +344,6 @@ int main (Int_t argc, Char_t **argv)
             app.Run(kTRUE);
          }
       } // end of event display
-
-#if 0
-	  TKalTrackSite& site = dynamic_cast<TKalTrackSite&>(kaltrack.GetCurSite());
-      site.GetFrame().GetRotation().Dump();
-#endif
-#endif
    }
 
    hfile.Write();
@@ -388,32 +351,6 @@ int main (Int_t argc, Char_t **argv)
 #ifdef __CLOCK__
    float ttime = float(total)/CLOCKS_PER_SEC;
    cout << "Time consumption of filtering: " << ttime << endl;
-#endif
-
-#ifdef __FRAME_TIMER1__
-   cout << "Time consumption of TTrackFrame::Ctor " << TTrackFrame::GetTimeCtor() << endl;
-#endif
-#ifdef __FRAME_TIMER2__
-   cout << "Time consumption of TTrackFrame::TransVec: " << TTrackFrame::GetTimeVec() << endl;
-#endif
-#ifdef __FRAME_TIMER3__
-   cout << "Time consumption of TTrackFrame::TransSv: " << TTrackFrame::GetTimeSv() << endl;
-#endif
-
-#ifdef __SITE_TIMER__
-   cout << "Time consumption of TVKalSite::Filter: " << TVKalSite::GetTime() << endl;
-#endif
-
-#ifdef __STATE_TIMER__
-   cout << "Time consumption of TVKalState::Propagate: " << TVKalState::GetTime() << endl;
-#endif
-
-#ifdef __SURFACE_TIMER__
-   cout << "Time consumption of TVSurface::CalcXingPointWith: " << TVSurface::GetTime() << endl;
-#endif
-
-#ifdef __J4TIMER__
-   J4Timer::PrintAllAccumulatedTimes();
 #endif
 
    return 0;
