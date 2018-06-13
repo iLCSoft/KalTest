@@ -32,10 +32,13 @@
 #include "TVSurface.h"       // from GeomLib
 #include "TVTrack.h"         // from GeomLib
 #include "TBField.h"         // from Bfield
+#include "TRungeKuttaTrack.h"
 
 #include <iostream>          // from STL
 
 ClassImp(TKalDetCradle)
+
+Bool_t   TKalDetCradle::fUseRKTrack= kFALSE;
 
 //_________________________________________________________________________
 //  ----------------------------------
@@ -101,7 +104,13 @@ void TKalDetCradle::Transport(const TKalTrackSite  &from,   // site from
     const TVMeasLayer& ml_to = to.GetHit().GetMeasLayer() ;
     
     TVector3  x0; // local pivot at the "to" site
-    this->Transport(from, ml_to, x0, sv, F, Q, help);
+
+	if(fUseRKTrack) {
+		this->Transport2(from, ml_to, x0, sv, F, Q, help);
+	} 
+	else {
+		this->Transport(from, ml_to, x0, sv, F, Q, help);
+	}
 
     TVTrack &hel = *help;
     
@@ -320,6 +329,146 @@ int TKalDetCradle::Transport(const TKalTrackSite  &from,  // site from
 }
 
 
+int TKalDetCradle::Transport2(const TKalTrackSite  &from,  // site from
+                              const TVMeasLayer    &ml_to, // layer to reach
+                                    TVector3       &x0,    // pivot for sv
+                                    TKalMatrix     &sv,    // state vector
+                                    TKalMatrix     &F,     // propagator matrix
+                                    TKalMatrix     &Q,     // process noise matrix
+                           std::unique_ptr<TVTrack> &help)  // pointer to update track object
+{
+  // ---------------------------------------------------------------------
+  //  Sort measurement layers in this cradle if not
+  // ---------------------------------------------------------------------
+  if (!fDone) Update();
+    
+  // ---------------------------------------------------------------------
+  //  Locate sites from and to in this cradle
+  // ---------------------------------------------------------------------
+  Int_t  fridx = from.GetHit().GetMeasLayer().GetIndex(); // index of site from
+  Int_t  toidx = ml_to.GetIndex();                        // index of layer to
+  Int_t  di    = fridx > toidx ? -1 : 1;                  // layer increment
+
+  // FIXME
+  THelicalTrack& hel = dynamic_cast<THelicalTrack&>(*help);
+
+  TVector3 xx;                               // expected hit position vector
+  Double_t fid     = 0.;                     // deflection angle from the last hit
+  
+  Int_t sdim = sv.GetNrows();                // number of track parameters
+  F.UnitMatrix();                            // set the propagator matrix to the unit matrix
+  Q.Zero();                                  // zero the noise matrix
+  
+  TKalMatrix DF(sdim, sdim);                 // propagator matrix segment
+  
+  // ---------------------------------------------------------------------
+  //  Loop over layers and transport sv, F, and Q step by step
+  // ---------------------------------------------------------------------
+  Int_t ifr = fridx; // set index to the index of the intitial starting layer
+  
+  // here we make first make sure that the helix is at the crossing point of the current surface.
+  // this is necessary to ensure that the material is only accounted for between fridx and toidx
+  // otherwise it is possible to have inconsistencies with material treatment.
+  // loop until we reach the index toidx, which is the surface we need to reach
+  
+  TRungeKuttaTrack rk;
+  TVTrack* trackPtr = 0;
+  
+  for (Int_t ito=fridx; (di>0 && ito<=toidx)||(di<0 && ito>=toidx); ito += di) {
+    
+	Bool_t isout = di>0 ? kTRUE: kFALSE;
+
+    // need to move to the from site as the helix may not be on the crossing point yet, 
+	// meaning that the eloss and ms will be incorrectely attributed
+	// the current TCylinder uses the Newtonian method to calculate crossing point, 
+	// in which the mode is always 0.
+    int mode = ito!=fridx ? di : 0;  
+
+    const TVMeasLayer   &ml  = *dynamic_cast<TVMeasLayer *>(At(ifr)); // get the last layer 
+	
+	//The crossing point between a TRungeKuttaTrack and a TVSurface
+    TVector3 rkxx;
+
+	//The initial step of Runge-Kutta algorithm
+    Double_t step = 0.01;
+
+	if(ito==fridx) { 
+		// If ito==fridx, it means the track will move from the current pivot (hit point)
+		// to the crossing point at the SAME layer.
+		// Because the distance between the two points is very small, so the difference of b field 
+		// of two points are also small, and we use the helical track model.
+
+		// helix is defined by local track parameters.
+	    // xx is a global coordinate.
+		// angle fid is difference of direction for pivot and crossing point in a helix.
+		dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(hel, xx, fid, mode);
+	}
+	else {
+	    // If ito!=fridx, it means the track will move from the currnt pivot (crossing point)
+		// to the next crossing point of track and next layer.
+		// Considering the non-uniformity of the magnetic field, we use the Runge-Kutta track model here, 
+		// and we create a runge-kutta track to calculate the crossing point.		
+
+		rk.SetFromTrack(hel);
+
+		dynamic_cast<TVSurface *>(At(ito))->CalcXingPointWith(rk, rkxx, step, mode);
+    }
+
+    TKalMatrix Qms(sdim, sdim);                                       
+
+    if (IsMSOn()&& ito!=fridx ){
+        ml.CalcQms(isout, hel, fid, Qms);                  
+	   	// Qms for this step, using the fact that the material was found to be outgoing 
+		// or incomming above, and the distance from the last layer 
+    }
+      
+	if(ito==fridx) {
+    	// Move the helix to the present crossing point.
+		// Frame rotation is not needed.
+        hel.MoveTo(xx, fid, &DF, 0, kFALSE);
+		trackPtr = &hel;
+	}
+	else { 
+		// Move the track to the new layer.
+		// A rotation is done in TRungeKuttaTrack::MoveTo.
+		rk.MoveTo(rkxx, step, DF);
+		trackPtr = &rk;
+		
+		rk.SetToTrack(hel);
+	}
+
+    if (sdim == 6) DF(5, 5) = 1.;     // t0 stays the same
+
+    F = DF * F;                       // update F
+
+    TKalMatrix DFt  = TKalMatrix(TMatrixD::kTransposed, DF);
+      
+    Q = DF * (Q + Qms) * DFt;         // transport Q to the present crossing point
+      
+    if (IsDEDXOn() && ito!=fridx) {
+        hel.PutInto(sv);                              // copy hel to sv
+
+        // whether the helix is moving forwards or backwards is calculated using 
+		// the sign of the charge and the sign of the deflection angle  
+                         
+		// Bool_t isfwd = ((cpa > 0 && df < 0) || (cpa <= 0 && df > 0)) ? kForward : kBackward;  
+		// taken from TVMeasurmentLayer::GetEnergyLoss  not df = fid
+        
+		sv(2,0) += ml.GetEnergyLoss(isout, hel, fid); 
+		// correct for dE/dx, returns delta kappa i.e. the change in pt 
+        hel.SetTo(sv, hel.GetPivot());                // save sv back to hel
+      }
+      
+	  ifr = ito; // for the next iteration set the "previous" layer to the current layer moved to 
+
+  } // end of loop over surfaces
+  
+  //hel or rk
+  x0 = trackPtr->GetPivot();
+  trackPtr->PutInto(sv);                     // save updated hel to sv
+  
+  return 0;
+}
 
 //_________________________________________________________________________
 // -----------------

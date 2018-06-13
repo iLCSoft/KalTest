@@ -80,6 +80,15 @@ public:
                         TKalMatrix     &Q,    // process noise matrix
 			std::unique_ptr<TVTrack> &help);// pointer to updated track object
 
+   int  Transport2(const TKalTrackSite  &from,   // site from
+                  const TVMeasLayer     &to,     // layer to reach
+                        TVector3        &x0,     // intersection point
+                        TKalMatrix      &sv,     // state vector
+                        TKalMatrix      &F,      // propagator matrix
+                        TKalMatrix      &Q,      // process noise matrix
+			std::unique_ptr<TVTrack>    &help);  // pointer to updated track object
+
+   static void SetUseRungeKuttaTrack(Bool_t b) { fUseRKTrack = b; }
 
 private:
    void Update();
@@ -89,6 +98,8 @@ private:
    Bool_t    fIsDEDXON{};       //! switch for energy loss
    Bool_t    fDone{};           //! flag to tell if sorting done
    Bool_t    fIsClosed{};       //! flag to tell if cradle closed
+
+   static Bool_t   fUseRKTrack;
 
    ClassDef(TKalDetCradle,1)  // Base class for detector system
 };

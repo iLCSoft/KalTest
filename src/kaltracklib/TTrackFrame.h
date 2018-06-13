@@ -46,7 +46,7 @@ public:
    //Transform 3D position vector
    TVector3 Transform(const TVector3 &v, TRType tt = kLocalToLocal) const;
 
-   TVector3 TransformBfield(const TVector3 &b, TRType tt = kLocalToLocal);
+   TVector3 TransformBfield(const TVector3 &b, TRType tt = kLocalToLocal) const;
 
    //Transform TKalMatrix(such as state vector, propagation matrix, and covariance matrix),
    //this is generally local to local transformation.
