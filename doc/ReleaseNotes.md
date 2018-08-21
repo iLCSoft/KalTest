@@ -1,3 +1,10 @@
+# v02-05
+
+* 2018-08-21 Bo Li ([PR#3](https://github.com/ilcsoft/KalTest/pull/3))
+  - Merged Runge-Kutta (RK) track propagation functions; 
+  - Added another trsansport option by using RK; 
+  - Cleaned the ct_nonuniform example
+
 # v02-04
 
 * 2018-01-31 Frank Gaede ([PR#2](https://github.com/iLCSoft/KalTest/pull/2))
