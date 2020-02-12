@@ -48,6 +48,8 @@ public:
 
    TKalMatrix(const TRotation &r);
 
+   TKalMatrix& operator= (const TKalMatrix &orig) = default;
+
    virtual ~TKalMatrix() {}
 
   // virtual void  DebugPrint() const { DebugPrint( "", 5 , std::cerr ) ; }

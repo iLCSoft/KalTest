@@ -117,6 +117,7 @@ Int_t TTube::CalcXingPointWith(const TVTrack  &hel,
             }
          }
          if (IsOnBarrel(xx)) return 1;
+         [[fallthrough]];
       default: // track hitting end cap part
          if (TMath::Abs(tnl) < 0.1) {
             return 0;

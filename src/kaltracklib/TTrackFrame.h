@@ -39,7 +39,7 @@ public:
    //rotation matrix.
    TTrackFrame(const TTrackFrame &lastFrame, const TVector3 &v, const TVector3 &b);
 
-   //TTrackFrame& operator=( const TTrackFrame& frame );
+   TTrackFrame& operator=( const TTrackFrame& frame ) = default;
 
    virtual ~TTrackFrame() {}
 

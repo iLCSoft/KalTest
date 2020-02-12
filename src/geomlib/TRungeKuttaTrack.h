@@ -70,7 +70,7 @@ public:
    void SetFromTrack(THelicalTrack& heltrack);
 
    // Utility methods
-   virtual void MoveTo(const TVector3 &globalPivot, 
+    virtual void MoveTo(const TVector3 &globalPivot, 
                              Double_t &step,     
 		                     TMatrixD  *FPtr = 0,    
 		                     TMatrixD  *F12Ptr = 0,    
@@ -79,6 +79,14 @@ public:
    virtual void MoveTo(const TVector3    &globalPivot, 
                              Double_t    &step,     
 		                     TKalMatrix  &FPtr);
+
+   // Do not allow calls to the base class method.
+   virtual void MoveTo(const TVector3 &,
+                             Double_t &,
+                             TMatrixD *,
+                             TMatrixD *,
+                       Bool_t   )
+   { std::abort(); }
 
    virtual TVector3 CalcXAt   (Double_t h) const;
    virtual TMatrixD CalcDxDa  (Double_t h) const;
