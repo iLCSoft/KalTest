@@ -110,7 +110,11 @@ Bool_t TVKalSite::Filter()
 
 void TVKalSite::Smooth(TVKalSite &pre)
 {
+#if 0
    if (&GetState(TVKalSite::kSmoothed)) return;
+#else
+   if (GetStatePtr(TVKalSite::kSmoothed)) return;
+#endif
 
    TVKalState &cura  = GetState(TVKalSite::kFiltered);
    TVKalState &prea  = pre.GetState(TVKalSite::kPredicted);
@@ -144,7 +148,11 @@ void TVKalSite::Smooth(TVKalSite &pre)
 
 void TVKalSite::InvFilter()
 {
+#if 0
    if (&GetState(TVKalSite::kInvFiltered)) return;
+#else
+   if (GetStatePtr(TVKalSite::kInvFiltered)) return;
+#endif
 
    TVKalState &sa = GetState(TVKalSite::kSmoothed);
    TKalMatrix pull = fResVec;
@@ -168,6 +176,7 @@ void TVKalSite::InvFilter()
 TKalMatrix TVKalSite::GetResVec (TVKalSite::EStType t)
 {
    using namespace std;
+#if 0
    TVKalState &a  = GetState(t);
    TVKalState &sa = (&GetState(TVKalSite::kSmoothed) != 0
                     ? GetState(TVKalSite::kSmoothed)
@@ -184,4 +193,22 @@ TKalMatrix TVKalSite::GetResVec (TVKalSite::EStType t)
    } else {
       return (fResVec - fH * (a - sa));
    }
+#else
+   TVKalState *ap  = GetStatePtr(t);
+   TVKalState *sap = (GetStatePtr(TVKalSite::kSmoothed) != 0
+                    ? GetStatePtr(TVKalSite::kSmoothed)
+                    : GetStatePtr(TVKalSite::kFiltered));
+   if (!ap || !sap) {
+     cerr << ":::::: ERROR in TVKalSite::GetResVec(EStType) " << endl
+          << " Invalid states requested"                      << endl
+          << " &a = " << ap << " &sa = " << sap               << endl
+          << " Abort!"                                        << endl;
+     ::abort();
+   }
+   if (ap == sap) {
+      return fResVec;
+   } else {
+      return (fResVec - fH * (*ap - *sap));
+   }
+#endif
 }

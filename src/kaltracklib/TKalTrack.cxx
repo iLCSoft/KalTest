@@ -197,9 +197,15 @@ std::string TKalTrack::toString() {
     str << "    site at index : " <<  IndexOf(curPtr) << std::endl ;
     
     
+#if 0
     TVKalState *tsP  = &curPtr->GetState(TVKalSite::kPredicted);
     TVKalState *tsF  = &curPtr->GetState(TVKalSite::kFiltered);
     TVKalState *tsS  = &curPtr->GetState(TVKalSite::kSmoothed); 
+#else
+    TVKalState *tsP  = curPtr->GetStatePtr(TVKalSite::kPredicted);
+    TVKalState *tsF  = curPtr->GetStatePtr(TVKalSite::kFiltered);
+    TVKalState *tsS  = curPtr->GetStatePtr(TVKalSite::kSmoothed); 
+#endif
     
 
     if(  tsP ) {

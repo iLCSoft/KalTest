@@ -102,8 +102,13 @@ void TVKalSystem::SmoothBackTo(Int_t k)
    TVKalSite  *prePtr;
    TVKalSite  *curPtr = static_cast<TVKalSite *>(cur());
    TVKalState &cura   = curPtr->GetState(TVKalSite::kFiltered);
+#if 0
    TVKalState &scura  = curPtr->GetState(TVKalSite::kSmoothed); 
    if (!&scura) {
+#else
+   TVKalState *scurap = curPtr->GetStatePtr(TVKalSite::kSmoothed); 
+   if (!scurap) {
+#endif
       curPtr->Add(&curPtr->CreateState(cura, cura.GetCovMat(),
                                        TVKalSite::kSmoothed));
    }
@@ -146,7 +151,11 @@ void TVKalSystem::InvFilter(Int_t k)
    //
    // Check if site k already smoothed
    //
+#if 0
    if (!&curPtr->GetState(TVKalSite::kSmoothed)) SmoothBackTo(k);
+#else
+   if (!curPtr->GetStatePtr(TVKalSite::kSmoothed)) SmoothBackTo(k);
+#endif
    //
    // Inverse filter site k
    //
