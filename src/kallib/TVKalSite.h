@@ -72,7 +72,11 @@ public:
    inline virtual Int_t        GetDimension() const { return fM.GetNrows(); }
    inline virtual TVKalState & GetCurState ()       { return *fCurStatePtr; }
    inline virtual TVKalState & GetCurState () const { return *fCurStatePtr; }
-   inline virtual TVKalState & GetState (EStType t);
+   inline virtual TVKalState & GetState    (EStType t);
+#if 0
+#else
+   inline virtual TVKalState * GetStatePtr (EStType t);
+#endif
    inline virtual TKalMatrix & GetMeasVec      ()   { return fM;            }
    inline virtual TKalMatrix & GetMeasNoiseMat ()   { return fV;            }
    inline virtual TKalMatrix & GetResVec       ()   { return fResVec;       }
@@ -122,4 +126,16 @@ TVKalState & TVKalSite::GetState(TVKalSite::EStType t)
    }
    return *ap;
 }
+#if 0
+#else
+
+TVKalState * TVKalSite::GetStatePtr(TVKalSite::EStType t)
+{
+   TVKalState *ap = 0;
+   if (t >= 0 && t < GetEntries()) {
+      ap = static_cast<TVKalState *>(UncheckedAt(t));
+   }
+   return ap;
+}
+#endif
 #endif

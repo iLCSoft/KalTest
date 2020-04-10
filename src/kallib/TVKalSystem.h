@@ -53,6 +53,11 @@ public:
    inline virtual TVKalSite  & GetCurSite()     { return *fCurSitePtr; }
    inline virtual TVKalState & GetState(TVKalSite::EStType t) 
                                    { return fCurSitePtr->GetState(t); }
+#if 0
+#else
+   inline virtual TVKalState * GetStatePtr(TVKalSite::EStType t) 
+                                   { return fCurSitePtr->GetStatePtr(t); }
+#endif
    inline virtual Double_t     GetChi2() { return fChi2; }
           virtual Int_t        GetNDF (Bool_t self = kTRUE);
    
