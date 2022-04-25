@@ -103,7 +103,7 @@ Double_t TVMeasLayer::GetEnergyLoss(      Bool_t    isoutgoing,
    else                    del = 0.;
    Double_t tmax = 2.*kMe*bg2 / (1. + meM*(2.*TMath::Sqrt(gm2) + meM)); 
    Double_t dedx = kK * Z/A * gm2/bg2 * (0.5*log(2.*kMe*bg2*tmax / (I*I))
-                 - bg2/gm2 - del);
+                 - bg2/gm2 - 0.5*del);
 
    Double_t path = hel.IsInB()
                  ? TMath::Abs(hel.GetRho()*df)*cslinv
