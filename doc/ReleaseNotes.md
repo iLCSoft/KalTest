@@ -1,3 +1,13 @@
+# v02-05-01
+
+* 2022-06-27 Daniel Jeans ([PR#5](https://github.com/iLCSoft/KalTest/pull/5))
+  - add missing factor 0.5 to density term of Bethe-Bloch parameterisation
+
+* 2020-04-12 Frank Gaede ([PR#4](https://github.com/iLCSoft/KalTest/pull/4))
+  - fix issue w/ c++17 
+        - this caused KalTest to return a “filtered” state as its “smoothed” or “inverse-filtered” state
+        - patch provided by K.Fujii
+
 # v02-05
 
 * 2018-08-21 Bo Li ([PR#3](https://github.com/ilcsoft/KalTest/pull/3))
