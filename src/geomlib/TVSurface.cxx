@@ -48,11 +48,10 @@ Int_t TVSurface::CalcXingPointWith(const TVTrack  &hel,
 				         Int_t     mode,
 				         Double_t  eps) const
 {
-   eps = 1.e-5;
-
+   //   eps = 1.e-5; // do we really want to ignore the input value?
    // this Newtonian method is used for non-uniform b field,
    // for this case mode is currently set to 0
-   mode = 0;
+   //   mode = 0; // do we really want to ignore the input value?
 
    static const Int_t       maxcount   = 100;
    static const Double_t    initlambda = 1.e-10;
