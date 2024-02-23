@@ -1,3 +1,11 @@
+# v02-05-02
+
+* 2024-02-23 tmadlener ([PR#9](https://github.com/iLCSoft/KalTest/pull/9))
+  - Update CI to run on latest clicdp nightlies and use the key4hep-build action
+
+* 2022-12-02 Thomas Madlener ([PR#8](https://github.com/iLCSoft/KalTest/pull/8))
+  - Migrate CI to github actions and remove obsolete travis CI configuration
+
 # v02-05-01
 
 * 2022-06-27 Daniel Jeans ([PR#5](https://github.com/iLCSoft/KalTest/pull/5))
