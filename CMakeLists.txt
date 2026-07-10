@@ -7,7 +7,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 3.10 FATAL_ERROR )
 
 
 # project name
-PROJECT( KalTest )
+PROJECT( KalTest LANGUAGES CXX )
 
 
 # project version
@@ -64,5 +64,5 @@ ADD_SUBDIRECTORY( ./examples/kaltest )
 DISPLAY_STD_VARIABLES()
 
 # generate and install following configuration files
-GENERATE_PACKAGE_CONFIGURATION_FILES( KalTestConfig.cmake KalTestConfigVersion.cmake KalTestLibDeps.cmake )
+GENERATE_PACKAGE_CONFIGURATION_FILES( KalTestConfig.cmake KalTestConfigVersion.cmake)
 
