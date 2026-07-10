@@ -7,7 +7,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 FATAL_ERROR )
 
 
 # project name
-PROJECT( KalTest )
+PROJECT( KalTest LANGUAGES CXX )
 
 
 # project version
