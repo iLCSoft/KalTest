@@ -71,6 +71,8 @@ public:
 
    THelicalTrack(const THelicalTrack&) = default;
    THelicalTrack& operator=(const THelicalTrack&) = default;
+   THelicalTrack(THelicalTrack&&) = default;
+   THelicalTrack& operator=(THelicalTrack&&) = default;
 
    virtual ~THelicalTrack() {}
 

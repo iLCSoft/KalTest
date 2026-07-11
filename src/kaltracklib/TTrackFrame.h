@@ -35,11 +35,14 @@ public:
    //Copy constructor
    TTrackFrame(const TTrackFrame &orig);
 
+   TTrackFrame(TTrackFrame&&) = default;
+   TTrackFrame& operator=(TTrackFrame&&) = default;
+
    //Build frame by last frame, shift vector and B field. The B field determines local
    //rotation matrix.
    TTrackFrame(const TTrackFrame &lastFrame, const TVector3 &v, const TVector3 &b);
 
-   //TTrackFrame& operator=( const TTrackFrame& frame );
+   TTrackFrame& operator=(const TTrackFrame& frame) = default;
 
    virtual ~TTrackFrame() {}
 
