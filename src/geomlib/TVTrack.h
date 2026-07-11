@@ -64,6 +64,8 @@ public:
 
    TVTrack(const TVTrack&) = default;
    TVTrack& operator=(const TVTrack&) = default;
+   TVTrack(TVTrack&&) = default;
+   TVTrack& operator=(TVTrack&&) = default;
 
    virtual ~TVTrack() {}
 
