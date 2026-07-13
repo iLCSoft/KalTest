@@ -50,8 +50,8 @@ public:
 
    TKalMatrix& operator= (const TKalMatrix &orig) = default;
 
-   TKalMatrix(TKalMatrix&&) = delete;
-   TKalMatrix& operator= (TKalMatrix&&) = delete;
+   TKalMatrix(TKalMatrix&&) = default;
+   TKalMatrix& operator= (TKalMatrix&&) = default;
 
    virtual ~TKalMatrix() {}
 
