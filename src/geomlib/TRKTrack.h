@@ -34,7 +34,7 @@ public:
    // Ctors and Dtor
    TRKTrack(Double_t chg, TVector3 x, TVector3 p);
    TRKTrack(const TRKTrack&);
-   TRKTrack& operator=(const TRKTrack&) = default ;
+   TRKTrack& operator=(const TRKTrack&) = delete ;
 
    virtual ~TRKTrack() {}
 
