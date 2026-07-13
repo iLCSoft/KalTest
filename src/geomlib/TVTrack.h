@@ -62,6 +62,11 @@ public:
                  Double_t     b,
            const TTrackFrame &f);
 
+   TVTrack(const TVTrack&) = default;
+   TVTrack& operator=(const TVTrack&) = default;
+   TVTrack(TVTrack&&) = default;
+   TVTrack& operator=(TVTrack&&) = default;
+
    virtual ~TVTrack() {}
 
    // Utility methods
