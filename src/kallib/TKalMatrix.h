@@ -50,6 +50,9 @@ public:
 
    TKalMatrix& operator= (const TKalMatrix &orig) = default;
 
+   TKalMatrix(TKalMatrix&&) = delete;
+   TKalMatrix& operator= (TKalMatrix&&) = delete;
+
    virtual ~TKalMatrix() {}
 
   // virtual void  DebugPrint() const { DebugPrint( "", 5 , std::cerr ) ; }
