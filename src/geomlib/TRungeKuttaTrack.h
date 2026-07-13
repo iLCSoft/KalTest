@@ -70,7 +70,7 @@ public:
    void SetFromTrack(THelicalTrack& heltrack);
 
    // Utility methods
-    virtual void MoveTo(const TVector3 &globalPivot, 
+   virtual void MoveTo(const TVector3 &globalPivot,
                              Double_t &step,     
 		                     TMatrixD  *FPtr = 0,    
 		                     TMatrixD  *F12Ptr = 0,    
