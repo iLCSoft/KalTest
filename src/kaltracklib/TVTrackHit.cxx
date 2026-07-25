@@ -13,7 +13,7 @@
 //*
 //*************************************************************************
 
-#include "TVTrackHit.h"   // from KalTrackLib
+#include <kaltest/TVTrackHit.h>   // from KalTrackLib
 
 ClassImp(TVTrackHit)
 

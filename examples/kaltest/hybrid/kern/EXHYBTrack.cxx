@@ -17,7 +17,7 @@
 //*************************************************************************
                                                                                 
 #include "EXHYBTrack.h"
-#include "TKalTrackSite.h"     // from KalTrackLib
+#include <kaltest/TKalTrackSite.h>     // from KalTrackLib
 #include "TVirtualPad.h"       // from ROOT
 #include "TPolyMarker3D.h"     // from ROOT
 

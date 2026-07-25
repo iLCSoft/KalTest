@@ -17,7 +17,7 @@
 #include <iostream>
 #include <iomanip>
 #include "TString.h"
-#include "TKalMatrix.h"
+#include <kaltest/TKalMatrix.h>
 
 //_____________________________________________________________________
 //  ------------------------------

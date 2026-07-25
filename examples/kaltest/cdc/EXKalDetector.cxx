@@ -5,7 +5,7 @@
 //-------------------
 #define __REALISTIC__
 
-#include "TKalDetCradle.h"
+#include <kaltest/TKalDetCradle.h>
 #include "EXKalDetector.h"
 
 ClassImp(EXKalDetector)

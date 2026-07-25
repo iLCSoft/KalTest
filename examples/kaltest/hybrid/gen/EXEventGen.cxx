@@ -1,7 +1,7 @@
 #include "EXEventGen.h"
 #include "EXVKalDetector.h"
 #include "EXVMeasLayer.h"
-#include "TPlane.h"
+#include <kaltest/TPlane.h>
 #include "TRandom.h"
 
 //-----------------------------------

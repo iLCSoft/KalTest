@@ -1,8 +1,8 @@
 #ifndef __EXRUNGEKUTTAEVENTGEN__
 #define __EXRUNGEKUTTAEVENTGEN__
 
-#include "TKalDetCradle.h"
-#include "TRungeKuttaTrack.h"
+#include <kaltest/TKalDetCradle.h>
+#include <kaltest/TRungeKuttaTrack.h>
 
 class EXRungeKuttaEventGen {
 public:

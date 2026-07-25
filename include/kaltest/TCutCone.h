@@ -20,7 +20,7 @@
 //*                             IsOnSurface(), etc.
 //*************************************************************************
 //
-#include "TVSurface.h"
+#include <kaltest/TVSurface.h>
 #include "TVector3.h"
 #include "TMatrixD.h"
 
@@ -119,4 +119,3 @@ Double_t TCutCone::GetSortingPolicy() const
    return GetZ1()*GetTanA();
 }
 #endif
-

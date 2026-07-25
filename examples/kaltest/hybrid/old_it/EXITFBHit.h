@@ -1,8 +1,8 @@
 #ifndef __EXITFBHIT__
 #define __EXITHFBIT__
 
-#include "KalTrackDim.h"
-#include "TVTrackHit.h"
+#include <kaltest/KalTrackDim.h>
+#include <kaltest/TVTrackHit.h>
 #include "EXITFBMeasLayer.h"
 
 class EXITFBHit : public TVTrackHit {

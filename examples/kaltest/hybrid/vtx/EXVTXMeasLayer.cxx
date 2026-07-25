@@ -18,7 +18,7 @@
 #include "EXVTXMeasLayer.h"
 #include "EXVTXHit.h"
 #include "EXVTXKalDetector.h"
-#include "TVTrack.h"
+#include <kaltest/TVTrack.h>
 #include "TVector3.h"
 #include "TRandom.h"
 #include "TMath.h"

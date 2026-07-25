@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include <iomanip>
-#include "KalTrackDim.h"
-#include "TVTrackHit.h"
+#include <kaltest/KalTrackDim.h>
+#include <kaltest/TVTrackHit.h>
 #include "EXMeasLayer.h"
 
 using namespace std;

@@ -17,7 +17,7 @@
 //*
 //*************************************************************************
 //
-#include "TVSurface.h"
+#include <kaltest/TVSurface.h>
 #include "TVector3.h"
 #include "TMatrixD.h"
 
@@ -107,4 +107,3 @@ Double_t THype::GetSortingPolicy() const
    return GetR0();
 }
 #endif
-

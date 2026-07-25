@@ -24,7 +24,7 @@
 #include <cmath>
 #include <iostream>    // from STL
 
-#include "TBField.h"   // from KalTrackLib
+#include <kaltest/TBField.h>   // from KalTrackLib
 
 ClassImp(TBField)
 

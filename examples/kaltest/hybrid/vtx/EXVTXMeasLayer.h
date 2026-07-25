@@ -17,10 +17,10 @@
 //*************************************************************************
 //
 #include "TVector3.h"
-#include "TKalMatrix.h"
-#include "TPlane.h"
+#include <kaltest/TKalMatrix.h>
+#include <kaltest/TPlane.h>
 #include "EXVMeasLayer.h"
-#include "KalTrackDim.h"
+#include <kaltest/KalTrackDim.h>
 #include "TMath.h"
 #include <sstream>
 class TVTrackHit;

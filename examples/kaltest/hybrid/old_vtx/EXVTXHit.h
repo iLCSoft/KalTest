@@ -1,8 +1,8 @@
 #ifndef __EXVTXHIT__
 #define __EXVTXHIT__
 
-#include "KalTrackDim.h"
-#include "TVTrackHit.h"
+#include <kaltest/KalTrackDim.h>
+#include <kaltest/TVTrackHit.h>
 #include "EXVTXMeasLayer.h"
 
 class EXVTXHit : public TVTrackHit {

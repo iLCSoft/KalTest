@@ -1,10 +1,10 @@
 //#define SAVE_RESIDUAL
 #include "TNtupleD.h"
 #include "TFile.h"
-#include "TKalDetCradle.h"
-#include "TKalTrackState.h"
-#include "TKalTrackSite.h"
-#include "TVTrackHit.h"
+#include <kaltest/TKalDetCradle.h>
+#include <kaltest/TKalTrackState.h>
+#include <kaltest/TKalTrackSite.h>
+#include <kaltest/TVTrackHit.h>
 #include "EXKalTest.h"
 #include "EXTPCKalDetector.h"
 #include "EXITKalDetector.h"

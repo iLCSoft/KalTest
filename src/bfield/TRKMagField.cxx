@@ -9,9 +9,9 @@
 //*
 //*************************************************************************
 //
-#include "TRKMagField.h"
+#include <kaltest/TRKMagField.h>
 #include "TVector3.h"
-#include "TBField.h"
+#include <kaltest/TBField.h>
 
 #include <iostream>
 #include <iomanip>

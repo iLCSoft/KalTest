@@ -19,8 +19,8 @@
 
 #include <iostream>
 #include <cstdlib>
-#include "TVKalSite.h"
-#include "TVKalState.h"
+#include <kaltest/TVKalSite.h>
+#include <kaltest/TVKalState.h>
 
 //_____________________________________________________________________
 //  ------------------------------

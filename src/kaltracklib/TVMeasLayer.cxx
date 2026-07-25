@@ -28,9 +28,9 @@
 //*
 //*************************************************************************
 
-#include "TVMeasLayer.h"  // from KalTrackLib
-#include "TKalTrack.h"    // from KalTrackLib
-#include "TVTrack.h"      // from KalTrackLib
+#include <kaltest/TVMeasLayer.h>  // from KalTrackLib
+#include <kaltest/TKalTrack.h>    // from KalTrackLib
+#include <kaltest/TVTrack.h>      // from KalTrackLib
 
 ClassImp(TVMeasLayer)
 

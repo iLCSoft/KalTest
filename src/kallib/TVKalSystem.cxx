@@ -18,8 +18,8 @@
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
-#include "TVKalSystem.h"
-#include "TVKalState.h"
+#include <kaltest/TVKalSystem.h>
+#include <kaltest/TVKalState.h>
 
 //_____________________________________________________________________
 //  ------------------------------

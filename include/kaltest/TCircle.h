@@ -18,7 +18,7 @@
 //
 #include <iostream>
 #include "TVector2.h"
-#include "TVCurve.h"
+#include <kaltest/TVCurve.h>
 
 using namespace std;
 //_____________________________________________________________________

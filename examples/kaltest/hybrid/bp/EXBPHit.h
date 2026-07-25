@@ -1,8 +1,8 @@
 #ifndef EXBPHIT_H
 #define EXBPHIT_H
 
-#include "KalTrackDim.h"
-#include "TVTrackHit.h"
+#include <kaltest/KalTrackDim.h>
+#include <kaltest/TVTrackHit.h>
 #include "EXBPMeasLayer.h"
 
 class EXBPHit : public TVTrackHit {

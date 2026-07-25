@@ -17,8 +17,8 @@
 //*************************************************************************
 //
 #include <iostream>
-#include "TVSurface.h"
-#include "TVTrack.h"
+#include <kaltest/TVSurface.h>
+#include <kaltest/TVTrack.h>
 
 using namespace std;
 

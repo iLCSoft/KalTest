@@ -21,10 +21,10 @@
 //*
 //*************************************************************************
 
-#include "TVKalState.h"         // from KalLib
-#include "THelicalTrack.h"      // from GeomLib
-#include "TStraightTrack.h"     // from GeomLib
-#include "KalTrackDim.h"        // from KalTrackLib
+#include <kaltest/TVKalState.h>         // from KalLib
+#include <kaltest/THelicalTrack.h>      // from GeomLib
+#include <kaltest/TStraightTrack.h>     // from GeomLib
+#include <kaltest/KalTrackDim.h>        // from KalTrackLib
 #include <iostream>
 
 class	TKalTrackSite;

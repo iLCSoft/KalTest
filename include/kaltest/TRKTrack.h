@@ -23,7 +23,7 @@
 
 #include "TVector3.h"
 
-#include "TVMeasLayer.h"
+#include <kaltest/TVMeasLayer.h>
 
 //_____________________________________________________________________
 //  -----------------------------------

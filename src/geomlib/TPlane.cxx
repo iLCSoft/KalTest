@@ -15,7 +15,7 @@
 //*
 //*************************************************************************
 //
-#include "TPlane.h"
+#include <kaltest/TPlane.h>
 
 
 //_____________________________________________________________________
@@ -63,5 +63,4 @@ TMatrixD TPlane::CalcDSDx(const TVector3 &/*xx*/) const
    dsdx(0,2) = fNormal.Z();
    return dsdx;
 }
-
 
