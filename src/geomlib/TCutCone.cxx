@@ -19,9 +19,9 @@
 //*************************************************************************
 //
 #include <iostream>
-#include "TCircle.h"
-#include "TCutCone.h"
-#include "TVTrack.h"
+#include <kaltest/TCircle.h>
+#include <kaltest/TCutCone.h>
+#include <kaltest/TVTrack.h>
 
 using namespace std;
 

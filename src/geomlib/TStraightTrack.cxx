@@ -16,7 +16,7 @@
 //
 
 #include <iostream>
-#include "TStraightTrack.h"
+#include <kaltest/TStraightTrack.h>
 
 using namespace std;
 
@@ -280,4 +280,3 @@ void TStraightTrack::CalcDapDa(Double_t fid,
    F(4,3) = 0;
    F(4,4) = 1;
 } 
-

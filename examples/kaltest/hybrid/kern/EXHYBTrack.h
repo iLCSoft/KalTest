@@ -16,8 +16,8 @@
 //*
 //*************************************************************************
                                                                                 
-#include "TKalTrack.h"         // from KalTrackLib
-#include "TAttDrawable.h"      // from Utils
+#include <kaltest/TKalTrack.h>         // from KalTrackLib
+#include <kaltest/TAttDrawable.h>      // from Utils
 
 //_________________________________________________________________________
 //  ------------------------------

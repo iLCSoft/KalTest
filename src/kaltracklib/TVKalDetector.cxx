@@ -17,6 +17,6 @@
 //*
 //*************************************************************************
 
-#include "TVKalDetector.h"
+#include <kaltest/TVKalDetector.h>
 
 ClassImp(TVKalDetector)

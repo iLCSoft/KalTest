@@ -1,8 +1,8 @@
 #ifndef __EXTPCHIT__
 #define __EXTPCHIT__
 
-#include "KalTrackDim.h"
-#include "TVTrackHit.h"
+#include <kaltest/KalTrackDim.h>
+#include <kaltest/TVTrackHit.h>
 #include "EXTPCMeasLayer.h"
 
 class EXTPCHit : public TVTrackHit {

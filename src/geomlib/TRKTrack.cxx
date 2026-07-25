@@ -10,9 +10,9 @@
 //*************************************************************************
 //
 #include <iostream>
-#include "TRKTrack.h"
-#include "TBField.h"
-#include "TRKMagField.h"
+#include <kaltest/TRKTrack.h>
+#include <kaltest/TBField.h>
+#include <kaltest/TRKMagField.h>
 
 ClassImp(TRKTrack)
 

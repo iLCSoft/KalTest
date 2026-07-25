@@ -16,7 +16,7 @@
 //*
 //*************************************************************************
 
-#include "TKalMatrix.h"
+#include <kaltest/TKalMatrix.h>
 #include "TRotation.h"
 #include "TVector3.h"
 

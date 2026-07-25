@@ -16,7 +16,7 @@
 //*
 //*************************************************************************
 //
-#include "TVSolid.h"
+#include <kaltest/TVSolid.h>
 #include "TVector3.h"
 
 class TVTrack;
@@ -89,4 +89,3 @@ Bool_t TTube::IsOutside(const TVector3 &xx) const
    return (r < fRin || r > fRout || z < GetZmin() || z > GetZmax());
 } 
 #endif
-

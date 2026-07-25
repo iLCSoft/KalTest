@@ -20,11 +20,11 @@
 //*************************************************************************
 
 #include "TVector3.h"    // from ROOT
-#include "TVKalSite.h"   // from KalLib
-#include "TVTrackHit.h"  // from KalTrackLib
+#include <kaltest/TVKalSite.h>   // from KalLib
+#include <kaltest/TVTrackHit.h>  // from KalTrackLib
 
-#include "TTrackFrame.h" // from KalTrackLib
-#include "TBField.h"     // from Bfield
+#include <kaltest/TTrackFrame.h> // from KalTrackLib
+#include <kaltest/TBField.h>     // from Bfield
 
 class TVKalState;
 class TKalTrackState;

@@ -26,8 +26,8 @@
 #include "TCollection.h"
 #endif
 
-#include "TVCurve.h"
-#include "TTrackFrame.h"
+#include <kaltest/TVCurve.h>
+#include <kaltest/TTrackFrame.h>
 
 #include <iostream>
 

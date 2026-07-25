@@ -1,8 +1,8 @@
 #ifndef __EXRKEVENTGEN__
 #define __EXRKEVENTGEN__
 
-#include "TKalDetCradle.h"
-#include "TRKTrack.h"
+#include <kaltest/TKalDetCradle.h>
+#include <kaltest/TRKTrack.h>
 
 class EXRKEventGen {
 public:

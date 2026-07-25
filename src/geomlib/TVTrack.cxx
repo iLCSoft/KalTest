@@ -16,8 +16,8 @@
 //
 
 #include <iostream>
-#include "TVTrack.h"
-#include "TTrackFrame.h"
+#include <kaltest/TVTrack.h>
+#include <kaltest/TTrackFrame.h>
 
 using namespace std;
 #if __GNUC__ < 4 && !defined(__STRICT_ANSI__)
@@ -89,4 +89,3 @@ TVTrack::TVTrack(const TMatrixD    &a,
 {
    SetMagField(b);
 }
-

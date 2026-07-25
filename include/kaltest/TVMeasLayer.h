@@ -30,9 +30,9 @@
 
 #include "TVector3.h"       // from ROOT
 #include "TMaterial.h"      // from ROOT
-#include "TAttElement.h"    // from Utils
-#include "TKalMatrix.h"     // from KalLib
-#include "KalTrackDim.h"    // from KalTrackLib
+#include <kaltest/TAttElement.h>    // from Utils
+#include <kaltest/TKalMatrix.h>     // from KalLib
+#include <kaltest/KalTrackDim.h>    // from KalTrackLib
 
 class TVTrack;
 class TVTrackHit;

@@ -17,7 +17,7 @@
 //*
 //*************************************************************************
 //
-#include "TVSurface.h"
+#include <kaltest/TVSurface.h>
 #include "TVector3.h"
 #include "TMatrixD.h"
 
@@ -77,4 +77,3 @@ Double_t TPlane::GetSortingPolicy() const
    return TMath::Abs(fXc*fNormal.Unit());
 }
 #endif
-

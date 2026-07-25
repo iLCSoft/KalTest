@@ -18,9 +18,9 @@
 //*************************************************************************
 
 #include "TVector3.h"      // from ROOT
-#include "TKalMatrix.h"    // from KalLib
-#include "KalTrackDim.h"   // from KalTrackLib
-#include "TVMeasLayer.h"   // from KalTrackLib
+#include <kaltest/TKalMatrix.h>    // from KalLib
+#include <kaltest/KalTrackDim.h>   // from KalTrackLib
+#include <kaltest/TVMeasLayer.h>   // from KalTrackLib
 
 class TVTrackHit : public TKalMatrix {
 public:

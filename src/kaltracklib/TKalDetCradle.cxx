@@ -23,16 +23,16 @@
 //*
 //*************************************************************************
 
-#include "TKalDetCradle.h"   // from KalTrackLib
-#include "TVMeasLayer.h"     // from KalTrackLib
-#include "TVKalDetector.h"   // from KalTrackLib
-#include "TKalTrackSite.h"   // from KalTrackLib
-#include "TKalTrackState.h"  // from KalTrackLib
-#include "TKalTrack.h"       // from KalTrackLib
-#include "TVSurface.h"       // from GeomLib
-#include "TVTrack.h"         // from GeomLib
-#include "TBField.h"         // from Bfield
-#include "TRungeKuttaTrack.h"
+#include <kaltest/TKalDetCradle.h>   // from KalTrackLib
+#include <kaltest/TVMeasLayer.h>     // from KalTrackLib
+#include <kaltest/TVKalDetector.h>   // from KalTrackLib
+#include <kaltest/TKalTrackSite.h>   // from KalTrackLib
+#include <kaltest/TKalTrackState.h>  // from KalTrackLib
+#include <kaltest/TKalTrack.h>       // from KalTrackLib
+#include <kaltest/TVSurface.h>       // from GeomLib
+#include <kaltest/TVTrack.h>         // from GeomLib
+#include <kaltest/TBField.h>         // from Bfield
+#include <kaltest/TRungeKuttaTrack.h>
 
 #include <iostream>          // from STL
 
@@ -493,5 +493,4 @@ void TKalDetCradle::Update()
     }
     
 }
-
 

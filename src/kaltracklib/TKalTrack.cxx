@@ -17,9 +17,9 @@
 //*
 //*************************************************************************
                                                                                 
-#include "TKalTrackState.h"    // from KalTrackLib
-#include "TKalTrackSite.h"     // from KalTrackLib
-#include "TKalTrack.h"         // from KalTrackLib
+#include <kaltest/TKalTrackState.h>    // from KalTrackLib
+#include <kaltest/TKalTrackSite.h>     // from KalTrackLib
+#include <kaltest/TKalTrack.h>         // from KalTrackLib
 #include <iostream>            // from STL
 #include <sstream>            // from STL
 

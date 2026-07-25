@@ -13,8 +13,8 @@
 //*
 //*************************************************************************
 
-#include "TKalFilterCond.h"
-#include "TKalTrackSite.h"
+#include <kaltest/TKalFilterCond.h>
+#include <kaltest/TKalTrackSite.h>
 #include <iostream>
 
 //_____________________________________________________________________

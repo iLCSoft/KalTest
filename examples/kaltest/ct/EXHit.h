@@ -1,8 +1,8 @@
 #ifndef __EXHIT__
 #define __EXHIT__
 
-#include "KalTrackDim.h"
-#include "TVTrackHit.h"
+#include <kaltest/KalTrackDim.h>
+#include <kaltest/TVTrackHit.h>
 #include "EXMeasLayer.h"
 
 class EXHit : public TVTrackHit {

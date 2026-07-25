@@ -16,7 +16,7 @@
 //*
 //*************************************************************************
 //
-#include "TVKalState.h"
+#include <kaltest/TVKalState.h>
 
 class EXKalSite;
 

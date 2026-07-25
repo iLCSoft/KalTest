@@ -24,9 +24,9 @@
 //*************************************************************************
 
 #include "TObjArray.h"     // from ROOT
-#include "TAttElement.h"   // from Utils
-#include "TKalMatrix.h"    // from KalTrackLib
-#include "TKalTrack.h"     // from KalTrackLib
+#include <kaltest/TAttElement.h>   // from Utils
+#include <kaltest/TKalMatrix.h>    // from KalTrackLib
+#include <kaltest/TKalTrack.h>     // from KalTrackLib
 #include <memory>          // from STL
 
 class TKalTrackSite;

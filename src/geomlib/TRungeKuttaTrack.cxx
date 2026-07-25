@@ -12,9 +12,9 @@
 #include <iostream>
 #include <cmath>
 
-#include "TRungeKuttaTrack.h"
-#include "TBField.h"
-#include "TRKMagField.h"
+#include <kaltest/TRungeKuttaTrack.h>
+#include <kaltest/TBField.h>
+#include <kaltest/TRKMagField.h>
 
 ClassImp(TRungeKuttaTrack)
 

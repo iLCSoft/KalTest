@@ -2,8 +2,8 @@
 #define __EXVDETECTOR__
 
 #include "TVector3.h"
-#include "TVKalDetector.h"
-#include "TAttDrawable.h"
+#include <kaltest/TVKalDetector.h>
+#include <kaltest/TAttDrawable.h>
 
 class TVMeasLayer;
 class TNode;

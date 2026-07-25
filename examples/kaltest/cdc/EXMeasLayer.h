@@ -18,10 +18,10 @@
 #include <iostream>
 #include "TVector3.h"
 
-#include "TKalMatrix.h"
-#include "THype.h"
-#include "TVMeasLayer.h"
-#include "KalTrackDim.h"
+#include <kaltest/TKalMatrix.h>
+#include <kaltest/THype.h>
+#include <kaltest/TVMeasLayer.h>
+#include <kaltest/KalTrackDim.h>
 #include "EXEventGen.h"
 
 using namespace std;

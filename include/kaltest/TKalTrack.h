@@ -21,8 +21,8 @@
 //*
 //*************************************************************************
                                                                                 
-#include "TVKalSystem.h"       // from KalLib
-#include "TKalTrackState.h"    // from KalTrackLib
+#include <kaltest/TVKalSystem.h>       // from KalLib
+#include <kaltest/TKalTrackState.h>    // from KalTrackLib
 
 //_________________________________________________________________________
 //  ------------------------------

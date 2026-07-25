@@ -5,7 +5,7 @@
 
 #include "TVector3.h"
 
-#include "TVKalDetector.h"
+#include <kaltest/TVKalDetector.h>
 #include "EXMeasLayer.h"
 
 using namespace std;

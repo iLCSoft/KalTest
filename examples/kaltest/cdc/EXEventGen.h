@@ -1,8 +1,8 @@
 #ifndef __EXEVENTGEN__
 #define __EXEVENTGEN__
 
-#include "TKalDetCradle.h"
-#include "THelicalTrack.h"
+#include <kaltest/TKalDetCradle.h>
+#include <kaltest/THelicalTrack.h>
 
 class EXEventGen {
 public:

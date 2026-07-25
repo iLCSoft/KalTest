@@ -14,7 +14,7 @@
 //*
 //*************************************************************************
 //
-#include "TCircle.h"
+#include <kaltest/TCircle.h>
 #if ROOT_VERSION_CODE >= ROOT_VERSION(5,15,0)
 #include "TMath.h"
 #endif
@@ -64,4 +64,3 @@ Int_t TCircle::CalcXingPointWith(const TCircle  &c,
       return 2;
    }
 }
-

@@ -2,7 +2,7 @@
 #define __EXDETECTOR__
 
 #include "TVector3.h"         // from ROOT
-#include "TVKalDetector.h"    // from KalTrackLib
+#include <kaltest/TVKalDetector.h>    // from KalTrackLib
 #include "EXMeasLayer.h"
 
 class EXKalDetector : public TVKalDetector {

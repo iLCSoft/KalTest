@@ -16,10 +16,10 @@
 //*************************************************************************
 //
 #include "TVector3.h"
-#include "TKalMatrix.h"
-#include "TCylinder.h"
-#include "TVMeasLayer.h"
-#include "KalTrackDim.h"
+#include <kaltest/TKalMatrix.h>
+#include <kaltest/TCylinder.h>
+#include <kaltest/TVMeasLayer.h>
+#include <kaltest/KalTrackDim.h>
 
 class TVTrackHit;
 

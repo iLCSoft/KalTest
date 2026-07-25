@@ -23,9 +23,9 @@
 //
 #include "TObjArray.h"
 
-#include "TAttLockable.h"
-#include "TKalMatrix.h"
-#include "TVKalState.h"
+#include <kaltest/TAttLockable.h>
+#include <kaltest/TKalMatrix.h>
+#include <kaltest/TVKalState.h>
 
 class TVKalSystem;
 

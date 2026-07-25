@@ -2,7 +2,7 @@
 #include "EXMeasLayer.h"
 #include "EXKalDetector.h"
 #include "TRandom.h"
-#include "TStraightTrack.h"
+#include <kaltest/TStraightTrack.h>
 
 // -----------------------------------
 //  Track Parameters

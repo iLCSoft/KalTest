@@ -16,8 +16,8 @@
 //
 
 #include <iostream>
-#include "THelicalTrack.h"
-#include "TBField.h"
+#include <kaltest/THelicalTrack.h>
+#include <kaltest/TBField.h>
 
 using namespace std;
 
@@ -495,4 +495,3 @@ void THelicalTrack::CalcDapDa(Double_t  fid,
    F(4,3) = 0.;
    F(4,4) = 1.;
 }
-

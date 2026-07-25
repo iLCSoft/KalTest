@@ -18,12 +18,12 @@
 //*
 //*************************************************************************
 
-#include "TKalTrackSite.h"    // from KalTrackLib
-#include "TKalTrackState.h"   // from KalTrackLib
-#include "TVTrackHit.h"       // from KalTrackLib
-#include "TKalFilterCond.h"   // from KalTrackLib
-#include "TVSurface.h"        // from GeomLib
-#include "TBField.h"          // from Bfield
+#include <kaltest/TKalTrackSite.h>    // from KalTrackLib
+#include <kaltest/TKalTrackState.h>   // from KalTrackLib
+#include <kaltest/TVTrackHit.h>       // from KalTrackLib
+#include <kaltest/TKalFilterCond.h>   // from KalTrackLib
+#include <kaltest/TVSurface.h>        // from GeomLib
+#include <kaltest/TBField.h>          // from Bfield
 
 #include <iostream>           // from STL
 #include <memory>             // from STL
@@ -190,4 +190,3 @@ void TKalTrackSite::DebugPrint() const
    cout << " res_z = " << (*(TKalTrackSite *)this).GetResVec()(1,0) << endl;
    fHitPtr->DebugPrint();
 }
-

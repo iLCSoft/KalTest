@@ -16,9 +16,9 @@
 //*************************************************************************
 //
 #include "TVector3.h"
-#include "TVMeasLayer.h"
-#include "THelicalTrack.h"
-#include "TVSurface.h"
+#include <kaltest/TVMeasLayer.h>
+#include <kaltest/THelicalTrack.h>
+#include <kaltest/TVSurface.h>
 
 using namespace std;
 

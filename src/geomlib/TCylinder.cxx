@@ -17,10 +17,10 @@
 //*************************************************************************
 //
 #include <iostream>
-#include "TCircle.h"
-#include "TCylinder.h"
-#include "TVTrack.h"
-#include "TBField.h"
+#include <kaltest/TCircle.h>
+#include <kaltest/TCylinder.h>
+#include <kaltest/TVTrack.h>
+#include <kaltest/TBField.h>
 
 using namespace std;
 
