@@ -2,7 +2,7 @@
 # cmake file for building KalFit libraries
 # @author Jan Engels, DESY
 # @author F. Gaede, DESY
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 FATAL_ERROR )
+CMAKE_MINIMUM_REQUIRED( VERSION 3.10 FATAL_ERROR )
 ########################################################
 
 
@@ -64,5 +64,9 @@ ADD_SUBDIRECTORY( ./examples/kaltest )
 DISPLAY_STD_VARIABLES()
 
 # generate and install following configuration files
-GENERATE_PACKAGE_CONFIGURATION_FILES( KalTestConfig.cmake KalTestConfigVersion.cmake KalTestLibDeps.cmake )
-
+# Modern CMake no longer generates the legacy dependency file used by this
+# package-config template.
+GENERATE_PACKAGE_CONFIGURATION_FILES( KalTestConfig.cmake KalTestConfigVersion.cmake )
+FILE( WRITE "${PROJECT_BINARY_DIR}/KalTestLibDeps.cmake"
+      "# KalTest shared-library dependency information is resolved at runtime.\n" )
+INSTALL( FILES "${PROJECT_BINARY_DIR}/KalTestLibDeps.cmake" DESTINATION lib/cmake )
