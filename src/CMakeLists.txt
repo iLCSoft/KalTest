@@ -8,7 +8,6 @@ SET( KalTest_PUBLIC_HEADER_DIR "${KalTest_PUBLIC_INCLUDE_DIR}/kaltest" )
 # One dictionary and one PCM serve the whole KalTest library.  Every header is
 # passed by its stable public spelling, kaltest/Header.h.
 FILE( GLOB KALTEST_PUBLIC_HEADERS "${KalTest_PUBLIC_HEADER_DIR}/*.h" )
-LIST( SORT KALTEST_PUBLIC_HEADERS )
 
 SET( KALTEST_DICT_HEADERS )
 SET( KALTEST_DICT_DEPENDS )
