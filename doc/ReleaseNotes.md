@@ -1,3 +1,25 @@
+# v02-06
+
+* 2026-07-25 Juan Miguel Carceller ([PR#16](https://github.com/iLCSoft/KalTest/pull/16))
+  - Move all header files to a top-level `include` folder
+  - Fix all the includes in the repository to reflect the new paths
+  - Instead of creating 4 dictionaries, create a single one. I think this makes sense since there is only a single library.
+
+* 2026-07-25 Juan Miguel Carceller ([PR#12](https://github.com/iLCSoft/KalTest/pull/12))
+  - Bump the minimum version of CMake to 3.10, to be able to compile with CMake 4.0
+
+* 2026-07-13 scott snyder ([PR#11](https://github.com/iLCSoft/KalTest/pull/11))
+  - Fix a number of warnings seen with recent compilers.
+
+* 2026-07-11 sss ([PR#13](https://github.com/iLCSoft/KalTest/pull/13))
+  - Fix warnings seen when building k4Reco with clang.
+
+* 2026-07-10 Juan Miguel Carceller ([PR#15](https://github.com/iLCSoft/KalTest/pull/15))
+  - Add an explicit CXX language specification to the CMake project() call, not to look for a C compiler.
+
+* 2026-07-10 sss ([PR#10](https://github.com/iLCSoft/KalTest/pull/10))
+  - Remove (obsolete) centos7 builds from CI.
+
 # v02-05-02
 
 * 2024-02-23 tmadlener ([PR#9](https://github.com/iLCSoft/KalTest/pull/9))
