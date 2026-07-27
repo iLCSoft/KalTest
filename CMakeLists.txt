@@ -12,8 +12,8 @@ PROJECT( KalTest LANGUAGES CXX )
 
 # project version
 SET( KalTest_VERSION_MAJOR 2 )
-SET( KalTest_VERSION_MINOR 5 )
-SET( KalTest_VERSION_PATCH 2 )
+SET( KalTest_VERSION_MINOR 6 )
+SET( KalTest_VERSION_PATCH 0 )
 
 cmake_policy(SET CMP0008 NEW)  
 
